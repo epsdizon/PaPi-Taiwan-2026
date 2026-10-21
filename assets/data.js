@@ -127,9 +127,8 @@ window.TRIP = {
         [2, "3:00 PM", "Van back to the hotel, then nap time", "hotel", "Van", "The van's day ends here."],
         [2, "5:30 PM", "Dinner near the hotel", "", "Walk or taxi", "Keep it close. Day 2 doesn't need more."],
 
-        [3, "6:30 AM", "Grab breakfast to eat in the van", "", "", "The hotel breakfast may not be open yet. Ask the hotel the night before if they can pack breakfast boxes."],
-        [3, "7:00 AM", "Van leaves for Sun Moon Lake, with one rest stop", "", "Van, about 3 hrs", "12 to 13-hour long-distance charter. Kids nap on the way."],
-        [3, "10:00 AM", "Formosan Aboriginal Culture Village: rides, shows and gardens", "formosan", "", "A whole day here, until about 4 PM. Kids under 3 get in free, and strollers are fine. Have lunch inside the park."],
+        [3, "6:00 AM", "Van leaves the hotel for Sun Moon Lake", "", "", "Grab breakfast to eat on the way. The hotel breakfast may not be open yet, so ask the night before if they can pack breakfast boxes. 12 to 13-hour charter; kids can nap in the van."],
+        [3, "9:30 AM", "Formosan Aboriginal Culture Village: rides, shows and gardens", "formosan", "Van, about 3 hrs with a rest stop", "Opens at 9:30 AM. A whole day here, until about 4 PM. Kids under 3 get in free, and strollers are fine. Have lunch inside the park."],
         [3, "1:30 PM", "Sun Moon Lake Ropeway down to the lake at Ita Thao", "sunmoon", "Cable car, about 10 min each way", "Included in the village ticket. It stops around 4 PM, so ride it after lunch."],
         [3, "4:00 PM", "Leave the park and drive toward Taichung", "", "Van, about 1¼ hrs", ""],
         [3, "5:15 PM", "Early dinner at Chun Shui Tang's original store, where pearl milk tea began", "chunshui", "", "It's on the way home, in Taichung. Order the classic pearl milk tea with dinner.", "must"],
@@ -257,9 +256,8 @@ window.TRIP = {
         [2, "5:30 PM", "Shilin Night Market: dinner and street food", "shilin", "Van, about 40 min", "The van's day ends here. Hot-Star chicken, oyster omelette."],
         [2, "8:30 PM", "Back to the hotel", "hotel", "MRT from Jiantan, or taxi", ""],
 
-        [3, "6:00 AM", "Wake up and grab breakfast to eat in the van", "breakfast", "", "Long day: about 6 hours of driving."],
-        [3, "6:30 AM", "Van leaves for Sun Moon Lake", "", "Van, about 3 hrs", "12 to 13-hour long-distance charter."],
-        [3, "9:30 AM", "Formosan Aboriginal Culture Village: rides, shows and gardens", "formosan", "", "A whole day here, until about 4 PM. It's beside Sun Moon Lake in Nantou. Have lunch inside the park."],
+        [3, "6:00 AM", "Van leaves the hotel for Sun Moon Lake", "", "", "Grab breakfast to eat on the way; ask the hotel the night before if they can pack breakfast boxes. Long day: about 6 hours of driving on a 12 to 13-hour charter."],
+        [3, "9:30 AM", "Formosan Aboriginal Culture Village: rides, shows and gardens", "formosan", "Van, about 3 hrs with a rest stop", "Opens at 9:30 AM. A whole day here, until about 4 PM. It's beside Sun Moon Lake in Nantou. Have lunch inside the park."],
         [3, "1:30 PM", "Sun Moon Lake Ropeway down to the lake at Ita Thao", "sunmoon", "Cable car, about 10 min each way", "Included in the village ticket. It stops around 4 PM, so ride it after lunch."],
         [3, "4:00 PM", "Leave the park and drive toward Taichung", "", "Van, about 1¼ hrs", ""],
         [3, "5:15 PM", "Early dinner at Chun Shui Tang's original store, birthplace of pearl milk tea", "chunshui", "", "Order the classic pearl milk tea with dinner.", "must"],
