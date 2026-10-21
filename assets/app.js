@@ -301,17 +301,49 @@
 
   // ---------- Cover ----------
   function renderHero() {
-    const n = daysBetween(T.start, today);
-    const last = T.dates[T.dates.length - 1];
-    let txt = '';
-    if (tripIdx >= 0) txt = `Day ${tripIdx + 1} of ${T.dates.length}. Enjoy today!`;
-    else if (n > 1) txt = `${n} days to go`;
-    else if (n === 1) txt = 'We fly tomorrow!';
-    else if (daysBetween(today, last) > 0) txt = 'Trip done. Salamat, Taiwan!';
-    $('#countdown').textContent = txt;
     $$('.toggle button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.plan === state.plan)));
     $('#plan-blurb').textContent = plan().blurb;
+    renderCountdown();
   }
+
+  // ---------- Countdown to landing (ticks every second) ----------
+  const CD = T.countdown || { to: T.start + 'T12:00:00+08:00', label: 'Until we land in Taipei', note: '' };
+  const landing = Date.parse(CD.to);
+  const previewTime = /^\d{1,2}:\d{2}$/.test(qs.get('time') || '') ? qs.get('time').padStart(5, '0') : '09:00';
+  const clockOffset = validDay(qs.get('today')) ? Date.parse(`${today}T${previewTime}:00+08:00`) - Date.now() : 0;
+  const nowTs = () => Date.now() + clockOffset;
+  const taipeiDate = (ts) => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(ts));
+  const pad2 = (n) => String(n).padStart(2, '0');
+  let cdTimer = 0;
+  function setDigit(unit, v) {
+    const el = $(`.cd-num[data-u="${unit}"]`);
+    if (!el || el.textContent === v) return;
+    el.textContent = v;
+    if (motionOK()) { el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick'); }
+  }
+  function renderCountdown() {
+    const box = $('#countdown');
+    const left = landing - nowTs();
+    if (left > 0 && box.dataset.mode !== 'msg') {
+      $('#cd-label-txt').textContent = CD.label;
+      $('#cd-note').textContent = CD.note || '';
+      const secs = Math.floor(left / 1000);
+      setDigit('d', String(Math.floor(secs / 86400)));
+      setDigit('h', pad2(Math.floor((secs % 86400) / 3600)));
+      setDigit('m', pad2(Math.floor((secs % 3600) / 60)));
+      setDigit('s', pad2(secs % 60));
+      if (!cdTimer) cdTimer = setInterval(renderCountdown, 1000);
+      return;
+    }
+    clearInterval(cdTimer);
+    cdTimer = 0;
+    const idx = T.dates.indexOf(taipeiDate(nowTs()));
+    const txt = idx >= 0 ? `Day ${idx + 1} of ${T.dates.length}. Enjoy today!`
+      : daysBetween(taipeiDate(nowTs()), T.dates[T.dates.length - 1]) > 0 ? 'Trip done. Salamat, Taiwan!' : 'Almost there!';
+    box.dataset.mode = 'msg';
+    box.innerHTML = `<p class="cd-msg">${esc(txt)}</p>`;
+  }
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && cdTimer) renderCountdown(); });
   function buildRoute() {
     $('#route').innerHTML = T.dates.map((iso, i) => `<li style="--i:${i};${colorVars(i)}"${i === tripIdx ? ' class="today"' : ''}>`
       + `<button type="button" data-act="goday" data-day="${i}" aria-current="false" aria-label="Day ${i + 1}, ${esc(dfmt(iso, { weekday: 'long', month: 'long', day: 'numeric' }))}">`

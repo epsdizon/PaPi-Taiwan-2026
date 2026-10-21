@@ -196,7 +196,37 @@ svg.i { width: 18px; height: 18px; flex: none; }
 @keyframes lift { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
 .when, .countdown, .plan-blurb, .route .lbl { text-shadow: 0 1px 12px rgba(8, 18, 48, .9), 0 0 2px rgba(8, 18, 48, .8); }
 .when { margin: 14px 0 0; font-size: 18px; font-weight: 600; color: #C8D3F3; animation: lift .8s cubic-bezier(.2, .8, .2, 1) .6s both; }
-.countdown { margin: 2px 0 0; font-size: 18px; font-weight: 800; color: var(--gold); animation: lift .8s cubic-bezier(.2, .8, .2, 1) .66s both; }
+/* Countdown: a station departure board with split-flap digits */
+.countdown { margin-top: 22px; max-width: 440px; animation: lift .8s cubic-bezier(.2, .8, .2, 1) .66s both; }
+.cd-label { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; font-size: 16px; font-weight: 800; color: var(--gold); }
+.cd-label svg { width: 20px; height: 20px; flex: none; }
+.cd-board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.cd-unit {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 4px 8px;
+  border-radius: 12px;
+  background: rgba(4, 9, 28, .9);
+  box-shadow: inset 0 0 0 1px rgba(246, 196, 83, .24);
+}
+.cd-unit::before { content: ""; position: absolute; left: 0; right: 0; top: 41%; height: 2px; background: rgba(0, 0, 0, .5); }
+.cd-num {
+  position: relative;
+  z-index: 1;
+  display: block;
+  font: 900 clamp(42px, 12.5vw, 64px)/1 var(--font-cond);
+  font-variant-numeric: tabular-nums;
+  color: var(--gold);
+  text-shadow: 0 0 16px rgba(246, 196, 83, .45);
+}
+.cd-num.tick { animation: tick .38s cubic-bezier(.2, .8, .2, 1); }
+@keyframes tick { from { opacity: 0; transform: translateY(-40%) rotateX(60deg); } to { opacity: 1; transform: none; } }
+.cd-txt { margin-top: 4px; font-size: 13px; font-weight: 700; color: #C8D3F3; }
+.cd-note { margin: 8px 0 0; font-size: 14px; color: #B7C2E5; }
+.cd-msg { margin: 0; font-size: 20px; font-weight: 800; color: var(--gold); }
 
 .plan-pick { margin-top: 24px; animation: lift .8s cubic-bezier(.2, .8, .2, 1) .75s both; }
 .toggle { display: inline-flex; padding: 4px; border-radius: 999px; background: rgba(255, 255, 255, .08); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .2); }

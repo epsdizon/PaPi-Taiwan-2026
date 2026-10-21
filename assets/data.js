@@ -11,6 +11,9 @@ window.TRIP = {
   // Fallback exchange rate if the live rate can't load (mid-market, Oct 21, 2026)
   rate: { value: 1.95, asOf: "Oct 21, 2026" },
 
+  // Live countdown on the cover. Update "to" and "note" once the flight is booked (Taipei time, +08:00).
+  countdown: { to: "2026-12-04T12:00:00+08:00", label: "Until we land in Taipei", note: "Fri, Dec 4, 12:00 PM Taipei time" },
+
   // Group setup. Every number can be changed on the Budget tab.
   settings: {
     adults: 4,
