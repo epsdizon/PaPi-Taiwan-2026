@@ -74,20 +74,42 @@
     camera: svg('<path d="M4 8h3l1.5-2.5h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/>'),
     bowl: svg('<path d="M3 11h18a9 9 0 0 1-18 0z"/><path d="M8 21h8"/><path d="M13 9l7-6M10 9l6-7"/>'),
     search: svg('<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>'),
+    bag: svg('<path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>'),
   };
-  const moveIcon = (t) => (/gondola/i.test(t) ? ICON.gondola : /mrt/i.test(t) ? ICON.train : /^walk/i.test(t) ? ICON.walk : ICON.van);
+  const moveIcon = (t) => (/gondola|cable car|ropeway/i.test(t) ? ICON.gondola : /mrt/i.test(t) ? ICON.train : /^walk/i.test(t) ? ICON.walk : ICON.van);
 
   // ---------- Trip data helpers ----------
   const stopsOf = (d) => plan().stops.filter((s) => s[0] === d + 1)
     .map((s) => ({ time: s[1], title: s[2], place: s[3], move: s[4], tip: s[5], must: s[6] === 'must' }));
   const foodEdits = () => store.get('food:' + state.plan, {});
   const priceEdits = () => store.get('prices:' + state.plan, {});
+  // Sharing orders (e.g. Din Tai Fung) scale with how many people are eating
+  const eaters = () => state.settings.adults + state.settings.kids * state.settings.kidFood;
+  function shareOrder(key) {
+    const sh = (T.shares || {})[key];
+    if (!sh) return null;
+    const e = Math.max(1, eaters());
+    const lines = sh.items.map((it) => {
+      const qty = Math.max(1, Math.ceil(e / it.per - 1e-9));
+      return Object.assign({}, it, { qty, total: qty * it.price });
+    });
+    const sub = lines.reduce((a, l) => a + l.total, 0);
+    const service = sub * (sh.service || 0);
+    return { sh, lines, sub, service, total: sub + service, per: (sub + service) / e };
+  }
   const foods = () => {
     const ed = foodEdits();
     return plan().food.map((f, i) => {
       const e = ed[i] || {};
-      const price = Number.isFinite(e.p) ? e.p : f[5];
-      return { i, day: f[0], place: f[1], name: f[2], type: f[3], order: f[4], base: f[5], price, on: typeof e.on === 'boolean' ? e.on : f[6], tip: f[7] || '', must: !!f[8], edited: price !== f[5] };
+      const so = f[9] ? shareOrder(f[9]) : null;
+      const base = so ? Math.round(so.per / 10) * 10 : f[5];
+      const price = Number.isFinite(e.p) ? e.p : base;
+      const hotel = !!state.settings.hotelBreakfast && f[1] === 'breakfast';
+      return {
+        i, day: f[0], place: f[1], name: f[2], type: f[3], order: f[4], base, price,
+        on: hotel ? false : typeof e.on === 'boolean' ? e.on : f[6],
+        hotel, share: f[9] || null, tip: f[7] || '', must: !!f[8], edited: price !== base,
+      };
     });
   };
   const items = () => {
@@ -427,6 +449,10 @@
     if (isToday) next = stops.findIndex((s) => { const m = toMin(s.time); return m === null || m + 30 >= now; });
     let html = '';
     stops.forEach((s, i) => {
+      const hotelBreakfast = s.place === 'breakfast' && state.settings.hotelBreakfast && (toMin(s.time) ?? 0) >= 7 * 60;
+      if (hotelBreakfast) {
+        s = Object.assign({}, s, { title: 'Free breakfast at the hotel', tip: 'Or try a Taiwanese breakfast shop nearby: dan bing and soy milk, about NT$100.', place: '' });
+      }
       const p = s.place ? P[s.place] : null;
       const st = isToday ? (next === -1 || i < next ? 'done' : i === next ? 'next' : '') : '';
       if (s.move) html += `<li class="move" style="--i:${i}"><span>${moveIcon(s.move)}${esc(s.move)}</span></li>`;
@@ -506,6 +532,16 @@
         + `<p class="order">${esc(f.order)}</p><p class="price">${php(f.price * r)} <small>${twd(f.price)} per person</small></p></div></article>`;
     }).join('');
 
+    const so = shareOrder('dtf');
+    const s = state.settings;
+    $('#share-box').innerHTML = so && list.some((f) => f.share === 'dtf' && f.on)
+      ? `<h3 class="mini-h">${esc(so.sh.title)}</h3><p class="sec-sub">For ${s.adults} adults and ${s.kids} kids, ordered for the table.</p><ul class="receipt">`
+        + so.lines.map((l) => `<li><span>${l.qty} × ${esc(l.name)} <span class="zh" lang="zh-Hant">${esc(l.zh)}</span></span><span>${twd(l.total)}</span></li>`).join('')
+        + `<li class="svc"><span>${Math.round((so.sh.service || 0) * 100)}% service charge</span><span>${twd(so.service)}</span></li>`
+        + `<li class="sum"><span>For the table</span><span>${php(so.total * r)}<small>${twd(so.total)}</small></span></li></ul>`
+        + `<p class="ftip">About ${twd(Math.round(so.per / 10) * 10)} per person. ${esc(so.sh.note)}</p>`
+      : '';
+
     $('#filters').innerHTML = GROUPS.map(([k, label]) => `<button type="button" class="fchip" data-act="filter" data-f="${k}" aria-pressed="${state.filter === k}">${label}</button>`).join('');
     const test = (GROUPS.find((g) => g[0] === state.filter) || [])[2];
     let html = '';
@@ -515,12 +551,19 @@
       html += `<section class="fday" style="${colorVars(d)}"><h3><span class="code">${line(d).code}</span>Day ${d + 1} <small>${esc(dfmt(iso, { weekday: 'long', month: 'short', day: 'numeric' }))}</small></h3>`;
       rows.forEach((f) => {
         const p = f.place ? P[f.place] : null;
+        if (f.hotel) {
+          html += `<div class="fitem" data-food="${f.i}"><span class="thumb ph blank" aria-hidden="true">${ICON.bowl}</span><div>`
+            + `<h4>Breakfast <span class="tag free">Free at the hotel</span></h4>`
+            + `<p class="ftip">Or a breakfast shop instead: ${esc(f.order || 'dan bing and soy milk')}. To count it, turn off "Free hotel breakfast" on the Budget tab.</p></div></div>`;
+          return;
+        }
         html += `<div class="fitem${f.on ? '' : ' off'}" data-food="${f.i}">`
           + (p ? photo(f.place, 'thumb', 330, f.name) : `<span class="thumb ph blank" aria-hidden="true">${ICON.bowl}</span>`)
           + `<div><h4>${esc(f.name)}${f.must ? ' <span class="tag must">Must-eat</span>' : ''}</h4>`
           + (p && !p.generic ? `<p class="zh" lang="zh-Hant">${esc(p.zh)}</p>` : '')
           + (f.order ? `<p class="order">${esc(f.order)}</p>` : '')
           + (f.tip ? `<p class="ftip">${esc(f.tip)}</p>` : '')
+          + (f.share ? '<p class="ftip">The price follows the sharing order above, so it changes with the group size.</p>' : '')
           + '<div class="row">'
           + `<label class="money"><span>NT$</span><input type="number" inputmode="numeric" min="0" step="5" value="${f.price}" data-act="food-price" data-i="${f.i}" aria-label="Price per person in NT dollars for ${esc(f.name)}"></label>`
           + `<span class="peso" data-peso="${f.i}">${php(f.price * r)} each</span>`
@@ -542,6 +585,7 @@
     { k: 'kidFood', label: 'How much the kids eat', type: 'range', min: 0, max: 1, step: 0.1, fmt: (v) => `${Math.round(v * 100)}% of an adult meal` },
     { k: 'buffer', label: 'Safety buffer', type: 'range', min: 0, max: 0.3, step: 0.05, fmt: (v) => `${Math.round(v * 100)}% on top of everything` },
     { k: 'shopPerAdult', label: 'Shopping per adult', type: 'money' },
+    { k: 'hotelBreakfast', label: 'Free hotel breakfast', type: 'toggle', hint: "When on, breakfast-shop meals aren't counted." },
     { k: 'hotelTotal', label: 'Hotel, if not paid yet', type: 'money', hint: 'Total for all rooms and nights. Leave 0 if paid.' },
   ];
   const CATS = { Van: 'Van and car seats', Food: 'Food', Entrance: 'Tickets and rides', Kids: 'Kid supplies', Shopping: 'Shopping', Other: 'SIM and EasyCard', Transport: 'Taxis and MRT', Hotel: 'Hotel' };
@@ -561,7 +605,11 @@
           + `<input id="in-${f.k}" type="range" min="${f.min}" max="${f.max}" step="${f.step}" value="${v}" data-act="set" data-k="${f.k}">`
           + `<small id="out-${f.k}">${f.fmt(v)}</small></div>`;
       }
-      return `<div class="field${f.k === 'hotelTotal' ? ' wide' : ''}"><label for="in-${f.k}">${f.label}</label>`
+      if (f.type === 'toggle') {
+        return `<div class="field"><label class="switch"><input type="checkbox" id="in-${f.k}" data-act="set-bool" data-k="${f.k}"${v ? ' checked' : ''}><span>${f.label}</span></label>`
+          + (f.hint ? `<small>${f.hint}</small>` : '') + '</div>';
+      }
+      return `<div class="field"><label for="in-${f.k}">${f.label}</label>`
         + `<span class="money"><span>NT$</span><input id="in-${f.k}" type="number" inputmode="numeric" min="0" step="100" value="${v}" data-act="set" data-k="${f.k}"></span>`
         + (f.hint ? `<small>${f.hint}</small>` : '') + '</div>';
     }).join('');
@@ -703,6 +751,107 @@
     $('#tips').innerHTML = T.tips.map(([h, b]) => `<div><dt>${esc(h)}</dt><dd>${esc(b)}</dd></div>`).join('');
   }
 
+  // ---------- Explore: things to do, MRT guide, must buys, shops ----------
+  const EX = () => Object.assign({ todo: [], mrt: { stations: [], basics: [] }, buys: [], rules: [], shops: [] }, T.explore || {});
+  const LINES = {
+    R: ['Red line', '#E3002C', '#FFFFFF'], BR: ['Brown line', '#C48C31', '#1A1306'], G: ['Green line', '#008659', '#FFFFFF'],
+    O: ['Orange line', '#F8B61C', '#1F1500'], BL: ['Blue line', '#0070BD', '#FFFFFF'], Y: ['Yellow line', '#FFDB00', '#1F1A00'],
+    A: ['Airport MRT', '#8246AF', '#FFFFFF'], V: ['Danhai light rail', '#5BB75B', '#0F2400'],
+  };
+  const lineOf = (code) => LINES[(/^[A-Z]+/.exec(code || '') || [''])[0]] || ['MRT', '#56607B', '#FFFFFF'];
+  const mrtBadge = (code) => { const [name, c, ink] = lineOf(code); return `<span class="mrt" style="--lc:${c};--li:${ink}" title="${esc(name)}">${esc(code)}</span>`; };
+  const mrtFor = (key) => (EX().mrt.stations || []).find((s) => (s.for || []).includes(key));
+  const fareTxt = (s) => (s && Number.isFinite(s.fare) ? twd(s.fare) : 'fare varies');
+  const dayInPlan = (key) => { const s = plan().stops.find((x) => x[3] === key); return s ? s[0] : 0; };
+
+  function renderExplore() {
+    const r = rateNow();
+    const x = EX();
+    const done = store.get('todo', {});
+    $('#todo').innerHTML = x.todo.map((t, i) => {
+      const day = t.place ? dayInPlan(t.place) : 0;
+      const st = t.place ? mrtFor(t.place) : null;
+      let where;
+      if (day) where = `<span class="code" style="${colorVars(day - 1)}">${line(day - 1).code}</span>Day ${day} in your plan`;
+      else if (st) where = `If there's time: ${mrtBadge(st.code)} ${esc(st.station)}, ${fareTxt(st)}`;
+      else where = esc(t.where || 'Anytime');
+      const p = t.place ? P[t.place] : null;
+      return `<li class="${done[i] ? 'done' : ''}"><input type="checkbox" id="todo-${i}" data-act="todo" data-i="${i}"${done[i] ? ' checked' : ''}>`
+        + `<div><label class="tt" for="todo-${i}">${esc(t.title)}</label><p class="dd">${esc(t.detail)}</p><p class="where">${where}</p></div>`
+        + (p && !p.photoless ? photo(t.place, 'thumb', 330, p.en) : '') + '</li>';
+    }).join('');
+
+    const air = x.mrt.airport;
+    $('#mrt-air').innerHTML = air
+      ? `${mrtBadge('A1')}<div><p class="nm">Airport MRT express</p><p class="note">${esc(air.text)}</p></div><p class="fare">${twd(air.fare)}<small>${php(air.fare * r)}</small></p>`
+      : '';
+    $('#mrt-basics').innerHTML = (x.mrt.basics || []).map((b) => `<li>${esc(b)}</li>`).join('');
+    const groups = [['On your plan', (s) => s.group === 'plan'], ['Shops and extras', (s) => s.group !== 'plan']];
+    $('#mrt-list').innerHTML = groups.map(([h, keep]) => {
+      const rows = (x.mrt.stations || []).filter(keep);
+      if (!rows.length) return '';
+      return `<h4 class="mini-h">${h}</h4><ul class="mrt-list">` + rows.map((s) => `<li>${mrtBadge(s.code)}<div>`
+        + `<p class="nm">${esc(s.dest)}</p><p class="st">${esc(s.station)} station <span class="zh" lang="zh-Hant">${esc(s.zh)}</span></p>`
+        + (s.note ? `<p class="note">${esc(s.note)}</p>` : '') + '</div>'
+        + (Number.isFinite(s.fare) ? `<p class="fare">${twd(s.fare)}<small>${php(s.fare * r)}</small></p>` : '<p class="fare"><small>Check fare</small></p>')
+        + '</li>').join('') + '</ul>';
+    }).join('');
+
+    const qty = store.get('buys', {});
+    $('#buys').innerHTML = x.buys.map((b, i) => {
+      const q = qty[i] || 0;
+      return `<div class="buy">${b.photo && P[b.photo] ? photo(b.photo, 'thumb', 330, b.name) : `<span class="thumb ph blank" aria-hidden="true">${ICON.bag}</span>`}<div>`
+        + `<h4>${esc(b.name)}</h4><p class="zh" lang="zh-Hant">${esc(b.zh)}</p><p class="order">${esc(b.what)}</p>`
+        + `<p class="ftip"><strong>Where:</strong> ${esc(b.where)}</p>` + (b.tip ? `<p class="ftip">${esc(b.tip)}</p>` : '')
+        + `<div class="row"><p class="price-tag">${twd(b.low)}${b.high > b.low ? ' to ' + twd(b.high) : ''}<small>${esc(b.unit)}, about ${php(((b.low + b.high) / 2) * r)}</small></p>`
+        + `<span class="qty${q ? ' has' : ''}"><button type="button" data-act="qty" data-i="${i}" data-d="-1" aria-label="One fewer: ${esc(b.name)}">−</button>`
+        + `<output data-q="${i}" aria-live="polite">${q}</output>`
+        + `<button type="button" data-act="qty" data-i="${i}" data-d="1" aria-label="One more: ${esc(b.name)}">+</button></span></div></div></div>`;
+    }).join('');
+    $('#rules').innerHTML = x.rules.map(([h, t]) => `<div><dt>${esc(h)}</dt><dd>${esc(t)}</dd></div>`).join('');
+    updateBuyTotal();
+
+    $('#shops').innerHTML = x.shops.map((s) => {
+      const p = P[s.key] || {};
+      const st = mrtFor(s.key);
+      return `<article class="shop-card">${P[s.key] && !p.photoless ? photo(s.key, 'photo', 960, s.name) : ''}<div class="body">`
+        + `<p class="meta">${esc(s.area)}</p><h3>${esc(s.name)}</h3><p class="zh" lang="zh-Hant">${esc(p.zh || '')}</p>`
+        + `<p class="order">${esc(s.buy)}</p>` + (s.kids ? `<p class="ftip">${esc(s.kids)}</p>` : '')
+        + '<dl class="facts">' + `<div><dt>Open</dt><dd>${esc(s.hours)}</dd></div>`
+        + (st ? `<div><dt>MRT</dt><dd>${mrtBadge(st.code)} ${esc(st.station)}, ${fareTxt(st)} from Taipei Main</dd></div>` : '') + '</dl>'
+        + (P[s.key] ? `<div class="acts"><a class="act" href="${mapUrl(s.key)}" target="_blank" rel="noopener">${ICON.pin}Map</a><button type="button" class="act" data-act="driver" data-place="${esc(s.key)}">${ICON.driver}Show driver</button></div>` : '')
+        + '</div></article>';
+    }).join('');
+    // Hide any part that has no content yet
+    $('#ex-mrt').hidden = !(x.mrt.stations || []).length && !x.mrt.airport;
+    $('#ex-buys').hidden = !x.buys.length;
+    $('#ex-shops').hidden = !x.shops.length;
+    $$('.subnav [data-act="jump"]').forEach((b) => { const sec = $('#' + b.dataset.to); b.hidden = !!(sec && sec.hidden); });
+    applyPhotos($('#explore'));
+  }
+
+  function updateBuyTotal() {
+    const x = EX();
+    const qty = store.get('buys', {});
+    const r = rateNow();
+    let low = 0;
+    let high = 0;
+    let n = 0;
+    x.buys.forEach((b, i) => { const q = qty[i] || 0; low += q * b.low; high += q * b.high; n += q; });
+    const allow = state.settings.shopPerAdult * state.settings.adults;
+    const box = $('#buy-total');
+    if (!n) {
+      box.innerHTML = '<p class="lbl">Your pasalubong list</p><p class="sub">Tap + on anything you plan to buy. The total shows up here and is saved on this phone.</p>';
+      return;
+    }
+    const mid = (low + high) / 2;
+    const over = mid > allow;
+    box.innerHTML = `<p class="lbl">Your pasalubong list, ${n} ${n === 1 ? 'item' : 'items'}</p><p class="big">${php(mid * r)}</p>`
+      + `<p class="twd">${twd(low)}${high > low ? ' to ' + twd(high) : ''}</p>`
+      + `<p class="sub">Shopping money in the budget is ${php(allow * r)} (${twd(allow)}) for ${state.settings.adults} adults.${over ? ' Your list is over it.' : ' Your list fits.'}</p>`
+      + (over ? '<button type="button" class="act" data-act="use-list">Make the budget fit my list</button>' : '');
+  }
+
   // ---------- Driver card and photo viewer ----------
   let lastFocus = null;
   function openDriver(key) {
@@ -796,7 +945,7 @@
   }
 
   // ---------- Tabs ----------
-  const TABS = ['days', 'food', 'budget', 'pack'];
+  const TABS = ['days', 'food', 'explore', 'budget', 'pack'];
   const navOffset = () => (window.matchMedia('(min-width: 760px)').matches ? 58 : 0);
   const scrollToMain = () => {
     const top = $('#main').getBoundingClientRect().top + window.scrollY - navOffset();
@@ -811,6 +960,7 @@
     const v = $('#' + tab);
     if (changed && motionOK()) { v.classList.remove('enter'); void v.offsetWidth; v.classList.add('enter'); }
     if (tab === 'food') renderFood();
+    if (tab === 'explore') renderExplore();
     if (tab === 'budget') renderBudget();
     if (tab === 'days') { if (opts.render) renderDays(true); else requestAnimationFrame(() => placeVan(false)); }
     updateRoute();
@@ -909,6 +1059,26 @@
     } else if (act === 'reset-checks') {
       store.del('checks');
       renderPack();
+    } else if (act === 'jump') {
+      const sec = $('#' + t.dataset.to);
+      if (sec) sec.scrollIntoView({ behavior: motionOK() ? 'smooth' : 'auto', block: 'start' });
+    } else if (act === 'qty') {
+      const qty = store.get('buys', {});
+      const v = Math.max(0, Math.min(99, (qty[t.dataset.i] || 0) + Number(t.dataset.d)));
+      qty[t.dataset.i] = v;
+      store.set('buys', qty);
+      const out = $(`[data-q="${t.dataset.i}"]`);
+      if (out) { out.textContent = v; out.parentElement.classList.toggle('has', v > 0); }
+      updateBuyTotal();
+    } else if (act === 'use-list') {
+      const qty = store.get('buys', {});
+      const mid = EX().buys.reduce((a, b, i) => a + (qty[i] || 0) * ((b.low + b.high) / 2), 0);
+      state.settings.shopPerAdult = Math.ceil(mid / Math.max(1, state.settings.adults) / 100) * 100;
+      saveSettings();
+      const inp = $('#in-shopPerAdult');
+      if (inp) inp.value = state.settings.shopPerAdult;
+      liveTotals();
+      updateBuyTotal();
     }
   });
 
@@ -918,12 +1088,14 @@
     if (act === 'food-price') {
       const v = Math.max(0, Number(t.value) || 0);
       const ed = foodEdits();
+      const base = foods()[t.dataset.i].base;
       ed[t.dataset.i] = Object.assign({}, ed[t.dataset.i], { p: v });
+      if (v === base) delete ed[t.dataset.i].p;
       store.set('food:' + state.plan, ed);
       const peso = $(`[data-peso="${t.dataset.i}"]`);
       if (peso) peso.textContent = `${php(v * rateNow())} each`;
       const undo = $(`[data-act="food-undo"][data-i="${t.dataset.i}"]`);
-      if (undo) undo.hidden = v === plan().food[t.dataset.i][5];
+      if (undo) undo.hidden = v === base;
       liveTotals();
     } else if (act === 'price') {
       const v = Math.max(0, Number(t.value) || 0);
@@ -966,6 +1138,16 @@
       const c = store.get('checks', {});
       c[t.dataset.k] = t.checked;
       store.set('checks', c);
+    } else if (act === 'set-bool') {
+      state.settings[t.dataset.k] = t.checked;
+      saveSettings();
+      liveTotals();
+      renderDays(false);
+    } else if (act === 'todo') {
+      const d = store.get('todo', {});
+      d[t.dataset.i] = t.checked;
+      store.set('todo', d);
+      t.closest('li').classList.toggle('done', t.checked);
     }
   });
 
@@ -996,6 +1178,7 @@
       renderRate();
       liveTotals();
       if (state.tab === 'food') renderFood();
+      if (state.tab === 'explore') renderExplore();
     });
 
     // During the trip, keep "Up next" current

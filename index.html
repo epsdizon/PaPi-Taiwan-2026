@@ -118,6 +118,10 @@
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11h18a9 9 0 0 1-18 0z"/><path d="M8 21h8"/><path d="M13 9l7-6M10 9l6-7"/></svg>
     Food
   </a>
+  <a href="#explore" data-tab="explore">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>
+    Explore
+  </a>
   <a href="#budget" data-tab="budget">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="13" rx="2.5"/><path d="M2.5 10h19"/><path d="M16 14.5h2"/></svg>
     Budget
@@ -142,8 +146,51 @@
       <p>The three must-eats first, then every food stop by day. Prices are per person; change one and the budget follows.</p>
     </div>
     <div class="musts" id="musts"></div>
+    <div class="share" id="share-box"></div>
     <div class="filters" id="filters" role="group" aria-label="Show food by type"></div>
     <div id="foodlist"></div>
+  </section>
+
+  <section class="view" id="explore" aria-labelledby="explore-h" hidden>
+    <div class="view-head">
+      <h2 id="explore-h">Explore</h2>
+      <p>Things to tick off, getting around by MRT, what to bring home, and where to shop when there's free time.</p>
+    </div>
+    <div class="subnav" role="group" aria-label="Jump to">
+      <button type="button" class="fchip" data-act="jump" data-to="ex-todo">Things to do</button>
+      <button type="button" class="fchip" data-act="jump" data-to="ex-mrt">MRT guide</button>
+      <button type="button" class="fchip" data-act="jump" data-to="ex-buys">Must buys</button>
+      <button type="button" class="fchip" data-act="jump" data-to="ex-shops">Shops</button>
+    </div>
+
+    <section class="ex-sec" id="ex-todo" aria-labelledby="todo-h">
+      <h3 class="section-h" id="todo-h">Things to do</h3>
+      <p class="sec-sub">Tick them off as you go. Ticks are saved on this phone.</p>
+      <ul class="todo" id="todo"></ul>
+    </section>
+
+    <section class="ex-sec" id="ex-mrt" aria-labelledby="mrt-h">
+      <h3 class="section-h" id="mrt-h">MRT guide</h3>
+      <p class="sec-sub">Adult fares from Taipei Main Station, one way. Kids under 6 ride free with an adult.</p>
+      <div class="air" id="mrt-air"></div>
+      <ul class="basics" id="mrt-basics"></ul>
+      <div id="mrt-list"></div>
+    </section>
+
+    <section class="ex-sec" id="ex-buys" aria-labelledby="buys-h">
+      <h3 class="section-h" id="buys-h">Must buys</h3>
+      <p class="sec-sub">Tap + to build your pasalubong list. Prices are approximate, checked October 2026.</p>
+      <div class="total buy-total" id="buy-total" aria-live="polite"></div>
+      <div id="buys"></div>
+      <h4 class="mini-h">Before you pack them</h4>
+      <dl class="tips rules" id="rules"></dl>
+    </section>
+
+    <section class="ex-sec" id="ex-shops" aria-labelledby="shops-h">
+      <h3 class="section-h" id="shops-h">Shops for free time</h3>
+      <p class="sec-sub">Worth a stop if a day ends early or you swap something out.</p>
+      <div class="shops" id="shops"></div>
+    </section>
   </section>
 
   <section class="view" id="budget" aria-labelledby="budget-h" hidden>
