@@ -1,7 +1,7 @@
 /* PaPi Taiwan 2026 — offline support.
    The site keeps working with weak signal: pages come from the network first, then from this cache.
    Bump VERSION whenever site files change. */
-const VERSION = 'papi-2026-v3';
+const VERSION = 'papi-2026-v4';
 const PHOTOS = 'papi-photos-v1';
 const CORE = [
   './',

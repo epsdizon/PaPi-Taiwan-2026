@@ -96,6 +96,27 @@ window.TRIP = {
     sunnyhills:  { en: "SunnyHills or Chia Te", zh: "微熱山丘 / 佳德糕餅", map: "Chia Te Bakery Taipei", wiki: ["Pineapple cake"], commons: "Taiwanese pineapple cake" },
     amusement:   { en: "Taipei Children's Amusement Park", zh: "臺北市立兒童新樂園", addr: "台北市士林區承德路五段55號", wiki: ["Taipei Children's Amusement Park"], commons: "Taipei Children's Amusement Park" },
     breakfast:   { en: "Taiwanese breakfast shop", zh: "早餐店", generic: true, wiki: ["Dan bing", "Youtiao"], commons: "Taiwanese breakfast" },
+    pokemon:     { en: "Pokémon Center Taipei", zh: "寶可夢中心 台北", addr: "台北市信義區松壽路11號 新光三越A11 3樓", map: "Pokemon Center Taipei", wiki: ["Pokémon Center"], commons: "Pokemon Center store" },
+    donki:       { en: "DON DON DONKI Ximen", zh: "唐吉訶德 西門店", map: "DON DON DONKI Ximen Taipei", wiki: ["Don Quijote (store)"], commons: "Don Don Donki" },
+    carrefour:   { en: "Carrefour Guilin", zh: "家樂福 桂林店", addr: "台北市萬華區桂林路1號", map: "Carrefour Guilin Taipei", wiki: ["Carrefour Taiwan", "Carrefour"], commons: "Carrefour Taiwan" },
+    citymall:    { en: "Taipei City Mall", zh: "台北地下街", map: "Taipei City Mall underground", wiki: ["Taipei City Mall"], commons: "Taipei City Mall" },
+    xinyi:       { en: "Xinyi shopping district", zh: "信義商圈", map: "Shin Kong Mitsukoshi Xinyi Place", wiki: ["Xinyi Special District", "Xinyi District, Taipei"], commons: "Xinyi District Taipei" },
+    eslite:      { en: "Eslite Spectrum Songyan", zh: "誠品生活松菸", map: "Eslite Spectrum Songyan Store", wiki: ["Songshan Cultural and Creative Park"], commons: "Songshan Cultural and Creative Park" },
+    huashan:     { en: "Huashan 1914 Creative Park", zh: "華山1914文化創意產業園區", map: "Huashan 1914 Creative Park", wiki: ["Huashan 1914 Creative Park"], commons: "Huashan 1914" },
+    sunnyhillsmp:{ en: "SunnyHills, Minsheng Park", zh: "微熱山丘 台北民生公園門市", addr: "台北市松山區民生東路五段36巷4弄1號", map: "SunnyHills Minsheng Park Taipei", wiki: ["Pineapple cake"], commons: "SunnyHills pineapple cake" },
+    yongkang:    { en: "Yongkang Street", zh: "永康街", map: "Yongkang Street Taipei", wiki: ["Yongkang Street"], commons: "Yongkang Street Taipei" },
+    wufenpu:     { en: "Wufenpu clothing market", zh: "五分埔商圈", map: "Wufenpu Garment Wholesale Area", wiki: ["Wufenpu"], commons: "Wufenpu" },
+    guanghua:    { en: "Guanghua Digital Plaza", zh: "光華數位新天地", map: "Guanghua Digital Plaza", wiki: ["Guanghua Digital Plaza"], commons: "Guanghua Digital Plaza" },
+    daan:        { en: "Daan Forest Park", zh: "大安森林公園", wiki: ["Daan Forest Park"], commons: "Daan Forest Park" },
+    beitou:      { en: "Xinbeitou hot springs", zh: "新北投溫泉", map: "Beitou Hot Spring Museum", wiki: ["Beitou Hot Spring Museum", "Beitou Thermal Valley"], commons: "Beitou Hot Spring Museum" },
+    tamsui:      { en: "Tamsui Old Street", zh: "淡水老街", map: "Tamsui Old Street", wiki: ["Tamsui Old Street", "Tamsui District"], commons: "Tamsui Old Street" },
+    suncake:     { en: "Sun cakes", zh: "太陽餅", generic: true, wiki: ["Suncake (Taiwan)", "Suncake"], commons: "suncake Taichung" },
+    nougat:      { en: "Nougat", zh: "牛軋糖", generic: true, wiki: ["Nougat"], commons: "Taiwanese nougat" },
+    oolong:      { en: "Oolong tea", zh: "烏龍茶", generic: true, wiki: ["Taiwanese tea", "Oolong"], commons: "Taiwan oolong tea" },
+    noodles:     { en: "Instant noodles", zh: "泡麵", generic: true, wiki: ["Instant noodles"], commons: "Taiwanese instant noodles" },
+    kuaikuai:    { en: "Kuai Kuai", zh: "乖乖", generic: true, wiki: ["Kuai Kuai"], commons: "Kuai Kuai snack" },
+    sheetmask:   { en: "Sheet masks", zh: "面膜", generic: true, wiki: ["Sheet mask"], commons: "sheet mask" },
+    kavalan:     { en: "Kavalan whisky", zh: "噶瑪蘭威士忌", generic: true, wiki: ["Kavalan Distillery"], commons: "Kavalan whisky" },
     sunmoon:     { en: "Sun Moon Lake, Ita Thao", zh: "日月潭 伊達邵", map: "Ita Thao Sun Moon Lake", wiki: ["Sun Moon Lake Ropeway", "Sun Moon Lake"], commons: "Sun Moon Lake" }
   },
 
@@ -372,10 +393,84 @@ window.TRIP = {
       { title: "Ride the MRT with an EasyCard", detail: "Tap in, tap out. Kids under 6 ride free.", where: "Anywhere in Taipei" },
       { title: "Raid a 7-Eleven", detail: "Tea eggs, onigiri, milk tea and Taiwan-only snacks.", where: "On every corner" }
     ],
-    mrt: { stations: [], basics: [] },
-    buys: [],
-    rules: [],
-    shops: []
+    /* MRT guide. fare = approximate adult one-way fare from Taipei Main Station (NT$20 to 65 by distance).
+       "for" = places on the site this station serves. Tap "Route" on the site for the exact fare. */
+    mrt: {
+      airport: { fare: 160, text: "Taoyuan Airport Terminal 1 or 2 to Taipei Main Station, about 35 minutes. Handy if anyone arrives separately from the van." },
+      basics: [
+        "Fares run NT$20 to 65 by distance. Kids under 6 ride free with a paying adult.",
+        "Get an EasyCard (NT$100 card, then top up) at any MRT counter or 7-Eleven. It's cheaper than single tickets and works in convenience stores too.",
+        "No eating, drinking or gum past the gates, including milk tea and kids' snacks. Fines start at NT$1,500. Bottles for babies are usually fine, but finish snacks before tapping in.",
+        "Every station has elevators. With strollers, use them instead of the escalators, and avoid 7 to 9 AM and 5 to 7 PM.",
+        "Trains run about 6 AM to midnight. Stand on the right on escalators."
+      ],
+      stations: [
+        { dest: "Taipei 101 and Din Tai Fung", station: "Taipei 101/World Trade Center", zh: "台北101/世貿", code: "R03", fare: 25, for: ["t101", "dtf"], group: "plan", note: "Exit 4 leads straight into the mall." },
+        { dest: "Elephant Mountain and Ichiran", station: "Xiangshan", zh: "象山", code: "R02", fare: 25, for: ["elephant", "ichiran"], group: "plan", note: "Ichiran is about 1 minute from the station." },
+        { dest: "Chiang Kai-shek Memorial Hall", station: "Chiang Kai-shek Memorial Hall", zh: "中正紀念堂", code: "R08", fare: 20, for: ["cks"], group: "plan", note: "Exit 5 for the main plaza." },
+        { dest: "Longshan Temple and Guangzhou St night market", station: "Longshan Temple", zh: "龍山寺", code: "BL10", fare: 20, for: ["longshan", "guangzhou"], group: "plan", note: "Exit 1, across the park." },
+        { dest: "Ximending", station: "Ximen", zh: "西門", code: "BL11", fare: 20, for: ["ximending", "aychung", "xingfutang"], group: "plan", note: "Exit 6 for the walking street." },
+        { dest: "Taipei Zoo and Maokong Gondola", station: "Taipei Zoo", zh: "動物園", code: "BR01", fare: 30, for: ["zoo", "gondola", "maokong", "yaoyue"], group: "plan", note: "Change to the Brown line at Zhongxiao Fuxing. The gondola station is a short walk away." },
+        { dest: "Shilin Night Market", station: "Jiantan", zh: "劍潭", code: "R15", fare: 20, for: ["shilin", "hotstar"], group: "plan", note: "Exit 1, then cross the road." },
+        { dest: "Taipei Children's Amusement Park", station: "Shilin", zh: "士林", code: "R16", fare: 25, for: ["amusement"], group: "plan", note: "Then a 5-minute taxi or bus. Walking is about 20 minutes." },
+        { dest: "Raohe Night Market", station: "Songshan", zh: "松山", code: "G19", fare: 25, for: ["raohe", "pepperbun"], group: "plan", note: "Exit 5. The pepper bun stall is at the entrance." },
+        { dest: "Fu Hang Dou Jiang (breakfast)", station: "Shandao Temple", zh: "善導寺", code: "BL13", fare: 20, for: ["fuhang"], group: "plan", note: "Exit 5, on the 2nd floor of the market building." },
+        { dest: "Dihua Street and Dadaocheng", station: "Beimen", zh: "北門", code: "G13", fare: 20, for: ["dihua"], group: "plan", note: "Exit 3, then about 10 minutes on foot." },
+        { dest: "Chia Te pineapple cakes", station: "Nanjing Sanmin", zh: "南京三民", code: "G17", fare: 25, for: ["sunnyhills"], group: "plan", note: "Exit 2, a few minutes' walk." },
+        { dest: "Pokémon Center and Xinyi malls", station: "Taipei City Hall", zh: "市政府", code: "BL18", fare: 25, for: ["pokemon", "xinyi"], group: "shop", note: "Exit 3. Pokémon Center is 3 minutes away." },
+        { dest: "DON DON DONKI, Ximen", station: "Ximen", zh: "西門", code: "BL11", fare: 20, for: ["donki"], group: "shop", note: "Exit 6." },
+        { dest: "Carrefour Guilin", station: "Longshan Temple", zh: "龍山寺", code: "BL10", fare: 20, for: ["carrefour"], group: "shop", note: "About 8 minutes on foot." },
+        { dest: "Taipei City Mall (underground)", station: "Taipei Main Station", zh: "台北車站", code: "BL12", fare: null, for: ["citymall"], group: "shop", note: "Right under Taipei Main Station." },
+        { dest: "Huashan 1914 and Guanghua Digital Plaza", station: "Zhongxiao Xinsheng", zh: "忠孝新生", code: "BL14", fare: 20, for: ["huashan", "guanghua"], group: "shop", note: "Exit 1 for Huashan, Exit 4 for Guanghua." },
+        { dest: "Eslite Songyan and Songshan Cultural Park", station: "Sun Yat-sen Memorial Hall", zh: "國父紀念館", code: "BL17", fare: 20, for: ["eslite"], group: "shop", note: "Exit 5, about 8 minutes on foot." },
+        { dest: "Yongkang Street", station: "Dongmen", zh: "東門", code: "R07", fare: 20, for: ["yongkang"], group: "shop", note: "Exit 5." },
+        { dest: "Wufenpu clothing market", station: "Houshanpi", zh: "後山埤", code: "BL20", fare: 30, for: ["wufenpu"], group: "shop", note: "Exit 1, about 7 minutes on foot." },
+        { dest: "SunnyHills (free tasting)", station: "Songshan Airport", zh: "松山機場", code: "BR13", fare: 25, for: ["sunnyhillsmp"], group: "shop", note: "About 15 minutes on foot, or a short taxi." },
+        { dest: "Daan Forest Park playground", station: "Daan Park", zh: "大安森林公園", code: "R05", fare: 20, for: ["daan"], group: "shop", note: "Exits 2 to 6 open onto the park." },
+        { dest: "Xinbeitou hot springs", station: "Xinbeitou", zh: "新北投", code: "R22A", fare: 35, for: ["beitou"], group: "shop", note: "Change at Beitou for the one-stop branch line." },
+        { dest: "Tamsui Old Street", station: "Tamsui", zh: "淡水", code: "R28", fare: 50, for: ["tamsui"], group: "shop", note: "End of the Red line, about 40 minutes." }
+      ]
+    },
+
+    /* Must buys. low/high = NT$ price range for the unit. photo = a place key for the picture. */
+    buys: [
+      { name: "SunnyHills pineapple cakes", zh: "微熱山丘 鳳梨酥", what: "All-pineapple filling, a bit tart. The classic gift box.", where: "SunnyHills at Minsheng Park, where they serve a free cake and tea. Also at Taipei 101.", low: 420, high: 420, unit: "box of 10", tip: "About 2 weeks shelf life. Buy on the last days.", photo: "sunnyhills" },
+      { name: "Chia Te pineapple cakes", zh: "佳德 鳳梨酥", what: "Sweeter, buttery crust. Taipei's best-seller.", where: "Chia Te on Nanjing E Rd Sec 5. Expect a queue.", low: 420, high: 420, unit: "box of 12", tip: "Also sells single cakes for NT$30 to try first.", photo: "sunnyhills" },
+      { name: "Sun cakes", zh: "太陽餅", what: "Flaky pastry with a malt-sugar filling. Taichung's famous treat.", where: "Miyahara or the bakeries on Ziyou Rd, Taichung (Day 3 stop).", low: 250, high: 400, unit: "box of about 10, approx.", tip: "Very flaky, so pack it on top.", photo: "suncake" },
+      { name: "Nougat and nougat crackers", zh: "牛軋糖 / 牛軋餅", what: "Milk nougat with peanuts, or sandwiched in scallion crackers.", where: "Sugar & Spice (糖村), or any souvenir shop.", low: 150, high: 450, unit: "bag or box, approx.", tip: "The crackers are salty-sweet and a big hit with kids.", photo: "nougat" },
+      { name: "High-mountain oolong tea", zh: "高山烏龍茶", what: "Taiwan's famous floral oolong. Light and easy to drink.", where: "Ten Ren tea shops, Maokong tea houses, or Wang De Chuan.", low: 300, high: 900, unit: "150 g pack, approx.", tip: "Ask to taste before buying.", photo: "oolong" },
+      { name: "Taiwanese instant noodles", zh: "曾拌麵 / 滿漢大餐", what: "Tseng Noodles (dry mixing noodles) and Man Han Feast braised beef noodles.", where: "Carrefour or DON DON DONKI. Cheapest at Carrefour.", low: 60, high: 450, unit: "single cup to pack of 4, approx.", tip: "Light and cheap, good for filling the gaps in a suitcase.", photo: "noodles" },
+      { name: "Kuai Kuai snacks", zh: "乖乖", what: "Coconut corn puffs. Taiwanese offices put the green bag on machines for luck.", where: "Any 7-Eleven or supermarket.", low: 20, high: 35, unit: "bag", tip: "A fun, cheap pasalubong for officemates.", photo: "kuaikuai" },
+      { name: "Milk tea packs", zh: "奶茶包", what: "Instant milk tea and boba kits to recreate pearl milk tea at home.", where: "Carrefour, DON DON DONKI, or Chun Shui Tang's shop corner.", low: 150, high: 300, unit: "pack, approx.", tip: "", photo: "xingfutang" },
+      { name: "Sheet masks", zh: "面膜", what: "Taiwan is known for cheap, good sheet masks.", where: "Watsons, Cosmed or Poya drugstores.", low: 150, high: 300, unit: "box, approx.", tip: "Drugstores often run buy-2-get-1 deals.", photo: "sheetmask" },
+      { name: "Kavalan whisky (adults)", zh: "噶瑪蘭威士忌", what: "Award-winning Taiwanese whisky.", where: "Carrefour, or duty-free at the airport.", low: 1200, high: 3000, unit: "bottle, approx.", tip: "Put it in checked bags, or buy it after security. See the customs limit below." }
+    ],
+
+    rules: [
+      ["Don't bring pork or meat INTO Taiwan", "Because of African swine fever, bringing pork or other meat products into Taiwan (longganisa, tocino, canned meat, even meat-flavored snacks) can cost NT$200,000 on the first offense. Foreigners who can't pay can be refused entry. Leave all meat at home."],
+      ["Alcohol back to the Philippines", "Philippine Customs lets each adult bring 2 bottles of up to 1 liter each duty-free. Check customs.gov.ph before you buy more."],
+      ["Liquids in hand-carry", "The usual 100 ml rule applies at the airport. Pack bottles, tea drinks and sauces in checked bags, except baby milk and formula, which are allowed."],
+      ["Tax refund on big buys", "Spend over NT$2,000 at one store with the Tax Refund sign on the same day, show your passport, and claim about 4% back at the airport counter before check-in."],
+      ["Pineapple cakes and pastries", "Fine to bring home in their sealed boxes. Avoid pastries with meat fillings to keep customs easy."]
+    ],
+
+    /* Shops and extras for free time. key = place key (photo, map, MRT). */
+    shops: [
+      { key: "pokemon", name: "Pokémon Center Taipei", area: "Xinyi, Mitsukoshi A11, 3F", hours: "11 AM to 9:30 PM, until 10 PM Fri and Sat", buy: "Taiwan-exclusive plushies and merch.", kids: "Easy with strollers; the mall has elevators and family rooms.", photo: "kavalan" },
+      { key: "donki", name: "DON DON DONKI Ximen", area: "Ximending", hours: "Open 24 hours", buy: "Japanese snacks, cosmetics, sweet potatoes, cheap groceries.", kids: "Crowded aisles, so a carrier is easier than a stroller." },
+      { key: "carrefour", name: "Carrefour Guilin", area: "Wanhua, near Ximending", hours: "Usually open 24 hours. Check before you go.", buy: "The cheapest place for pasalubong in bulk: noodles, snacks, tea, pineapple cakes.", kids: "Big aisles and trolleys. Good for diapers and milk too." },
+      { key: "citymall", name: "Taipei City Mall", area: "Under Taipei Main Station", hours: "About 11 AM to 9:30 PM", buy: "Toys, anime figures, games and electronics in a long underground arcade.", kids: "Air-conditioned, good on a rainy day." },
+      { key: "xinyi", name: "Xinyi shopping district", area: "Around Taipei 101", hours: "About 11 AM to 9:30 PM", buy: "Mitsukoshi, Breeze and Taipei 101 mall. Department store food halls sell all the big pineapple cake brands.", kids: "Skybridges link the malls, so it's stroller-friendly even in rain." },
+      { key: "eslite", name: "Eslite Spectrum Songyan", area: "Songshan Cultural and Creative Park", hours: "About 11 AM to 10 PM", buy: "Taiwanese design goods, stationery, local snacks and a big kids' book corner.", kids: "The park outside has a pond and open space to run." },
+      { key: "huashan", name: "Huashan 1914 Creative Park", area: "Zhongzheng", hours: "Grounds open all day; shops about 11 AM to 9 PM", buy: "Pop-up markets, design shops and weekend exhibits in old winery buildings.", kids: "Lawns for the kids. Check what's on that week." },
+      { key: "sunnyhillsmp", name: "SunnyHills, Minsheng Park", area: "Songshan, a quiet lane", hours: "About 10 AM to 6 PM", buy: "Pineapple cakes. Every visitor gets a free cake and a cup of oolong.", kids: "A calm little shop with a garden view." },
+      { key: "yongkang", name: "Yongkang Street", area: "Da'an, near Dongmen", hours: "Shops about 11 AM to 9 PM", buy: "The original Din Tai Fung, mango shaved ice, tea shops and boutiques.", kids: "Narrow sidewalks; use a carrier." },
+      { key: "wufenpu", name: "Wufenpu clothing market", area: "Songshan", hours: "About noon to midnight", buy: "Cheap clothes and kids' outfits at wholesale prices.", kids: "Very narrow lanes. Best without the strollers." },
+      { key: "guanghua", name: "Guanghua Digital Plaza", area: "Zhongzheng", hours: "About 10 AM to 9 PM", buy: "Phones, cameras, chargers, gaming gear.", kids: "Mostly for the adults." },
+      { key: "daan", name: "Daan Forest Park", area: "Da'an", hours: "Open 24 hours, free", buy: "A big park with a toddler playground, ducks and squirrels.", kids: "Perfect for a free afternoon. Stroller paths everywhere." },
+      { key: "beitou", name: "Xinbeitou hot springs", area: "Beitou", hours: "Hot Spring Museum closed Mondays", buy: "Steamy Thermal Valley, the free Hot Spring Museum and a public foot bath.", kids: "Toddlers love the steam valley. Keep them away from the hot water edges." },
+      { key: "tamsui", name: "Tamsui Old Street", area: "End of the Red line", hours: "Shops about 11 AM to 10 PM", buy: "Riverside snacks, giant ice cream cones and the sunset over the river.", kids: "Flat riverside walk, easy with strollers." }
+    ]
   },
 
   confirm: [

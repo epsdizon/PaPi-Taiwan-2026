@@ -761,7 +761,9 @@
   const lineOf = (code) => LINES[(/^[A-Z]+/.exec(code || '') || [''])[0]] || ['MRT', '#56607B', '#FFFFFF'];
   const mrtBadge = (code) => { const [name, c, ink] = lineOf(code); return `<span class="mrt" style="--lc:${c};--li:${ink}" title="${esc(name)}">${esc(code)}</span>`; };
   const mrtFor = (key) => (EX().mrt.stations || []).find((s) => (s.for || []).includes(key));
-  const fareTxt = (s) => (s && Number.isFinite(s.fare) ? twd(s.fare) : 'fare varies');
+  const fareTxt = (s) => (s && Number.isFinite(s.fare) ? 'about ' + twd(s.fare) : 'fare varies');
+  const routeUrl = (s) => 'https://www.google.com/maps/dir/?api=1&travelmode=transit&origin=' + encodeURIComponent('Taipei Main Station')
+    + '&destination=' + encodeURIComponent(s.station + ' MRT Station, Taipei');
   const dayInPlan = (key) => { const s = plan().stops.find((x) => x[3] === key); return s ? s[0] : 0; };
 
   function renderExplore() {
@@ -792,8 +794,9 @@
       if (!rows.length) return '';
       return `<h4 class="mini-h">${h}</h4><ul class="mrt-list">` + rows.map((s) => `<li>${mrtBadge(s.code)}<div>`
         + `<p class="nm">${esc(s.dest)}</p><p class="st">${esc(s.station)} station <span class="zh" lang="zh-Hant">${esc(s.zh)}</span></p>`
-        + (s.note ? `<p class="note">${esc(s.note)}</p>` : '') + '</div>'
-        + (Number.isFinite(s.fare) ? `<p class="fare">${twd(s.fare)}<small>${php(s.fare * r)}</small></p>` : '<p class="fare"><small>Check fare</small></p>')
+        + (s.note ? `<p class="note">${esc(s.note)}</p>` : '')
+        + `<p class="note"><a href="${routeUrl(s)}" target="_blank" rel="noopener">Route and exact fare</a></p></div>`
+        + (Number.isFinite(s.fare) ? `<p class="fare"><small>about</small>${twd(s.fare)}<small>${php(s.fare * r)}</small></p>` : '<p class="fare"><small>No ride needed</small></p>')
         + '</li>').join('') + '</ul>';
     }).join('');
 
