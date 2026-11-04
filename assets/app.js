@@ -53,6 +53,16 @@
     store.del('settings');
     store.set('settingsRev', SETTINGS_REV);
   }
+  // When the van prices change (pricesRev in data.js), drop each phone's old edits to the van rows
+  const PRICES_REV = T.pricesRev || 1;
+  if (store.get('pricesRev', 1) !== PRICES_REV) {
+    Object.keys(T.plans).forEach((k) => {
+      const ed = store.get('prices:' + k, {});
+      T.plans[k].budget.forEach((b, i) => { if (b[2] === 'Van') delete ed[i]; });
+      store.set('prices:' + k, ed);
+    });
+    store.set('pricesRev', PRICES_REV);
+  }
   const savedPlan = store.get('plan', 'slow');
   const state = {
     plan: T.plans[savedPlan] ? savedPlan : 'slow',
@@ -126,7 +136,7 @@
     return plan().budget.map((b, i) => {
       const numeric = typeof b[4] === 'number';
       const unit = numeric && Number.isFinite(ed[i]) ? ed[i] : b[4];
-      return { i, day: b[0], item: b[1], cat: b[2], basis: b[3], base: b[4], unit, numeric, note: b[5] || '', check: b[6] || '', booked: b[7] === 'booked', later: b[7] === 'later', kid: b[7] === 'kid', edited: numeric && unit !== b[4] };
+      return { i, day: b[0], item: b[1], cat: b[2], basis: b[3], base: b[4], unit, numeric, note: b[5] || '', check: b[6] || '', booked: b[7] === 'booked', later: b[7] === 'later', kid: b[7] === 'kid', vans: Number(b[8]) || 0, edited: numeric && unit !== b[4] };
     });
   };
   const mapUrl = (key) => {
@@ -160,7 +170,8 @@
       else if (unit === 'SHOP') unit = s.shopPerAdult;
       else if (unit === 'HOTEL') unit = s.hotelTotal;
       unit = Number(unit) || 0;
-      const qty = q[b.basis] ?? 0;
+      // A booked van row can name its own number of vans (2 or 3 a day); otherwise use the group's
+      const qty = b.basis === 'van' && b.vans ? b.vans : (q[b.basis] ?? 0);
       const total = unit * qty;
       // The kids' part of a cost goes to the families with kids, not into the adults' share
       let kid = 0;
@@ -671,7 +682,7 @@
       case 'child3': return `× ${n} ${s('kid')} 3 or older`;
       case 'eater': return `× ${Number(n.toFixed(1))} eaters (kids count as ${Math.round(state.settings.kidFood * 100)}%)`;
       case 'lantern': return `× ${n} ${s('lantern')}`;
-      default: return x.cat === 'Van' ? 'for the day' : 'for the group';
+      default: return 'for the group';
     }
   };
   const calcText = (x) => {
@@ -752,7 +763,11 @@
     // Transport on its own, then everything else
     $('#share-brk').innerHTML = `<p><span>Transport</span><b>${php(c.trAdult * r)}</b><small>${twd(c.trAdult)}, split by ${c.split}</small></p>`
       + `<p><span>Everything else</span><b>${php(c.otherAdult * r)}</b><small>${twd(c.otherAdult)}, with a ${Math.round(s.buffer * 100)}% buffer</small></p>`;
-    $('#group-total').textContent = `Whole group: ${php(c.grand * r)} (${twd(c.grand)}) for ${s.adults} adults and ${s.kids} kids, with ${c.vans} ${c.vans === 1 ? 'van' : 'vans'}.`;
+    const vc = c.rows.filter((x) => x.basis === 'van' && /^Van:/.test(x.item)).map((x) => x.qty);
+    const lo = Math.min(...vc);
+    const hi = Math.max(...vc);
+    const vanTxt = !vc.length ? '' : lo === hi ? `, with ${lo} ${lo === 1 ? 'van' : 'vans'}` : `, with ${lo} to ${hi} vans a day`;
+    $('#group-total').textContent = `Whole group: ${php(c.grand * r)} (${twd(c.grand)}) for ${s.adults} adults and ${s.kids} kids${vanTxt}.`;
 
     const maxDay = Math.max(1, ...c.byDay);
     $$('#bars-day .bar').forEach((li, d) => {
