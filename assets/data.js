@@ -8,7 +8,7 @@ window.TRIP = {
   dates: ["2026-12-04", "2026-12-05", "2026-12-06", "2026-12-07", "2026-12-08", "2026-12-09"],
   version: 1,
   settingsRev: 2,      // bump when the default group changes, so phones pick up the new numbers
-  pricesRev: 2,        // bump when van prices change, so phones drop their old edits to the van rows
+  pricesRev: 3,        // bump when van or kid prices change, so phones drop their old edits to those rows
 
   // Fallback exchange rate if the live rate can't load (mid-market, Nov 4, 2026)
   rate: { value: 1.936, asOf: "Nov 4, 2026" },
@@ -35,13 +35,13 @@ window.TRIP = {
     shopPerAdult: 3000,  // pasalubong / shopping money per adult (NT$)
     hotelTotal: 0,       // 0 if the hotel is already paid
     hotelBreakfast: true, // the hotel includes free breakfast, so breakfast-shop meals aren't counted
-    kids3: 3,            // kids 3 or older (the Formosan Village is free under 3)
-    transportPerPerson: false // false: the adults split the vans, tips and taxis; true: each kid pays a seat too
+    kids3: 3             // kids 3 or older (only matters for a ticket priced from age 3)
   },
 
   /* Who's in each family, for "Who pays what" on the Budget tab.
-     Kid costs (car seats, kids' tickets and rides, diapers, kids' meals) go only to families with kids.
-     Add under3: true to the kid who is under 3 (free at the Formosan Village). */
+     Kids ride free and car seats cost nothing, so transport is the same for every adult.
+     Kid costs (diapers, milk and kids' meals) go only to families with kids.
+     Add under3: true to a kid under 3 (only matters for a ticket priced from age 3). */
   households: [
     { names: "Pao and Je", adults: 2, kids: [{ name: "Yuki" }] },
     { names: "Kim and Gelo", adults: 2, kids: [{ name: "Kylian" }] },
@@ -238,7 +238,7 @@ window.TRIP = {
       // day, item, category, basis, NT$ per unit (or FOOD / SHOP / HOTEL), note, price-check search, flag, vans that day, Transfer or Tour
       budget: [
         [1, "Van: arrival airport (booked)", "Van", "van", 2000, "Booked: 3 vans at NT$2,000 each.", "", "booked", 3, "Transfer"],
-        [1, "Child car seats (NT$200 per seat, 5 van days)", "Van", "child", 1000, "Required by law for kids 0 to 4. Some operators give one seat free.", "Taiwan private charter child car seat fee"],
+        [1, "Child car seats (free with the vans)", "Van", "child", 0, "Required by law for kids 0 to 4. No extra cost."],
         [1, "Taipei 101 Observatory (adults)", "Entrance", "adult", 600, "Kids under 115 cm usually free. Type 0 to skip.", "Taipei 101 Observatory ticket price"],
         [1, "Meals", "Food", "eater", "FOOD", "From the Food tab."],
         [1, "eSIM or SIM card", "Other", "adult", 300, "", "Taiwan eSIM 6 days price"],
@@ -250,7 +250,7 @@ window.TRIP = {
         [2, "Taxi to and from dinner", "Transport", "group", 300, ""],
         [3, "Van: Formosan amusement park, culture village and Sun Moon Lake (booked)", "Van", "van", 10000, "Booked: 2 vans at NT$10,000 each (NT$20,000). It's about a 15-hour day, so confirm the price covers it.", "", "booked", 2, "Tour"],
         [3, "Formosan Aboriginal Culture Village (adults)", "Entrance", "adult", 980, "Includes the Sun Moon Lake Ropeway. Often cheaper on Klook or KKday.", "Formosan Aboriginal Culture Village ticket price"],
-        [3, "Formosan Village tickets for kids 3 and up", "Entrance", "child3", 490, "Kids under 3 get in free.", "九族文化村 票價 博幼票"],
+        [3, "Formosan Village tickets for kids (free)", "Entrance", "child3", 0, "Kids get in free."],
         [3, "Meals", "Food", "eater", "FOOD", ""],
         [4, "Van: cats, lanterns, waterfalls and Jiufen (booked)", "Van", "van", 7000, "Booked: 2 vans at NT$7,000 each (NT$14,000), with the Golden Waterfall on the way.", "", "booked", 2, "Tour"],
         [4, "Sky lantern (4 colors) at Shifen", "Entrance", "lantern", 300, "", "Shifen sky lantern price"],
@@ -259,8 +259,8 @@ window.TRIP = {
         [5, "MRT for the day", "Transport", "adult", 60, "No van today. Kids under 6 ride free."],
         [5, "Short taxi rides (park and night market)", "Transport", "group", 400, "Two taxis per ride for the whole group."],
         [5, "Amusement park entry (adults)", "Entrance", "adult", 30, "Kids under 6 free.", "Taipei Children's Amusement Park ticket price"],
-        [5, "Kids' rides (NT$20 to 40 each)", "Entrance", "child", 200, "About 6 to 8 rides each.", "Taipei Children's Amusement Park ride price"],
-        [5, "A grown-up riding along with each toddler", "Entrance", "child", 100, "Toddlers ride with a parent, about 3 to 4 rides."],
+        [5, "Kids' rides (free)", "Entrance", "child", 0, "Kids ride free."],
+        [5, "A grown-up riding along with each toddler", "Entrance", "child", 0, "Free for now. Type a price if the grown-ups riding along have to pay."],
         [5, "Meals", "Food", "eater", "FOOD", ""],
         [6, "Van: departure airport (booked)", "Van", "van", 2000, "Booked: 3 vans at NT$2,000 each.", "", "booked", 3, "Transfer"],
         [6, "Meals", "Food", "eater", "FOOD", ""],
@@ -372,7 +372,7 @@ window.TRIP = {
       ],
       budget: [
         [1, "Van: arrival airport (booked)", "Van", "van", 2000, "Booked: 3 vans at NT$2,000 each.", "", "booked", 3, "Transfer"],
-        [1, "Child car seats (NT$200 per seat, 5 van days)", "Van", "child", 1000, "Required by law for kids 0 to 4. Some operators give one seat free.", "Taiwan private charter child car seat fee"],
+        [1, "Child car seats (free with the vans)", "Van", "child", 0, "Required by law for kids 0 to 4. No extra cost."],
         [1, "Taipei 101 Observatory (adults, optional)", "Entrance", "adult", 600, "Type 0 to skip.", "Taipei 101 Observatory ticket price"],
         [1, "Meals and street food", "Food", "eater", "FOOD", "From the Food tab."],
         [1, "eSIM or SIM card", "Other", "adult", 300, "", "Taiwan eSIM 6 days price"],
@@ -384,7 +384,7 @@ window.TRIP = {
         [2, "MRT or taxi back from Shilin", "Other", "adult", 50, ""],
         [3, "Van: Formosan amusement park, culture village and Sun Moon Lake (booked)", "Van", "van", 10000, "Booked: 2 vans at NT$10,000 each (NT$20,000). It's about a 15-hour day, so confirm the price covers it.", "", "booked", 2, "Tour"],
         [3, "Formosan Aboriginal Culture Village (adults)", "Entrance", "adult", 980, "Includes the Sun Moon Lake Ropeway. Often cheaper on Klook or KKday.", "Formosan Aboriginal Culture Village ticket price"],
-        [3, "Formosan Village tickets for kids 3 and up", "Entrance", "child3", 490, "Kids under 3 get in free.", "九族文化村 票價 博幼票"],
+        [3, "Formosan Village tickets for kids (free)", "Entrance", "child3", 0, "Kids get in free."],
         [3, "Meals and street food", "Food", "eater", "FOOD", ""],
         [4, "Van: cats, lanterns, waterfalls and Jiufen (booked)", "Van", "van", 7000, "Booked: 2 vans at NT$7,000 each (NT$14,000), with the Golden Waterfall on the way.", "", "booked", 2, "Tour"],
         [4, "Sky lantern (4 colors) at Shifen", "Entrance", "lantern", 300, "", "Shifen sky lantern price"],
