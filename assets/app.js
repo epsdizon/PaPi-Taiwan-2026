@@ -126,7 +126,7 @@
     return plan().budget.map((b, i) => {
       const numeric = typeof b[4] === 'number';
       const unit = numeric && Number.isFinite(ed[i]) ? ed[i] : b[4];
-      return { i, day: b[0], item: b[1], cat: b[2], basis: b[3], base: b[4], unit, numeric, note: b[5] || '', check: b[6] || '', booked: b[7] === 'booked', edited: numeric && unit !== b[4] };
+      return { i, day: b[0], item: b[1], cat: b[2], basis: b[3], base: b[4], unit, numeric, note: b[5] || '', check: b[6] || '', booked: b[7] === 'booked', later: b[7] === 'later', edited: numeric && unit !== b[4] };
     });
   };
   const mapUrl = (key) => {
@@ -151,7 +151,8 @@
     };
     const fl = foods();
     const foodDay = (d) => fl.reduce((a, f) => a + (f.on && f.day === d ? Number(f.price) || 0 : 0), 0);
-    const rows = items().map((b) => {
+    // Rows flagged "later" (not booked yet, e.g. the going-home van) stay out of every total
+    const rows = items().filter((b) => !b.later).map((b) => {
       let unit = b.unit;
       if (unit === 'FOOD') unit = foodDay(b.day);
       else if (unit === 'SHOP') unit = s.shopPerAdult;
@@ -638,7 +639,7 @@
       case 'child': return `× ${n} ${s('kid')}`;
       case 'eater': return `× ${Number(n.toFixed(1))} eaters (kids count as ${Math.round(state.settings.kidFood * 100)}%)`;
       case 'lantern': return `× ${n} ${s('lantern')}`;
-      default: return 'for the group';
+      default: return x.cat === 'Van' ? 'for the day' : 'for the group';
     }
   };
   const calcText = (x) => {
@@ -765,7 +766,8 @@
       const d = x.day - 1;
       return `<li style="${colorVars(d)}"><span class="code">${line(d).code}</span><div>`
         + `<p class="nm">${esc(vanLabel(x.item))} <span class="tag ${x.booked ? 'ok' : 'est'}">${x.booked ? 'Booked' : 'Estimate'}</span></p>`
-        + `<p class="sub">${esc(dfmt(T.dates[d], { weekday: 'short', month: 'short', day: 'numeric' }))}: ${x.qty} ${x.qty === 1 ? 'van' : 'vans'} × ${twd(x.unitVal)} = ${twd(x.total)}</p></div>`
+        + `<p class="sub">${esc(dfmt(T.dates[d], { weekday: 'short', month: 'short', day: 'numeric' }))}: `
+        + (x.basis === 'van' ? `${x.qty} ${x.qty === 1 ? 'van' : 'vans'} × ${twd(x.unitVal)} = ${twd(x.total)}` : `${twd(x.total)} for the day`) + '</p></div>'
         + `<p class="each">${php((x.total / n) * r)}<small>${twd(x.total / n)} each</small></p></li>`;
     }).join('');
     box.innerHTML = rows + `<li class="sum"><span></span><div><p class="nm">All vans, per ${headWord()}</p>`
