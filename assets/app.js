@@ -23,6 +23,9 @@
   const fTWD = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'TWD', maximumFractionDigits: 0 });
   const php = (n) => fPHP.format(Math.round(n || 0));
   const twd = (n) => fTWD.format(Math.round(n || 0));
+  // Two decimals when a split isn't a whole number (e.g. NT$6,000 ÷ 13 = NT$461.54)
+  const fTWD2 = new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'TWD', minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const twd2 = (n) => (Math.abs((n || 0) - Math.round(n || 0)) < 0.005 ? twd(n) : fTWD2.format(n));
 
   // ---------- Time in Taipei (add ?today=2026-12-06&time=10:15 to preview a trip day) ----------
   const qs = new URLSearchParams(location.search);
@@ -136,7 +139,7 @@
     return plan().budget.map((b, i) => {
       const numeric = typeof b[4] === 'number';
       const unit = numeric && Number.isFinite(ed[i]) ? ed[i] : b[4];
-      return { i, day: b[0], item: b[1], cat: b[2], basis: b[3], base: b[4], unit, numeric, note: b[5] || '', check: b[6] || '', booked: b[7] === 'booked', later: b[7] === 'later', kid: b[7] === 'kid', vans: Number(b[8]) || 0, edited: numeric && unit !== b[4] };
+      return { i, day: b[0], item: b[1], cat: b[2], basis: b[3], base: b[4], unit, numeric, note: b[5] || '', check: b[6] || '', booked: b[7] === 'booked', later: b[7] === 'later', kid: b[7] === 'kid', vans: Number(b[8]) || 0, kind: b[9] || '', edited: numeric && unit !== b[4] };
     });
   };
   const mapUrl = (key) => {
@@ -817,22 +820,29 @@
       .map(([v, l]) => `<button type="button" data-act="trsplit" data-v="${v ? 1 : 0}" aria-pressed="${c.perPerson === v}">${l}</button>`).join('');
     const list = c.rows.filter((x) => x.tr && (x.pool || x.shared)).sort((a, b) => a.day - b.day);
     const each = (x) => (x.pool ? x.pool / c.split : x.shared / A);
-    let booked = 0;
-    const rows = list.map((x) => {
-      if (x.booked) booked += x.pool;
+    // Booked vans first (transfers and tours), then tips, taxis and MRT
+    const isVan = (x) => x.booked && x.basis === 'van';
+    const vans = list.filter(isVan);
+    const other = list.filter((x) => !isVan(x));
+    const booked = vans.reduce((a, x) => a + x.pool, 0);
+    const row = (x) => {
       const d = x.day - 1;
       const opt = /optional/i.test(x.item);
       const how = x.basis === 'van' ? `${x.qty} ${x.qty === 1 ? 'van' : 'vans'} × ${twd(x.unitVal)} = ${twd(x.total)}`
         : x.basis === 'adult' ? `${twd(x.unitVal)} per adult` : `${twd(x.total)} for the group`;
+      const when = opt ? '' : esc(day(d)) + (x.kind ? ` · ${esc(x.kind)}` : '') + ': ';
       return `<li style="${colorVars(d)}"><span class="code">${line(d).code}</span><div>`
         + `<p class="nm">${esc(trName(x.item))} <span class="tag ${x.booked ? 'ok' : 'est'}">${x.booked ? 'Booked' : opt ? 'Optional' : 'Estimate'}</span></p>`
-        + `<p class="sub">${opt ? '' : esc(day(d)) + ': '}${how}</p></div>`
-        + `<p class="each">${php(each(x) * r)}<small>${twd(each(x))} each</small></p></li>`;
-    }).join('');
+        + `<p class="sub">${when}${how}</p></div>`
+        + `<p class="each">${php(each(x) * r)}<small>${twd2(each(x))} each</small></p></li>`;
+    };
+    const head = (t) => `<li class="grp-h"><p>${t}</p></li>`;
     const sum = (nm, sub, v, lbl) => `<li class="sum"><span></span><div><p class="nm">${nm}</p><p class="sub">${sub}</p></div>`
-      + `<p class="each">${php(v * r)}<small>${twd(v)} ${lbl}</small></p></li>`;
-    box.innerHTML = rows
-      + (booked ? sum('Booked vans', `${twd(booked)} for the group, divided by ${c.split}`, booked / c.split, 'each') : '')
+      + `<p class="each">${php(v * r)}<small>${twd2(v)} ${lbl}</small></p></li>`;
+    const kinds = [...new Set(vans.filter((x) => x.kind).map((x) => `${x.qty}-van ${x.kind.toLowerCase()}s`))];
+    box.innerHTML = (vans.length ? head('Booked vans' + (kinds.length ? `: ${kinds.join(' and ')}` : '')) + vans.map(row).join('')
+        + sum(`Booked vans, per ${c.perPerson ? 'person' : 'adult'}`, `${twd(booked)} for the group, divided by ${c.split}`, booked / c.split, 'each') : '')
+      + (other.length ? head('Tips, taxis and MRT') + other.map(row).join('') : '')
       + sum('All transport, per adult', `Vans, tips and taxis divided by ${c.split}` + (c.trFares ? `, plus ${twd(c.trFares / A)} of train fares` : ''), c.trAdult, 'each')
       + (c.kidSeat ? sum("Each kid's seat", "Goes on their family's kid costs", c.kidSeat, 'per kid') : '');
     const later = items().filter((b) => b.later && TRANSPORT.has(b.cat))

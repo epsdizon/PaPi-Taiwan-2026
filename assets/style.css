@@ -678,6 +678,9 @@ button.ph { border: 0; padding: 0; cursor: zoom-in; }
 .fam .cols .t span, .fam .cols .t small { color: inherit; opacity: .8; }
 .vansplit li + li { border-top: 1px dashed var(--rule); }
 .vansplit li.sum { border-top: 1.5px solid var(--rule); }
+.vansplit li.grp-h { display: block; padding: 14px 0 2px; border-top: 0; }
+.vansplit li.grp-h + li { border-top: 0; }
+.vansplit .grp-h p { font-size: 12.5px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
 .vansplit p { margin: 0; }
 .vansplit .nm { font-weight: 800; line-height: 1.3; }
 .vansplit .sub { margin-top: 2px; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
