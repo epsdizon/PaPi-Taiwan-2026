@@ -24,6 +24,8 @@ Everything lives in [`assets/data.js`](assets/data.js):
 
 Price edits made on the website are saved only on that phone. To change a price for everyone, edit `data.js`.
 
+After any change, bump `VERSION` in `sw.js`. Phones that already have the site open then show a "The plan was just updated" notice with a Refresh button.
+
 After adding a place with new Chinese characters, run `python tools/build_assets.py` so the characters are added to the site's font. They still show without it, just in the phone's own font.
 
 To preview a trip day, add `?today=2026-12-06&time=10:15` to the address.

@@ -1,7 +1,7 @@
 /* PaPi Taiwan 2026 — offline support.
    The site keeps working with weak signal: pages come from the network first, then from this cache.
    Bump VERSION whenever site files change. */
-const VERSION = 'papi-2026-v8';
+const VERSION = 'papi-2026-v9';
 const PHOTOS = 'papi-photos-v1';
 const CORE = [
   './',
@@ -20,7 +20,10 @@ const CORE = [
 const API_HOSTS = /(^|\.)wikipedia\.org$|(^|\.)wikimedia\.org$|jsdelivr\.net$|currency-api\.pages\.dev$|er-api\.com$/;
 
 self.addEventListener('install', (e) => {
-  e.waitUntil(caches.open(VERSION).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()));
+  // cache: 'reload' skips the browser's own cache, so a new version never stores old files
+  e.waitUntil(caches.open(VERSION)
+    .then((c) => c.addAll(CORE.map((u) => new Request(u, { cache: 'reload' }))))
+    .then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (e) => {
@@ -36,7 +39,8 @@ self.addEventListener('fetch', (e) => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin === self.location.origin) {
-    e.respondWith(networkFirst(req, VERSION, 3500));
+    // Ask the server every time (cheap when nothing changed), so updates show right away
+    e.respondWith(networkFirst(req, VERSION, 3500, new Request(req.url, { cache: 'no-cache', credentials: 'same-origin' })));
   } else if (url.hostname === 'upload.wikimedia.org') {
     e.respondWith(cacheFirst(req, PHOTOS));
   } else if (API_HOSTS.test(url.hostname)) {
@@ -44,10 +48,10 @@ self.addEventListener('fetch', (e) => {
   }
 });
 
-async function networkFirst(req, name, waitMs) {
+async function networkFirst(req, name, waitMs, netReq) {
   const cache = await caches.open(name);
-  const fallback = async () => (await cache.match(req)) || (req.mode === 'navigate' ? cache.match('index.html') : undefined);
-  const net = fetch(req).then((res) => {
+  const fallback = async () => (await cache.match(req, { ignoreSearch: req.mode === 'navigate' })) || (req.mode === 'navigate' ? cache.match('index.html') : undefined);
+  const net = fetch(netReq || req).then((res) => {
     if (res && (res.ok || res.type === 'opaque')) cache.put(req, res.clone());
     return res;
   });

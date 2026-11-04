@@ -1132,6 +1132,8 @@
     } else if (act === 'reset-checks') {
       store.del('checks');
       renderPack();
+    } else if (act === 'reload') {
+      location.reload();
     } else if (act === 'split') {
       state.settings.splitKids = t.dataset.v === '1';
       saveSettings();
@@ -1280,7 +1282,17 @@
     }
 
     if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
-      navigator.serviceWorker.register('sw.js').catch(() => { /* offline mode unavailable */ });
+      const hadController = !!navigator.serviceWorker.controller;
+      navigator.serviceWorker.register('sw.js').then((reg) => {
+        // Look for a newer plan whenever the site comes back on screen, and every 30 minutes
+        const check = () => reg.update().catch(() => { /* offline */ });
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) check(); });
+        setInterval(check, 30 * 60e3);
+      }).catch(() => { /* offline mode unavailable */ });
+      // A new version took over: offer a refresh (not on the very first visit)
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (hadController) $('#update').hidden = false;
+      });
     }
   }
 
