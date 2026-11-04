@@ -61,7 +61,7 @@
   if (store.get('pricesRev', 1) !== PRICES_REV) {
     Object.keys(T.plans).forEach((k) => {
       const ed = store.get('prices:' + k, {});
-      T.plans[k].budget.forEach((b, i) => { if (b[2] === 'Van' || /^child/.test(b[3])) delete ed[i]; });
+      T.plans[k].budget.forEach((b, i) => { if (b[2] === 'Van' || b[2] === 'Entrance' || /^child/.test(b[3])) delete ed[i]; });
       store.set('prices:' + k, ed);
     });
     store.set('pricesRev', PRICES_REV);

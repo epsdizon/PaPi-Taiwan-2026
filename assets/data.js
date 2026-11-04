@@ -8,7 +8,7 @@ window.TRIP = {
   dates: ["2026-12-04", "2026-12-05", "2026-12-06", "2026-12-07", "2026-12-08", "2026-12-09"],
   version: 1,
   settingsRev: 2,      // bump when the default group changes, so phones pick up the new numbers
-  pricesRev: 3,        // bump when van or kid prices change, so phones drop their old edits to those rows
+  pricesRev: 4,        // bump when van, kid or ticket prices change, so phones drop their old edits to those rows
 
   // Fallback exchange rate if the live rate can't load (mid-market, Nov 4, 2026)
   rate: { value: 1.936, asOf: "Nov 4, 2026" },
@@ -17,7 +17,7 @@ window.TRIP = {
   seating: {
     src: "assets/van-seating.webp", w: 1600, h: 1467,
     caption: "Who rides where from the airport. Tap to see it bigger.",
-    alt: "Van seating chart, airport to hotel, with one seat up front. Van 1: Pao in front; Je, Yuki and Kylian in row 2; Kim and Gelo in row 3; Sarah and Edward in the back. Van 2: Angelou, Aisla and Gian in row 2; Joe, Sekai and Naz in row 3; bags in the back. Van 3: Mark in front; Barts and Myles together in row 2; bags in rows 3 and 4."
+    alt: "Van seating chart, airport to hotel, in 3 nine-seaters: 1 seat up front, then rows of 2, 2 and 3. Van 1: Pao in front; Je and Yuki; Gelo and Kylian; Kim, Sarah and Edward in the back. Van 2: Gian in front; Angelou and Aisla; bags in row 3; Joe, Sekai and Naz in the back. Van 3: Mark in front; Barts and Myles together in row 2; bags behind."
   },
 
   // Van seating chart for the tour days (Dec 5 to 7): 2 vans, 1 seat up front, no luggage
@@ -251,16 +251,16 @@ window.TRIP = {
         [1, "eSIM or SIM card", "Other", "adult", 300, "", "Taiwan eSIM 6 days price"],
         [1, "EasyCard (deposit + load)", "Other", "adult", 200, "Kids under 6 ride the MRT free.", "EasyCard Taiwan price"],
         [2, "Van: Taipei Zoo and Maokong Gondola (booked)", "Van", "van", 6500, "Booked: 2 vans at NT$6,500 each (NT$13,000). Ends around 3 PM.", "", "booked", 2, "Tour"],
-        [2, "Taipei Zoo (adults)", "Entrance", "adult", 60, "Kids under 6 free.", "Taipei Zoo ticket price"],
-        [2, "Maokong Gondola round trip (adults)", "Entrance", "adult", 240, "Kids under 6 free.", "Maokong Gondola fare"],
+        [2, "Taipei Zoo (adults)", "Entrance", "adult", 100, "Kids get in free.", "Taipei Zoo ticket price"],
+        [2, "Maokong Gondola (optional, adults)", "Entrance", "adult", 300, "Optional. Kids ride free. Type 0 if you skip it.", "Maokong Gondola fare"],
         [2, "Meals", "Food", "eater", "FOOD", ""],
         [2, "Taxi to and from dinner", "Transport", "group", 300, ""],
         [3, "Van: Formosan amusement park, culture village and Sun Moon Lake (booked)", "Van", "van", 10000, "Booked: 2 vans at NT$10,000 each (NT$20,000). It's about a 15-hour day, so confirm the price covers it.", "", "booked", 2, "Tour"],
-        [3, "Formosan Aboriginal Culture Village (adults)", "Entrance", "adult", 980, "Includes the Sun Moon Lake Ropeway. Often cheaper on Klook or KKday.", "Formosan Aboriginal Culture Village ticket price"],
+        [3, "Formosan Aboriginal Culture Village (adults)", "Entrance", "adult", 880, "Includes the Sun Moon Lake Ropeway. Kids get in free.", "Formosan Aboriginal Culture Village ticket price"],
         [3, "Formosan Village tickets for kids (free)", "Entrance", "child3", 0, "Kids get in free."],
         [3, "Meals", "Food", "eater", "FOOD", ""],
         [4, "Van: cats, lanterns, waterfalls and Jiufen (booked)", "Van", "van", 7000, "Booked: 2 vans at NT$7,000 each (NT$14,000), with the Golden Waterfall on the way.", "", "booked", 2, "Tour"],
-        [4, "Sky lantern (4 colors) at Shifen", "Entrance", "lantern", 300, "", "Shifen sky lantern price"],
+        [4, "Sky lantern at Shifen (per adult)", "Entrance", "adult", 300, "NT$300 per person.", "Shifen sky lantern price"],
         [4, "Meals", "Food", "eater", "FOOD", ""],
         [4, "MRT to Ichiran and back", "Transport", "adult", 60, "Kids under 6 ride free."],
         [5, "MRT for the day", "Transport", "adult", 60, "No van today. Kids under 6 ride free."],
@@ -274,7 +274,8 @@ window.TRIP = {
         [6, "Diapers, milk and kid snacks (whole trip)", "Kids", "child", 1800, "About NT$300 per child per day. Bring from home to save."],
         [6, "Shopping and pasalubong", "Shopping", "adult", "SHOP", "Set on the Budget tab."],
         [6, "Hotel (if not prepaid)", "Hotel", "group", "HOTEL", "Set on the Budget tab."],
-        [6, "Driver tips (optional, about NT$500 per van per day)", "Van", "group", 6000, "12 van-days: 3 vans on Dec 4 and 9, 2 vans on Dec 5 to 7. Not required in Taiwan, but a nice gesture."]
+        [6, "Driver tips (optional, about NT$500 per van per day)", "Van", "group", 6000, "12 van-days: 3 vans on Dec 4 and 9, 2 vans on Dec 5 to 7. Not required in Taiwan, but a nice gesture."],
+        [2, "Taipei Zoo train (adults)", "Entrance", "adult", 5, "Kids ride free."]
       ]
     },
 
@@ -385,16 +386,16 @@ window.TRIP = {
         [1, "eSIM or SIM card", "Other", "adult", 300, "", "Taiwan eSIM 6 days price"],
         [1, "EasyCard (deposit + load)", "Other", "adult", 200, "Used on the MRT and in convenience stores.", "EasyCard Taiwan price"],
         [2, "Van: Taipei Zoo, Maokong Gondola and Shilin (booked)", "Van", "van", 6500, "Booked: 2 vans at NT$6,500 each (NT$13,000). This plan runs about 9 hours, so check the hours included.", "", "booked", 2, "Tour"],
-        [2, "Taipei Zoo (adults)", "Entrance", "adult", 60, "", "Taipei Zoo ticket price"],
-        [2, "Maokong Gondola, one way up (adults)", "Entrance", "adult", 120, "The van picks you up at the top.", "Maokong Gondola fare"],
+        [2, "Taipei Zoo (adults)", "Entrance", "adult", 100, "Kids get in free.", "Taipei Zoo ticket price"],
+        [2, "Maokong Gondola (optional, adults)", "Entrance", "adult", 300, "Optional. The van picks you up at the top. Type 0 if you skip it.", "Maokong Gondola fare"],
         [2, "Meals and street food", "Food", "eater", "FOOD", ""],
         [2, "MRT or taxi back from Shilin", "Other", "adult", 50, ""],
         [3, "Van: Formosan amusement park, culture village and Sun Moon Lake (booked)", "Van", "van", 10000, "Booked: 2 vans at NT$10,000 each (NT$20,000). It's about a 15-hour day, so confirm the price covers it.", "", "booked", 2, "Tour"],
-        [3, "Formosan Aboriginal Culture Village (adults)", "Entrance", "adult", 980, "Includes the Sun Moon Lake Ropeway. Often cheaper on Klook or KKday.", "Formosan Aboriginal Culture Village ticket price"],
+        [3, "Formosan Aboriginal Culture Village (adults)", "Entrance", "adult", 880, "Includes the Sun Moon Lake Ropeway. Kids get in free.", "Formosan Aboriginal Culture Village ticket price"],
         [3, "Formosan Village tickets for kids (free)", "Entrance", "child3", 0, "Kids get in free."],
         [3, "Meals and street food", "Food", "eater", "FOOD", ""],
         [4, "Van: cats, lanterns, waterfalls and Jiufen (booked)", "Van", "van", 7000, "Booked: 2 vans at NT$7,000 each (NT$14,000), with the Golden Waterfall on the way.", "", "booked", 2, "Tour"],
-        [4, "Sky lantern (4 colors) at Shifen", "Entrance", "lantern", 300, "", "Shifen sky lantern price"],
+        [4, "Sky lantern at Shifen (per adult)", "Entrance", "adult", 300, "NT$300 per person.", "Shifen sky lantern price"],
         [4, "Meals and street food", "Food", "eater", "FOOD", ""],
         [5, "MRT and taxis for the free day", "Transport", "adult", 200, "No van on the free day."],
         [5, "Meals and street food", "Food", "eater", "FOOD", ""],
@@ -403,7 +404,8 @@ window.TRIP = {
         [6, "Shopping and pasalubong", "Shopping", "adult", "SHOP", "Set on the Budget tab."],
         [6, "Hotel (if not prepaid)", "Hotel", "group", "HOTEL", "Set on the Budget tab."],
         [6, "Driver tips (optional, about NT$500 per van per day)", "Van", "group", 6000, "12 van-days: 3 vans on Dec 4 and 9, 2 vans on Dec 5 to 7. Not required in Taiwan, but a nice gesture."],
-        [4, "MRT or taxi to Ximending and back", "Transport", "adult", 50, ""]
+        [4, "MRT or taxi to Ximending and back", "Transport", "adult", 50, ""],
+        [2, "Taipei Zoo train (adults)", "Entrance", "adult", 5, "Kids ride free."]
       ]
     }
   },
