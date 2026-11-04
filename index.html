@@ -199,7 +199,7 @@
       <p>Estimates in pesos and NT dollars. Change the group, the rate or any price, and everything updates.</p>
     </div>
     <div class="total">
-      <p class="lbl">Each adult's share, all in</p>
+      <p class="lbl" id="share-lbl">Each adult's share, all in</p>
       <p class="big" id="per-adult">₱0</p>
       <p class="twd" id="per-adult-twd"></p>
       <p class="grp" id="group-total"></p>
@@ -219,6 +219,12 @@
       </div>
       <p>Money changers usually give a little less than the live rate.</p>
     </details>
+
+    <h3 class="section-h">Van split</h3>
+    <p class="sec-sub">Each van booking divided between the group.</p>
+    <div class="seg" id="split-toggle" role="group" aria-label="Divide costs between"></div>
+    <ul class="vansplit" id="vansplit"></ul>
+    <p class="sec-sub split-note">Car seats and driver tips aren't in this split.</p>
 
     <h3 class="section-h">Who's going</h3>
     <div class="setup" id="setup"></div>
