@@ -146,6 +146,8 @@
     const p = P[key];
     return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.map || p.en + ', Taiwan');
   };
+  // Van seating charts a stop can show: "seating" (airport transfers) and "seatingTour" (tour days)
+  const seatChart = (k) => ((k === 'seating' || k === 'seatingTour') && T[k] ? T[k] : null);
   const zhShort = (key) => ((P[key] && P[key].zh) || '').split(/[\s/]/)[0].slice(0, 2);
 
   // ---------- Budget math ----------
@@ -512,6 +514,7 @@
         ? `<div class="acts"><a class="act" href="${mapUrl(s.place)}" target="_blank" rel="noopener">${ICON.pin}Map</a>`
           + `<button type="button" class="act" data-act="driver" data-place="${esc(s.place)}">${ICON.driver}Show driver</button></div>`
         : '';
+      const ch = seatChart(s.extra);
       html += `<li class="stop${s.must ? ' must' : ''}${st ? ' ' + st : ''}" style="--i:${i}">`
         + '<span class="node" aria-hidden="true"></span><div class="stop-body">'
         + `<p class="stop-meta"><span class="time">${esc(s.time)}</span><span class="scode">${L.code}${String(i + 1).padStart(2, '0')}</span>`
@@ -520,10 +523,10 @@
         + `<h3>${esc(s.title)}</h3>`
         + (p && !p.generic ? `<p class="zh" lang="zh-Hant">${esc(p.zh)}</p>` : '')
         + (s.tip ? `<p class="tip">${esc(s.tip)}</p>` : '')
-        + (s.extra === 'seating' && T.seating
-          ? `<button type="button" class="seat-img" data-act="seating" aria-label="Open the van seating chart">`
-            + `<img src="${esc(T.seating.src)}" alt="${esc(T.seating.alt)}" width="${T.seating.w}" height="${T.seating.h}" loading="lazy" decoding="async"></button>`
-            + `<p class="seat-cap">${esc(T.seating.caption)}</p>`
+        + (ch
+          ? `<button type="button" class="seat-img" data-act="seating" data-chart="${esc(s.extra)}" aria-label="Open the van seating chart">`
+            + `<img src="${esc(ch.src)}" alt="${esc(ch.alt)}" width="${ch.w}" height="${ch.h}" loading="lazy" decoding="async"></button>`
+            + `<p class="seat-cap">${esc(ch.caption)}</p>`
           : '')
         + acts + '</div>'
         + (p && !p.photoless ? photo(s.place, 'thumb', 330, p.en) : '')
@@ -1225,7 +1228,8 @@
     } else if (act === 'gallery') {
       openGallery(t.dataset.place);
     } else if (act === 'seating') {
-      openImage(T.seating.src, 'Van seating', T.seating.alt);
+      const ch = seatChart(t.dataset.chart) || T.seating;
+      openImage(ch.src, ch.title || 'Van seating', ch.alt);
     } else if (act === 'close-lb') {
       closeGallery();
     } else if (act === 'lb-prev' || act === 'lb-next') {

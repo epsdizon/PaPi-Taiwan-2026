@@ -20,6 +20,13 @@ window.TRIP = {
     alt: "Van seating chart. Van 1: Pao and Gelo in front; Je, Yuki and Kylian in the middle; Kim, Sarah and Edward in the back. Van 2: Angelou, Aisla and Gian in the middle; Joe, Sekai and Naz in the back. Van 3: Barts and Myles in front; Mark in the middle."
   },
 
+  // Van seating chart for the tour days (Dec 5 to 7): 2 vans, 1 seat up front, no luggage
+  seatingTour: {
+    src: "assets/van-seating-tours.webp", w: 1600, h: 1437, title: "Tour seating",
+    caption: "Who rides where on tour days. Tap to see it bigger.",
+    alt: "Tour seating chart, 2 vans with one seat up front. Van 1: Pao in front; Je, Yuki and Kylian in row 2; Kim and Gelo in row 3; Sarah and Edward in the back. Van 2: Mark in front; Barts and Myles together in row 2; Angelou, Aisla and Gian in row 3; Joe, Sekai and Naz in the back."
+  },
+
   // Live countdown on the cover. Update "to" and "note" once the flight is booked (Taipei time, +08:00).
   countdown: { to: "2026-12-04T12:00:00+08:00", label: "Until we land in Taipei", note: "Fri, Dec 4, 12:00 PM Taipei time" },
 
@@ -167,13 +174,13 @@ window.TRIP = {
         [1, "6:30 PM", "MRT back to the hotel for an early night", "hotel", "MRT, about 25 min", "It's rush hour, so use the elevators and keep the strollers together. A taxi is an easy backup."],
 
         [2, "8:00 AM", "Breakfast near the hotel", "breakfast", "Walk", "Steamed buns (mantou) make easy toddler food."],
-        [2, "9:00 AM", "Van pickup at the hotel", "hotel", "", "2 vans booked for the day, NT$6,500 each (NT$13,000). Confirm how many hours it covers, since overtime is extra."],
+        [2, "9:00 AM", "Van pickup at the hotel", "hotel", "", "2 vans booked for the day, NT$6,500 each (NT$13,000). Confirm how many hours it covers, since overtime is extra.", "", "seatingTour"],
         [2, "9:30 AM", "Taipei Zoo: pandas, penguins, koalas and the Children's Zoo", "zoo", "Van, about 30 min", "Bring the stroller; the zoo is big. Kids under 6 get in free. Have lunch inside."],
         [2, "1:00 PM", "Maokong Gondola, a short round trip for the view", "gondola", "Gondola, about 25 min each way", "Kids may nap in the cabin. Snack at a tea house near Maokong Station, then ride down."],
         [2, "3:00 PM", "Van back to the hotel, then nap time", "hotel", "Van", "The van's day ends here."],
         [2, "5:30 PM", "Dinner near the hotel", "", "Walk or taxi", "Keep it close. Day 2 doesn't need more."],
 
-        [3, "6:00 AM", "Van leaves the hotel for Sun Moon Lake", "", "", "2 vans booked for the day, NT$10,000 each (NT$20,000). Grab breakfast to eat on the way; the hotel breakfast may not be open yet, so ask the night before if they can pack breakfast boxes. Kids can nap in the van."],
+        [3, "6:00 AM", "Van leaves the hotel for Sun Moon Lake", "", "", "2 vans booked for the day, NT$10,000 each (NT$20,000). Grab breakfast to eat on the way; the hotel breakfast may not be open yet, so ask the night before if they can pack breakfast boxes. Kids can nap in the van.", "", "seatingTour"],
         [3, "9:30 AM", "Formosan Aboriginal Culture Village: rides, shows and gardens", "formosan", "Van, about 3 hrs with a rest stop", "Opens at 9:30 AM. Kids under 3 get in free, and strollers are fine. Have lunch inside the park."],
         [3, "2:45 PM", "Sun Moon Lake: ropeway down to the lake at Ita Thao", "sunmoon", "Cable car, about 10 min", "Included in the village ticket. It stops around 4 PM, so head down by 3. Ask the drivers to meet you at Ita Thao so nobody rides back up."],
         [3, "4:00 PM", "Leave Sun Moon Lake for Taichung", "", "Van, about 1¼ hrs", ""],
@@ -182,7 +189,7 @@ window.TRIP = {
         [3, "7:15 PM", "Van back to the hotel while the kids sleep", "hotel", "Van, about 2½ hrs", "Sunday traffic north can be heavy. Home around 9:45 PM."],
 
         [4, "8:00 AM", "Breakfast", "breakfast", "Walk", ""],
-        [4, "8:30 AM", "Van to Houtong", "", "Van, about 1 hr", "2 vans booked for the day, NT$7,000 each (NT$14,000). Kids nap on the drive."],
+        [4, "8:30 AM", "Van to Houtong", "", "Van, about 1 hr", "2 vans booked for the day, NT$7,000 each (NT$14,000). Kids nap on the drive.", "", "seatingTour"],
         [4, "9:30 AM", "Houtong Cat Village", "houtong", "", "Kids love the cats. Don't feed them your own snacks."],
         [4, "10:30 AM", "Shifen Old Street: sky lantern and an early lunch", "shifen", "Van, about 25 min", "Hold the kids' hands. The train runs right through the street."],
         [4, "12:00 PM", "Shifen Waterfall", "shifenfalls", "Van, then a 15-min walk", "Paved path. A carrier is easier than a stroller."],
@@ -295,7 +302,7 @@ window.TRIP = {
         [1, "9:00 PM", "Back to the hotel", "hotel", "Walk, MRT or taxi", ""],
 
         [2, "7:30 AM", "Breakfast near the hotel (dan bing or 7-Eleven)", "breakfast", "Walk", ""],
-        [2, "8:30 AM", "Van pickup at the hotel", "hotel", "", "2 vans booked for the day, NT$6,500 each (NT$13,000). Confirm how many hours it covers, since overtime is extra."],
+        [2, "8:30 AM", "Van pickup at the hotel", "hotel", "", "2 vans booked for the day, NT$6,500 each (NT$13,000). Confirm how many hours it covers, since overtime is extra.", "", "seatingTour"],
         [2, "9:00 AM", "Taipei Zoo: pandas, penguins and koalas", "zoo", "Van, about 30 min", "Opens at 9 AM. It's a big park, so wear comfy shoes. Lunch inside the zoo."],
         [2, "1:30 PM", "Maokong Gondola from Taipei Zoo Station", "gondola", "Gondola, about 25 min", "Try the glass-floor Eyes of Maokong cabins (separate queue)."],
         [2, "2:15 PM", "Maokong tea houses: tea, tea snacks and mountain views", "maokong", "Walk", "Yao Yue Teahouse is the classic pick."],
@@ -303,7 +310,7 @@ window.TRIP = {
         [2, "5:30 PM", "Shilin Night Market: dinner and street food", "shilin", "Van, about 40 min", "The van's day ends here. Hot-Star chicken, oyster omelette."],
         [2, "8:30 PM", "Back to the hotel", "hotel", "MRT from Jiantan, or taxi", ""],
 
-        [3, "6:00 AM", "Van leaves the hotel for Sun Moon Lake", "", "", "2 vans booked for the day, NT$10,000 each (NT$20,000). Grab breakfast to eat on the way; the hotel breakfast may not be open yet, so ask the night before if they can pack breakfast boxes. Kids can nap in the van."],
+        [3, "6:00 AM", "Van leaves the hotel for Sun Moon Lake", "", "", "2 vans booked for the day, NT$10,000 each (NT$20,000). Grab breakfast to eat on the way; the hotel breakfast may not be open yet, so ask the night before if they can pack breakfast boxes. Kids can nap in the van.", "", "seatingTour"],
         [3, "9:30 AM", "Formosan Aboriginal Culture Village: rides, shows and gardens", "formosan", "Van, about 3 hrs with a rest stop", "Opens at 9:30 AM. It's beside Sun Moon Lake in Nantou. Have lunch inside the park."],
         [3, "2:45 PM", "Sun Moon Lake: ropeway down to the lake at Ita Thao", "sunmoon", "Cable car, about 10 min", "Included in the village ticket. It stops around 4 PM, so head down by 3. Ask the drivers to meet you at Ita Thao so nobody rides back up."],
         [3, "4:00 PM", "Leave Sun Moon Lake for Taichung", "", "Van, about 1¼ hrs", ""],
@@ -312,7 +319,7 @@ window.TRIP = {
         [3, "7:15 PM", "Van back to the hotel while the kids sleep", "hotel", "Van, about 2½ hrs", "Sunday traffic north can be heavy. Home around 9:45 PM."],
 
         [4, "7:30 AM", "Breakfast", "breakfast", "Walk", ""],
-        [4, "8:00 AM", "Van pickup at the hotel", "hotel", "", "2 vans booked for the day, NT$7,000 each (NT$14,000)."],
+        [4, "8:00 AM", "Van pickup at the hotel", "hotel", "", "2 vans booked for the day, NT$7,000 each (NT$14,000).", "", "seatingTour"],
         [4, "9:00 AM", "Houtong Cat Village", "houtong", "Van, about 1 hr", ""],
         [4, "10:15 AM", "Shifen Old Street: sky lantern release", "shifen", "Van, about 25 min", "Write wishes on all 4 sides. Try the stuffed chicken wing."],
         [4, "11:45 AM", "Shifen Waterfall", "shifenfalls", "Van, then a 15-min walk", ""],
