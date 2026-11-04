@@ -202,6 +202,7 @@
       <p class="lbl" id="share-lbl">Each adult's share, all in</p>
       <p class="big" id="per-adult">₱0</p>
       <p class="twd" id="per-adult-twd"></p>
+      <div class="brk" id="share-brk"></div>
       <p class="grp" id="group-total"></p>
     </div>
     <div class="rate">
@@ -220,11 +221,21 @@
       <p>Money changers usually give a little less than the live rate.</p>
     </details>
 
-    <h3 class="section-h">Van split</h3>
-    <p class="sec-sub">Each van booking divided between the group.</p>
-    <div class="seg" id="split-toggle" role="group" aria-label="Divide costs between"></div>
+    <h3 class="section-h">Transport</h3>
+    <p class="sec-sub">Vans, tips, taxis and train fares, kept separate from everything else. Divide the vans and taxis between:</p>
+    <div class="seg" id="tr-toggle" role="group" aria-label="Divide the vans and taxis between"></div>
     <ul class="vansplit" id="vansplit"></ul>
-    <p class="sec-sub split-note">The van home on Dec 9 isn't counted until it's booked. Car seats and driver tips aren't in this split.</p>
+    <p class="sec-sub split-note" id="tr-note"></p>
+
+    <h3 class="section-h">Kid costs</h3>
+    <p class="sec-sub">Paid only by the families with kids, so they're left out of the adults' share.</p>
+    <ul class="vansplit two" id="kidcosts"></ul>
+    <p class="sec-sub split-note" id="kid-note"></p>
+
+    <h3 class="section-h">Who pays what</h3>
+    <p class="sec-sub">Each family's transport, kept separate from everything else. Kid costs go only to the families with kids.</p>
+    <ul class="vansplit two" id="households"></ul>
+    <p class="sec-sub split-note" id="payers-note"></p>
 
     <h3 class="section-h">Who's going</h3>
     <div class="setup" id="setup"></div>

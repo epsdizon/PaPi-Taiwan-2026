@@ -91,9 +91,9 @@
   const priceEdits = () => store.get('prices:' + state.plan, {});
   // Sharing orders (e.g. Din Tai Fung) scale with how many people are eating
   const eaters = () => state.settings.adults + state.settings.kids * state.settings.kidFood;
-  // How many people the costs are divided between: adults only, or the kids too
-  const heads = () => Math.max(1, state.settings.adults + (state.settings.splitKids ? state.settings.kids : 0));
-  const headWord = () => (state.settings.splitKids ? 'person' : 'adult');
+  // Shared costs are divided between the adults; kid costs go to the families with kids
+  const heads = () => Math.max(1, state.settings.adults);
+  const headWord = () => 'adult';
   function shareOrder(key) {
     const sh = (T.shares || {})[key];
     if (!sh) return null;
@@ -126,7 +126,7 @@
     return plan().budget.map((b, i) => {
       const numeric = typeof b[4] === 'number';
       const unit = numeric && Number.isFinite(ed[i]) ? ed[i] : b[4];
-      return { i, day: b[0], item: b[1], cat: b[2], basis: b[3], base: b[4], unit, numeric, note: b[5] || '', check: b[6] || '', booked: b[7] === 'booked', later: b[7] === 'later', edited: numeric && unit !== b[4] };
+      return { i, day: b[0], item: b[1], cat: b[2], basis: b[3], base: b[4], unit, numeric, note: b[5] || '', check: b[6] || '', booked: b[7] === 'booked', later: b[7] === 'later', kid: b[7] === 'kid', edited: numeric && unit !== b[4] };
     });
   };
   const mapUrl = (key) => {
@@ -137,6 +137,7 @@
 
   // ---------- Budget math ----------
   const rateNow = () => (state.ownRate > 0 ? state.ownRate : state.rate ? state.rate.v : T.rate.value);
+  const TRANSPORT = new Set(['Van', 'Transport']); // budget categories counted as transport
   function compute() {
     const s = state.settings;
     const pax = s.adults + s.kids;
@@ -145,6 +146,7 @@
       van: vans,
       adult: s.adults,
       child: s.kids,
+      child3: Math.min(s.kids, s.kids3 ?? s.kids),
       eater: s.adults + s.kids * s.kidFood,
       lantern: Math.ceil(pax / Math.max(1, s.lanternShare) - 1e-9),
       group: 1,
@@ -159,14 +161,43 @@
       else if (unit === 'HOTEL') unit = s.hotelTotal;
       unit = Number(unit) || 0;
       const qty = q[b.basis] ?? 0;
-      return Object.assign(b, { unitVal: unit, qty, total: unit * qty });
+      const total = unit * qty;
+      // The kids' part of a cost goes to the families with kids, not into the adults' share
+      let kid = 0;
+      if (b.basis === 'child' || b.basis === 'child3' || b.kid) kid = total;
+      else if (b.basis === 'eater') kid = unit * s.kids * s.kidFood;
+      // Transport is kept apart. Vans, tips and taxis are a pool that can be split per person;
+      // train fares are per adult, since kids under 6 ride the MRT free
+      const tr = TRANSPORT.has(b.cat);
+      const pool = tr && b.basis !== 'adult' ? total - kid : 0;
+      return Object.assign(b, { unitVal: unit, qty, total, kid, shared: total - kid, tr, pool });
     });
-    const byDay = T.dates.map((_, d) => rows.reduce((a, r) => a + (r.day === d + 1 ? r.total : 0), 0));
+    const A = heads();
+    const perPerson = !!s.transportPerPerson && s.kids > 0;
+    const split = A + (perPerson ? s.kids : 0); // people sharing the vans, tips and taxis
+    rows.forEach((r) => { r.adultPart = r.pool ? r.pool / split : r.shared / A; });
+    const sumOf = (f) => rows.reduce((a, r) => a + f(r), 0);
+    const byDay = T.dates.map((_, d) => sumOf((r) => (r.day === d + 1 ? r.total : 0)));
+    const adultByDay = T.dates.map((_, d) => sumOf((r) => (r.day === d + 1 ? r.adultPart : 0)));
     const cats = {};
     rows.forEach((r) => { cats[r.cat] = (cats[r.cat] || 0) + r.total; });
     const sub = byDay.reduce((a, b) => a + b, 0);
-    const grand = sub * (1 + s.buffer);
-    return { rows, byDay, cats, sub, grand, perAdult: grand / heads(), vans, pax };
+    // Transport has no safety buffer, since the vans are booked at fixed prices
+    const trPool = sumOf((r) => r.pool);
+    const trFares = sumOf((r) => (r.tr && !r.pool ? r.shared : 0));
+    const trAdult = trPool / split + trFares / A;
+    const kidSeat = perPerson ? trPool / split : 0; // each kid's seat in the vans and taxis
+    // Everything else: the buffer goes on the adults' shared costs; kid costs stay at face value
+    const otherShared = sumOf((r) => (r.tr ? 0 : r.shared)) * (1 + s.buffer);
+    const otherAdult = otherShared / A;
+    const kidOwn = sumOf((r) => r.kid);
+    const kidSub = kidOwn + kidSeat * s.kids;
+    const kidTr = sumOf((r) => (r.tr ? r.kid : 0)) + kidSeat * s.kids; // car seats and kids' seats
+    const grand = trPool + trFares + otherShared + kidOwn;
+    return {
+      rows, byDay, adultByDay, cats, sub, grand, kidSub, kidTr, kidSeat, vans, pax,
+      perAdult: trAdult + otherAdult, trAdult, otherAdult, trPool, trFares, split, perPerson,
+    };
   }
 
   // ---------- Network ----------
@@ -426,7 +457,7 @@
     const el = $('#daysum');
     if (!el) return;
     const n = stopsOf(d).length;
-    const perHead = (c.byDay[d] / heads()) * rateNow();
+    const perHead = c.adultByDay[d] * rateNow();
     el.innerHTML = `${n} stops. About <strong>${php(perHead)}</strong> per ${headWord()} for the day (${twd(perHead / rateNow())}).`;
   }
 
@@ -598,7 +629,7 @@
     { k: 'kids', label: 'Kids under 4', type: 'step', min: 0, max: 12, hint: 'Each one needs a car seat.' },
     { k: 'seatsPerVan', label: 'Car seats per van', type: 'step', min: 1, max: 6, hint: 'Ask the operator. If 4 fit, you may need just 1 van.' },
     { k: 'kidFood', label: 'How much the kids eat', type: 'range', min: 0, max: 1, step: 0.1, fmt: (v) => `${Math.round(v * 100)}% of an adult meal` },
-    { k: 'buffer', label: 'Safety buffer', type: 'range', min: 0, max: 0.3, step: 0.05, fmt: (v) => `${Math.round(v * 100)}% on top of everything` },
+    { k: 'buffer', label: 'Safety buffer', type: 'range', min: 0, max: 0.3, step: 0.05, fmt: (v) => `${Math.round(v * 100)}% on top of everything except transport` },
     { k: 'shopPerAdult', label: 'Shopping per adult', type: 'money' },
     { k: 'hotelBreakfast', label: 'Free hotel breakfast', type: 'toggle', hint: "When on, breakfast-shop meals aren't counted." },
     { k: 'hotelTotal', label: 'Hotel, if not paid yet', type: 'money', hint: 'Total for all rooms and nights. Leave 0 if paid.' },
@@ -637,6 +668,7 @@
       case 'van': return `× ${n} ${s('van')}`;
       case 'adult': return `× ${n} ${s('adult')}`;
       case 'child': return `× ${n} ${s('kid')}`;
+      case 'child3': return `× ${n} ${s('kid')} 3 or older`;
       case 'eater': return `× ${Number(n.toFixed(1))} eaters (kids count as ${Math.round(state.settings.kidFood * 100)}%)`;
       case 'lantern': return `× ${n} ${s('lantern')}`;
       default: return x.cat === 'Van' ? 'for the day' : 'for the group';
@@ -712,9 +744,14 @@
     const pa = c.perAdult * r;
     tween($('#per-adult'), shownPerAdult, pa, php);
     shownPerAdult = pa;
-    $('#share-lbl').textContent = s.splitKids ? "Each person's share, all in (kids count too)" : "Each adult's share, all in";
+    $('#share-lbl').textContent = "Each adult's share, without kid costs";
     renderVanSplit(c);
-    $('#per-adult-twd').textContent = `${twd(c.perAdult)} each, with a ${Math.round(s.buffer * 100)}% safety buffer`;
+    renderKidCosts(c);
+    renderHouseholds(c);
+    $('#per-adult-twd').textContent = `${twd(c.perAdult)} each`;
+    // Transport on its own, then everything else
+    $('#share-brk').innerHTML = `<p><span>Transport</span><b>${php(c.trAdult * r)}</b><small>${twd(c.trAdult)}, split by ${c.split}</small></p>`
+      + `<p><span>Everything else</span><b>${php(c.otherAdult * r)}</b><small>${twd(c.otherAdult)}, with a ${Math.round(s.buffer * 100)}% buffer</small></p>`;
     $('#group-total').textContent = `Whole group: ${php(c.grand * r)} (${twd(c.grand)}) for ${s.adults} adults and ${s.kids} kids, with ${c.vans} ${c.vans === 1 ? 'van' : 'vans'}.`;
 
     const maxDay = Math.max(1, ...c.byDay);
@@ -749,32 +786,123 @@
     $$('#items .iday').forEach((det, d) => { $('summary .amt', det).textContent = php(c.byDay[d] * r); });
   }
 
-  // Van split: each van row divided by the number of people sharing the cost
+  // Transport: every van, tip, taxi and train fare, kept apart from everything else
   const vanLabel = (t) => { const x = t.replace(/^Van:\s*/, '').replace(/\s*\(booked\)\s*$/, ''); return x.charAt(0).toUpperCase() + x.slice(1); };
+  const trName = (t) => (/^Van:/.test(t) ? vanLabel(t) : t.replace(/\(optional,?\s*/i, '(').replace(/\s*\(\)/, ''));
   function renderVanSplit(c) {
     const box = $('#vansplit');
     if (!box) return;
     const r = rateNow();
     const s = state.settings;
-    const n = heads();
-    const vans = c.rows.filter((x) => x.cat === 'Van' && /^Van:/.test(x.item));
-    let tot = 0;
+    const A = heads();
+    const day = (d) => dfmt(T.dates[d], { weekday: 'short', month: 'short', day: 'numeric' });
+    const tg = $('#tr-toggle');
+    tg.hidden = !s.kids;
+    tg.innerHTML = [[false, `${s.adults} adults`], [true, `All ${s.adults + s.kids}, kids too`]]
+      .map(([v, l]) => `<button type="button" data-act="trsplit" data-v="${v ? 1 : 0}" aria-pressed="${c.perPerson === v}">${l}</button>`).join('');
+    const list = c.rows.filter((x) => x.tr && (x.pool || x.shared)).sort((a, b) => a.day - b.day);
+    const each = (x) => (x.pool ? x.pool / c.split : x.shared / A);
     let booked = 0;
-    const rows = vans.map((x) => {
-      tot += x.total;
-      if (x.booked) booked += x.total;
+    const rows = list.map((x) => {
+      if (x.booked) booked += x.pool;
       const d = x.day - 1;
+      const opt = /optional/i.test(x.item);
+      const how = x.basis === 'van' ? `${x.qty} ${x.qty === 1 ? 'van' : 'vans'} × ${twd(x.unitVal)} = ${twd(x.total)}`
+        : x.basis === 'adult' ? `${twd(x.unitVal)} per adult` : `${twd(x.total)} for the group`;
       return `<li style="${colorVars(d)}"><span class="code">${line(d).code}</span><div>`
-        + `<p class="nm">${esc(vanLabel(x.item))} <span class="tag ${x.booked ? 'ok' : 'est'}">${x.booked ? 'Booked' : 'Estimate'}</span></p>`
-        + `<p class="sub">${esc(dfmt(T.dates[d], { weekday: 'short', month: 'short', day: 'numeric' }))}: `
-        + (x.basis === 'van' ? `${x.qty} ${x.qty === 1 ? 'van' : 'vans'} × ${twd(x.unitVal)} = ${twd(x.total)}` : `${twd(x.total)} for the day`) + '</p></div>'
-        + `<p class="each">${php((x.total / n) * r)}<small>${twd(x.total / n)} each</small></p></li>`;
+        + `<p class="nm">${esc(trName(x.item))} <span class="tag ${x.booked ? 'ok' : 'est'}">${x.booked ? 'Booked' : opt ? 'Optional' : 'Estimate'}</span></p>`
+        + `<p class="sub">${opt ? '' : esc(day(d)) + ': '}${how}</p></div>`
+        + `<p class="each">${php(each(x) * r)}<small>${twd(each(x))} each</small></p></li>`;
     }).join('');
-    box.innerHTML = rows + `<li class="sum"><span></span><div><p class="nm">All vans, per ${headWord()}</p>`
-      + `<p class="sub">${twd(tot)} for the group${booked && booked < tot ? `; ${twd(booked)} of it booked` : ''}, divided by ${n}</p></div>`
-      + `<p class="each">${php((tot / n) * r)}<small>${twd(tot / n)} each</small></p></li>`;
-    $('#split-toggle').innerHTML = [[false, `${s.adults} adults`], [true, `${s.adults + s.kids} with kids`]]
-      .map(([v, l]) => `<button type="button" data-act="split" data-v="${v ? 1 : 0}" aria-pressed="${!!s.splitKids === v}">${l}</button>`).join('');
+    const sum = (nm, sub, v, lbl) => `<li class="sum"><span></span><div><p class="nm">${nm}</p><p class="sub">${sub}</p></div>`
+      + `<p class="each">${php(v * r)}<small>${twd(v)} ${lbl}</small></p></li>`;
+    box.innerHTML = rows
+      + (booked ? sum('Booked vans', `${twd(booked)} for the group, divided by ${c.split}`, booked / c.split, 'each') : '')
+      + sum('All transport, per adult', `Vans, tips and taxis divided by ${c.split}` + (c.trFares ? `, plus ${twd(c.trFares / A)} of train fares` : ''), c.trAdult, 'each')
+      + (c.kidSeat ? sum("Each kid's seat", "Goes on their family's kid costs", c.kidSeat, 'per kid') : '');
+    const later = items().filter((b) => b.later && TRANSPORT.has(b.cat))
+      .map((b) => `${vanLabel(b.item)} on ${day(b.day - 1)} isn't counted until it's booked.`);
+    $('#tr-note').textContent = later.concat([
+      c.perPerson ? "Each kid pays for a seat like everyone else, added to their family's share."
+        : `The adults are covering the kids' seats. Choose "All ${s.adults + s.kids}, kids too" to give each kid a share.`,
+      'Kids under 6 ride the MRT free, so train fares are per adult. Car seats are under Kid costs.',
+    ]).join(' ');
+  }
+
+  // Kid costs: paid only by the families with kids
+  function renderKidCosts(c) {
+    const box = $('#kidcosts');
+    if (!box) return;
+    const r = rateNow();
+    const s = state.settings;
+    if (!s.kids) {
+      box.innerHTML = '<li><div><p class="nm">No kids in the group</p></div><p class="each"></p></li>';
+      $('#kid-note').textContent = '';
+      return;
+    }
+    const lines = [];
+    let food = 0;
+    c.rows.forEach((x) => {
+      if (!x.kid) return;
+      if (x.basis === 'eater') { food += x.kid; return; }
+      const v3 = x.basis === 'child3';
+      lines.push({
+        name: x.item,
+        sub: v3 ? `${twd(x.unitVal)} each for ${x.qty} ${x.qty === 1 ? 'kid' : 'kids'} 3 or older` : `${twd(x.unitVal)} × ${x.qty} ${x.qty === 1 ? 'kid' : 'kids'}`,
+        per: v3 ? x.unitVal : x.kid / s.kids,
+        lbl: v3 ? 'per kid 3 or older' : 'per kid',
+      });
+    });
+    if (food) lines.push({ name: "Kids' share of meals", sub: `${Math.round(s.kidFood * 100)}% of an adult's meals, all trip`, per: food / s.kids, lbl: 'per kid' });
+    if (c.kidSeat) lines.unshift({ name: 'Seat in the vans and taxis', sub: `Transport split between all ${c.split} people`, per: c.kidSeat, lbl: 'per kid' });
+    const v3row = c.rows.find((x) => x.basis === 'child3');
+    const base = (c.kidSub - (v3row ? v3row.total : 0)) / s.kids;
+    // Headline is the usual case: a kid 3 or older, who also needs a village ticket
+    const has3 = v3row && v3row.qty > 0;
+    const per = base + (has3 ? v3row.unitVal : 0);
+    box.innerHTML = lines.map((l) => `<li><div><p class="nm">${esc(l.name)}</p><p class="sub">${esc(l.sub)}</p></div>`
+      + `<p class="each">${php(l.per * r)}<small>${twd(l.per)} ${l.lbl}</small></p></li>`).join('')
+      + `<li class="sum"><div><p class="nm">Per kid, all in</p><p class="sub">${twd(c.kidSub)} for all ${s.kids} ${s.kids === 1 ? 'kid' : 'kids'}</p></div>`
+      + `<p class="each">${php(per * r)}<small>${twd(per)} ${has3 ? 'per kid 3 or older' : 'per kid'}</small></p></li>`;
+    $('#kid-note').textContent = has3 && v3row.qty < s.kids
+      ? `A kid under 3 is ${twd(base)}, because the Formosan Village is free for them.` : '';
+  }
+
+  // Who pays what: each family's adults' shares plus their kid costs
+  function renderHouseholds(c) {
+    const box = $('#households');
+    if (!box) return;
+    const H = T.households || [];
+    const r = rateNow();
+    const s = state.settings;
+    const v3row = c.rows.find((x) => x.basis === 'child3');
+    const add3 = v3row ? v3row.unitVal : 0;
+    const base = s.kids ? (c.kidSub - (v3row ? v3row.total : 0)) / s.kids : 0;
+    const kidTr = s.kids ? c.kidTr / s.kids : 0; // car seat, plus a seat share when kids count
+    const cell = (lbl, v, cls) => `<p class="${cls}"><span>${lbl}</span><b>${php(v * r)}</b><small>${twd(v)}</small></p>`;
+    let adults = 0;
+    let marked = 0;
+    box.innerHTML = H.map((h) => {
+      adults += h.adults;
+      const kids = h.kids || [];
+      let kidAmt = 0;
+      kids.forEach((k) => {
+        kidAmt += base + (k.under3 ? 0 : add3);
+        if (k.under3) marked += 1;
+      });
+      const amt = h.adults * c.perAdult + kidAmt;
+      const tr = h.adults * c.trAdult + kids.length * kidTr;
+      const who = esc(h.names) + (kids.length ? ` + ${esc(kids.map((k) => k.name).join(', '))}` : '');
+      const sub = `${h.adults} ${h.adults === 1 ? 'adult' : 'adults'}` + (kids.length ? ` and ${kids.length} ${kids.length === 1 ? 'kid' : 'kids'}` : '');
+      return `<li class="fam"><p class="nm">${who}</p><p class="sub">${sub}</p><div class="cols">`
+        + cell('Transport', tr, 'tr') + cell('The rest', amt - tr, '') + cell('Total', amt, 't') + '</div></li>';
+    }).join('');
+    const notes = [];
+    // Kids under 3 the budget expects but nobody is marked as yet (under3: true in data.js)
+    const under3 = s.kids - Math.min(s.kids, s.kids3 ?? s.kids);
+    if (add3 && marked < under3) notes.push(`The youngest kid gets into the Formosan Village free, so that family pays ${twd(add3)} less.`);
+    if (adults !== s.adults) notes.push(`These families add up to ${adults} adults, but the budget is set for ${s.adults}.`);
+    $('#payers-note').textContent = notes.join(' ');
   }
 
   function liveTotals() {
@@ -1134,11 +1262,11 @@
       renderPack();
     } else if (act === 'reload') {
       location.reload();
-    } else if (act === 'split') {
-      state.settings.splitKids = t.dataset.v === '1';
+    } else if (act === 'trsplit') {
+      state.settings.transportPerPerson = t.dataset.v === '1';
       saveSettings();
       liveTotals();
-      const on = $('#split-toggle [aria-pressed="true"]');
+      const on = $('#tr-toggle [aria-pressed="true"]');
       if (on) on.focus();
     } else if (act === 'jump') {
       const sec = $('#' + t.dataset.to);

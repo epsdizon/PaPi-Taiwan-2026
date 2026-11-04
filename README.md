@@ -9,7 +9,7 @@ Live site: https://epsdizon.github.io/PaPi-Taiwan-2026/
 - **Van seating**: the airport-to-hotel seating chart sits on Day 1 and is saved for offline use, for when there's no data yet at the airport.
 - **Days**: each day drawn as its own Taipei-MRT-style line, with times, tips, photos, a map link, and a "Show driver" card with the place name in Chinese. During the trip it opens on today and marks the next stop.
 - **Food**: the three must-eats (Din Tai Fung, Chun Shui Tang's original store, Ichiran) plus every food stop by day, with prices you can change.
-- **Budget**: each adult's share and the group total in pesos and NT dollars. The exchange rate updates by itself every few hours. Change the number of adults and kids, car seats per van, or any price, and every total follows. "Check price" opens a search for the current price.
+- **Budget**: each adult's share and the group total in pesos and NT dollars, with transport (vans, tips, taxis, MRT) kept separate from everything else. The vans and taxis can be split between the adults or between everyone, kids included. Kid costs (car seats, kids' tickets and rides, diapers, kids' meals) go only to the families with kids, and "Who pays what" shows each family's transport, the rest, and total. The exchange rate updates by itself every few hours. Change the number of adults and kids, car seats per van, or any price, and every total follows. "Check price" opens a search for the current price.
 - **Packing**: things to confirm before the trip, a toddler packing list, and good-to-know tips. Ticks are saved on each phone.
 - Two plans: **Slow & kid-friendly** (default) and **Original pace**. Switch on the cover.
 - Works offline after the first visit, and can be added to the phone's home screen.
@@ -18,7 +18,8 @@ Live site: https://epsdizon.github.io/PaPi-Taiwan-2026/
 
 Everything lives in [`assets/data.js`](assets/data.js):
 
-- `settings`: default number of adults and kids, car seats per van, shopping money, hotel cost.
+- `settings`: default number of adults and kids, car seats per van, shopping money, hotel cost, and `transportPerPerson` (whether kids pay a seat in the vans and taxis).
+- `households`: who's in each family, for "Who pays what". Add `under3: true` to a kid under 3 (free at the Formosan Village).
 - `plans.slow` and `plans.original`: each has `stops` (day, time, what, place, how to get there, tip), `food` (with NT$ prices) and `budget` (with NT$ prices).
 - `places`: names in English and Chinese, addresses for the driver card, and which Wikipedia pages to borrow photos from.
 

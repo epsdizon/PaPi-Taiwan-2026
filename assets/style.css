@@ -644,6 +644,11 @@ button.ph { border: 0; padding: 0; cursor: zoom-in; }
 .total .big { margin: 6px 0 2px; font: 900 clamp(64px, 19vw, 104px)/.86 var(--font-cond); letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
 .total .twd { margin: 0; font-weight: 700; color: var(--gold); }
 .total .grp { margin: 12px 0 0; color: #C3CDEC; font-size: 15px; }
+.total .brk { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, .16); }
+.total .brk p { margin: 0; }
+.total .brk span { display: block; font-size: 13px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; color: #C3CDEC; }
+.total .brk b { display: block; margin-top: 4px; font: 900 32px/1 var(--font-cond); font-variant-numeric: tabular-nums; }
+.total .brk small { display: block; margin-top: 4px; font-size: 13px; font-weight: 700; color: var(--gold); }
 .rate { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; padding: 14px 16px; border-radius: var(--r-m); background: var(--surface); box-shadow: inset 0 0 0 1px var(--rule); }
 .rate p { margin: 0; }
 .rate .rv { font: 900 28px/1 var(--font-cond); }
@@ -661,6 +666,16 @@ button.ph { border: 0; padding: 0; cursor: zoom-in; }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
 .vansplit { list-style: none; margin: 0; padding: 2px 16px; border-radius: var(--r-m); background: var(--surface); box-shadow: inset 0 0 0 1px var(--rule); }
 .vansplit li { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 12px 0; }
+.vansplit.two li { grid-template-columns: minmax(0, 1fr) auto; }
+.vansplit li.fam { display: block; }
+.fam .cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 10px; }
+.fam .cols p { padding: 8px 10px; border-radius: 10px; background: var(--surface-2); }
+.fam .cols span { display: block; font-size: 12.5px; font-weight: 700; color: var(--muted); }
+.fam .cols b { display: block; margin-top: 2px; font-size: 17px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.fam .cols small { display: block; font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.fam .cols .tr { box-shadow: inset 3px 0 0 var(--gold); }
+.fam .cols .t { background: var(--ink); color: var(--paper); }
+.fam .cols .t span, .fam .cols .t small { color: inherit; opacity: .8; }
 .vansplit li + li { border-top: 1px dashed var(--rule); }
 .vansplit li.sum { border-top: 1.5px solid var(--rule); }
 .vansplit p { margin: 0; }

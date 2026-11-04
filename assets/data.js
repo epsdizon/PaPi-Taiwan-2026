@@ -34,8 +34,22 @@ window.TRIP = {
     shopPerAdult: 3000,  // pasalubong / shopping money per adult (NT$)
     hotelTotal: 0,       // 0 if the hotel is already paid
     hotelBreakfast: true, // the hotel includes free breakfast, so breakfast-shop meals aren't counted
-    splitKids: false     // false: costs are divided between the adults; true: the kids count as a share too
+    kids3: 3,            // kids 3 or older (the Formosan Village is free under 3)
+    transportPerPerson: false // false: the adults split the vans, tips and taxis; true: each kid pays a seat too
   },
+
+  /* Who's in each family, for "Who pays what" on the Budget tab.
+     Kid costs (car seats, kids' tickets and rides, diapers, kids' meals) go only to families with kids.
+     Add under3: true to the kid who is under 3 (free at the Formosan Village). */
+  households: [
+    { names: "Pao and Je", adults: 2, kids: [{ name: "Yuki" }] },
+    { names: "Kim and Gelo", adults: 2, kids: [{ name: "Kylian" }] },
+    { names: "Angelou and Gian", adults: 2, kids: [{ name: "Aisla" }] },
+    { names: "Joe", adults: 1, kids: [{ name: "Sekai" }] },
+    { names: "Sarah and Edward", adults: 2 },
+    { names: "Barts and Myles", adults: 2 },
+    { names: "Mark and Dancel", adults: 2 }
+  ],
 
   // One Taipei-MRT-style line per day
   lines: [
@@ -235,7 +249,7 @@ window.TRIP = {
         [2, "Taxi to and from dinner", "Transport", "group", 300, ""],
         [3, "Van: Sun Moon Lake and Taichung (booked)", "Van", "van", 10000, "Booked: 3 vans at NT$10,000 each. It's about a 15-hour day, so confirm the price covers it.", "", "booked"],
         [3, "Formosan Aboriginal Culture Village (adults)", "Entrance", "adult", 980, "Includes the Sun Moon Lake Ropeway. Often cheaper on Klook or KKday.", "Formosan Aboriginal Culture Village ticket price"],
-        [3, "Village tickets for the 3-year-olds", "Entrance", "group", 1470, "About NT$490 each for three 3-year-olds. Kids under 3 get in free.", "九族文化村 票價 博幼票"],
+        [3, "Formosan Village tickets for kids 3 and up", "Entrance", "child3", 490, "Kids under 3 get in free.", "九族文化村 票價 博幼票"],
         [3, "Meals", "Food", "eater", "FOOD", ""],
         [4, "Van: Houtong, Shifen and Jiufen (booked)", "Van", "van", 7000, "Booked: 3 vans at NT$7,000 each, with the Golden Waterfall on the way.", "", "booked"],
         [4, "Sky lantern (4 colors) at Shifen", "Entrance", "lantern", 300, "", "Shifen sky lantern price"],
@@ -245,7 +259,7 @@ window.TRIP = {
         [5, "Short taxi rides (park and night market)", "Transport", "group", 400, "Two taxis per ride for the whole group."],
         [5, "Amusement park entry (adults)", "Entrance", "adult", 30, "Kids under 6 free.", "Taipei Children's Amusement Park ticket price"],
         [5, "Kids' rides (NT$20 to 40 each)", "Entrance", "child", 200, "About 6 to 8 rides each.", "Taipei Children's Amusement Park ride price"],
-        [5, "Adults riding with toddlers", "Entrance", "adult", 100, ""],
+        [5, "A grown-up riding along with each toddler", "Entrance", "child", 100, "Toddlers ride with a parent, about 3 to 4 rides."],
         [5, "Meals", "Food", "eater", "FOOD", ""],
         [6, "Van: going home to the airport", "Van", "van", 6500, "Not booked yet, so it's left out of the totals.", "Taipei to Taoyuan airport 9 seater van transfer price", "later"],
         [6, "Meals", "Food", "eater", "FOOD", ""],
@@ -369,7 +383,7 @@ window.TRIP = {
         [2, "MRT or taxi back from Shilin", "Other", "adult", 50, ""],
         [3, "Van: Sun Moon Lake and Taichung (booked)", "Van", "van", 10000, "Booked: 3 vans at NT$10,000 each. It's about a 15-hour day, so confirm the price covers it.", "", "booked"],
         [3, "Formosan Aboriginal Culture Village (adults)", "Entrance", "adult", 980, "Includes the Sun Moon Lake Ropeway. Often cheaper on Klook or KKday.", "Formosan Aboriginal Culture Village ticket price"],
-        [3, "Village tickets for the 3-year-olds", "Entrance", "group", 1470, "About NT$490 each for three 3-year-olds. Kids under 3 get in free.", "九族文化村 票價 博幼票"],
+        [3, "Formosan Village tickets for kids 3 and up", "Entrance", "child3", 490, "Kids under 3 get in free.", "九族文化村 票價 博幼票"],
         [3, "Meals and street food", "Food", "eater", "FOOD", ""],
         [4, "Van: Houtong, Shifen and Jiufen (booked)", "Van", "van", 7000, "Booked: 3 vans at NT$7,000 each, with the Golden Waterfall on the way.", "", "booked"],
         [4, "Sky lantern (4 colors) at Shifen", "Entrance", "lantern", 300, "", "Shifen sky lantern price"],
