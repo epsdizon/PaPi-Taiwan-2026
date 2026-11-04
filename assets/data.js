@@ -20,11 +20,11 @@ window.TRIP = {
     alt: "Van seating chart, airport to hotel, in 3 nine-seaters: 1 seat up front, then rows of 2, 2 and 3. Van 1: Pao in front; Je and Yuki; Gelo and Kylian; Kim, Sarah and Edward in the back. Van 2: Gian in front; Angelou and Aisla; bags in row 3; Joe, Sekai and Naz in the back. Van 3: Mark in front; Barts and Myles together in row 2; bags behind."
   },
 
-  // Van seating chart for the tour days (Dec 5 to 7): 2 vans, 1 seat up front, no luggage
+  // Van seating chart for the tour days (Dec 5 to 7): 2 nine-seaters (1 up front, then 2, 2 and 3), no luggage
   seatingTour: {
-    src: "assets/van-seating-tours.webp", w: 1600, h: 1437, title: "Tour seating",
+    src: "assets/van-seating-tours.webp", w: 1600, h: 1467, title: "Tour seating",
     caption: "Who rides where on tour days. Tap to see it bigger.",
-    alt: "Tour seating chart, 2 vans with one seat up front. Van 1: Pao in front; Je, Yuki and Kylian in row 2; Kim and Gelo in row 3; Sarah and Edward in the back. Van 2: Mark in front; Barts and Myles together in row 2; Angelou, Aisla and Gian in row 3; Joe, Sekai and Naz in the back."
+    alt: "Tour seating chart, 2 nine-seaters: 1 seat up front, then rows of 2, 2 and 3. Van 1: Pao in front; Je and Yuki; Gelo and Kylian; Kim, Sarah and Edward in the back. Van 2: Mark in front; Barts and Myles together in row 2; Angelou and Aisla in row 3; Gian, Joe and Naz in the back, with Sekai on Joe's lap."
   },
 
   // Live countdown on the cover. Update "to" and "note" once the flight is booked (Taipei time, +08:00).
