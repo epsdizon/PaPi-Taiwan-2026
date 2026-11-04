@@ -7,17 +7,25 @@ window.TRIP = {
   start: "2026-12-04",
   dates: ["2026-12-04", "2026-12-05", "2026-12-06", "2026-12-07", "2026-12-08", "2026-12-09"],
   version: 1,
+  settingsRev: 2,      // bump when the default group changes, so phones pick up the new numbers
 
   // Fallback exchange rate if the live rate can't load (mid-market, Oct 21, 2026)
   rate: { value: 1.95, asOf: "Oct 21, 2026" },
+
+  // Van seating chart for the airport-to-hotel ride, shown on Day 1
+  seating: {
+    src: "assets/van-seating.webp", w: 1600, h: 1507,
+    caption: "Who rides where from the airport. Tap to see it bigger.",
+    alt: "Van seating chart. Van 1: Pao and Gelo in front; Je, Yuki and Kylian in the middle; Kim, Sarah and Edward in the back. Van 2: Angelou, Aisla and Gian in the middle; Joe and Sekai in the back. Van 3: Barts and Myles in front; Mark and Dancel in the middle. Naz follows on his own tricycle, as a joke."
+  },
 
   // Live countdown on the cover. Update "to" and "note" once the flight is booked (Taipei time, +08:00).
   countdown: { to: "2026-12-04T12:00:00+08:00", label: "Until we land in Taipei", note: "Fri, Dec 4, 12:00 PM Taipei time" },
 
   // Group setup. Every number can be changed on the Budget tab.
   settings: {
-    adults: 4,
-    kids: 4,             // three 3-year-olds + one almost-2-year-old
+    adults: 13,
+    kids: 4,             // Yuki, Kylian, Aisla and Sekai
     kidFood: 0.4,        // a toddler eats about 40% of an adult meal
     vanPax: 8,           // 9-seater van = 8 passengers; a car seat counts as 1
     seatsPerVan: 2,      // many operators fit only 2 car seats per 9-seater
@@ -135,7 +143,7 @@ window.TRIP = {
       ],
       stops: [
         [1, "12:00 PM", "Land at Taoyuan Airport", "airport", "", "Immigration, then grab a SIM or eSIM. Keep snacks, milk and a change of clothes in your hand-carry."],
-        [1, "1:00 PM", "Meet the van driver at arrivals", "", "Van, about 50 min", "Today the van only does the airport run. Car seats should already be installed, and kids can nap on the ride."],
+        [1, "1:00 PM", "Meet the van drivers at arrivals", "", "3 vans, about 50 min", "3 vans booked for the airport run, NT$2,000 each. Find your van on the seating chart. Kids can nap on the ride.", "", "seating"],
         [1, "2:00 PM", "Check in at Orange Hotel, then nap time", "hotel", "", "Let everyone recover from the flight."],
         [1, "4:00 PM", "Early dinner at Din Tai Fung, Taipei 101", "dtf", "MRT to Taipei 101/World Trade Center, about 25 min", "The restaurant is in the mall basement, linked to the station. 4 to 5 PM has the shortest queue. Order for the table and share the xiaolongbao. High chairs available.", "must"],
         [1, "5:30 PM", "Taipei 101 Observatory, or just walk the mall", "t101", "", "Kids under 115 cm usually go up free."],
@@ -211,7 +219,7 @@ window.TRIP = {
       ],
       // day, item, category, basis, NT$ per unit (or FOOD / SHOP / HOTEL), note, price-check search
       budget: [
-        [1, "Van: airport to hotel transfer", "Van", "van", 2000, "9-seater with meet and greet. Usually NT$1,800 to 2,500.", "Taoyuan airport pickup 9 seater van to Taipei price"],
+        [1, "Van: airport to hotel (booked)", "Van", "van", 2000, "Booked: 3 vans at NT$2,000 each."],
         [1, "Child car seats (NT$200 per seat, 5 van days)", "Van", "child", 1000, "Required by law for kids 0 to 4. Some operators give one seat free.", "Taiwan private charter child car seat fee"],
         [1, "Taipei 101 Observatory (adults)", "Entrance", "adult", 600, "Kids under 115 cm usually free. Type 0 to skip.", "Taipei 101 Observatory ticket price"],
         [1, "Meals", "Food", "eater", "FOOD", "From the Food tab."],
@@ -259,7 +267,7 @@ window.TRIP = {
       ],
       stops: [
         [1, "12:00 PM", "Land at Taoyuan Airport", "airport", "", "Allow 45 to 60 minutes for immigration and bags. Buy an EasyCard and a SIM or eSIM."],
-        [1, "1:00 PM", "Meet the van driver at arrivals", "", "Van, about 50 min", "Today the van only does the airport run. The city is by MRT."],
+        [1, "1:00 PM", "Meet the van drivers at arrivals", "", "3 vans, about 50 min", "3 vans booked for the airport run, NT$2,000 each. Find your van on the seating chart. The city is by MRT.", "", "seating"],
         [1, "2:00 PM", "Orange Hotel: check in or drop the bags", "hotel", "", ""],
         [1, "2:30 PM", "Taipei 101: late lunch at Din Tai Fung (B1), then the mall", "dtf", "MRT to Taipei 101/World Trade Center, about 25 min", "Get a queue number first, then walk the mall while you wait. Order for the table and share the xiaolongbao.", "must"],
         [1, "4:15 PM", "Taipei 101 Observatory on the 89th floor (optional)", "t101", "", "Go up before sunset, around 5:05 PM in December."],
@@ -343,7 +351,7 @@ window.TRIP = {
         [3, "chunshui", "Chun Shui Tang extra milk tea to go", "Milk tea", "A second cup for the road", 100, false, "Switch on to count it."]
       ],
       budget: [
-        [1, "Van: airport to hotel transfer", "Van", "van", 2000, "9-seater with meet and greet. Usually NT$1,800 to 2,500.", "Taoyuan airport pickup 9 seater van to Taipei price"],
+        [1, "Van: airport to hotel (booked)", "Van", "van", 2000, "Booked: 3 vans at NT$2,000 each."],
         [1, "Child car seats (NT$200 per seat, 5 van days)", "Van", "child", 1000, "Required by law for kids 0 to 4. Some operators give one seat free.", "Taiwan private charter child car seat fee"],
         [1, "Taipei 101 Observatory (adults, optional)", "Entrance", "adult", 600, "Type 0 to skip.", "Taipei 101 Observatory ticket price"],
         [1, "Meals and street food", "Food", "eater", "FOOD", "From the Food tab."],
@@ -474,7 +482,7 @@ window.TRIP = {
   },
 
   confirm: [
-    "Van operator can fit 4 child car seats (and how many vans that means)",
+    "Car seats for the airport vans: 2 in Van 1 and 2 in Van 2 (seating chart on Day 1)",
     "Van quote includes tolls, parking, fuel and overtime",
     "Exact number of adults coming",
     "Flight times for Dec 4 and Dec 9",
@@ -498,7 +506,7 @@ window.TRIP = {
   ],
 
   tips: [
-    ["Car seats are the law", "Kids 0 to 4 must ride in a car seat, and each seat takes a passenger spot. That's why the budget assumes 2 vans until an operator confirms 4 seats in one."],
+    ["Car seats are the law", "Kids 0 to 4 must ride in a car seat, and each seat takes a passenger spot. The seating chart puts 2 car seats in Van 1 and 2 in Van 2."],
     ["Visa-free for Philippine passports", "Up to 14 days, extended through July 31, 2027. Six days fits easily."],
     ["Arrival card goes online", "Taiwan's paper arrival cards are gone. File online at twac.immigration.gov.tw within 3 days before you land."],
     ["Skip whole boba for little ones", "Tapioca pearls are a choking risk for kids under 4. Order their drinks without pearls."],

@@ -6,6 +6,7 @@ Live site: https://epsdizon.github.io/PaPi-Taiwan-2026/
 
 ## What's on the site
 
+- **Van seating**: the airport-to-hotel seating chart sits on Day 1 and is saved for offline use, for when there's no data yet at the airport.
 - **Days**: each day drawn as its own Taipei-MRT-style line, with times, tips, photos, a map link, and a "Show driver" card with the place name in Chinese. During the trip it opens on today and marks the next stop.
 - **Food**: the three must-eats (Din Tai Fung, Chun Shui Tang's original store, Ichiran) plus every food stop by day, with prices you can change.
 - **Budget**: each adult's share and the group total in pesos and NT dollars. The exchange rate updates by itself every few hours. Change the number of adults and kids, car seats per van, or any price, and every total follows. "Check price" opens a search for the current price.

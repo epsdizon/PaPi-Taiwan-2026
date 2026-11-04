@@ -47,6 +47,12 @@
   const tripIdx = T.dates.indexOf(today);
 
   // ---------- State ----------
+  // When the default group changes (settingsRev in data.js), drop each phone's old saved settings
+  const SETTINGS_REV = T.settingsRev || 1;
+  if (store.get('settingsRev', 1) !== SETTINGS_REV) {
+    store.del('settings');
+    store.set('settingsRev', SETTINGS_REV);
+  }
   const savedPlan = store.get('plan', 'slow');
   const state = {
     plan: T.plans[savedPlan] ? savedPlan : 'slow',
@@ -80,7 +86,7 @@
 
   // ---------- Trip data helpers ----------
   const stopsOf = (d) => plan().stops.filter((s) => s[0] === d + 1)
-    .map((s) => ({ time: s[1], title: s[2], place: s[3], move: s[4], tip: s[5], must: s[6] === 'must' }));
+    .map((s) => ({ time: s[1], title: s[2], place: s[3], move: s[4], tip: s[5], must: s[6] === 'must', extra: s[7] || '' }));
   const foodEdits = () => store.get('food:' + state.plan, {});
   const priceEdits = () => store.get('prices:' + state.plan, {});
   // Sharing orders (e.g. Din Tai Fung) scale with how many people are eating
@@ -468,6 +474,11 @@
         + `<h3>${esc(s.title)}</h3>`
         + (p && !p.generic ? `<p class="zh" lang="zh-Hant">${esc(p.zh)}</p>` : '')
         + (s.tip ? `<p class="tip">${esc(s.tip)}</p>` : '')
+        + (s.extra === 'seating' && T.seating
+          ? `<button type="button" class="seat-img" data-act="seating" aria-label="Open the van seating chart">`
+            + `<img src="${esc(T.seating.src)}" alt="${esc(T.seating.alt)}" width="${T.seating.w}" height="${T.seating.h}" loading="lazy" decoding="async"></button>`
+            + `<p class="seat-cap">${esc(T.seating.caption)}</p>`
+          : '')
         + acts + '</div>'
         + (p && !p.photoless ? photo(s.place, 'thumb', 330, p.en) : '')
         + '</li>';
@@ -535,7 +546,7 @@
     const so = shareOrder('dtf');
     const s = state.settings;
     $('#share-box').innerHTML = so && list.some((f) => f.share === 'dtf' && f.on)
-      ? `<h3 class="mini-h">${esc(so.sh.title)}</h3><p class="sec-sub">For ${s.adults} adults and ${s.kids} kids, ordered for the table.</p><ul class="receipt">`
+      ? `<h3 class="mini-h">${esc(so.sh.title)}</h3><p class="sec-sub">For ${s.adults} adults and ${s.kids} kids, shared family-style across your tables.</p><ul class="receipt">`
         + so.lines.map((l) => `<li><span>${l.qty} × ${esc(l.name)} <span class="zh" lang="zh-Hant">${esc(l.zh)}</span></span><span>${twd(l.total)}</span></li>`).join('')
         + `<li class="svc"><span>${Math.round((so.sh.service || 0) * 100)}% service charge</span><span>${twd(so.service)}</span></li>`
         + `<li class="sum"><span>For the table</span><span>${php(so.total * r)}<small>${twd(so.total)}</small></span></li></ul>`
@@ -939,6 +950,29 @@
       if (token === lbToken) status.textContent = track.children.length ? 'More photos need an internet connection.' : 'Photos need an internet connection.';
     }
   }
+  // One image in the photo viewer (the van seating chart)
+  function openImage(src, title, alt) {
+    lbToken += 1;
+    lastFocus = document.activeElement;
+    const track = $('#lb-track');
+    $('#lb-title').textContent = title;
+    $('#lb-count').textContent = '';
+    $('#lb-status').textContent = '';
+    track.textContent = '';
+    track.scrollLeft = 0;
+    const fig = document.createElement('figure');
+    fig.className = 'lb-slide';
+    const img = document.createElement('img');
+    img.alt = alt || '';
+    img.decoding = 'async';
+    img.onload = () => img.classList.add('ok');
+    img.src = src;
+    fig.append(img);
+    track.append(fig);
+    $('#lightbox').classList.add('open');
+    document.body.classList.add('locked');
+    $('#lb-close').focus();
+  }
   function closeGallery() {
     lbToken += 1;
     $('#lightbox').classList.remove('open');
@@ -1013,6 +1047,8 @@
       closeDriver();
     } else if (act === 'gallery') {
       openGallery(t.dataset.place);
+    } else if (act === 'seating') {
+      openImage(T.seating.src, 'Van seating', T.seating.alt);
     } else if (act === 'close-lb') {
       closeGallery();
     } else if (act === 'lb-prev' || act === 'lb-next') {

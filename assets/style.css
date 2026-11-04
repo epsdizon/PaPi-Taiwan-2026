@@ -509,6 +509,9 @@ main { display: block; }
   transition: background .2s;
 }
 .act:hover { background: color-mix(in srgb, var(--c) 18%, var(--surface-2)); }
+.seat-img { display: block; width: 100%; max-width: 560px; margin-top: 12px; padding: 0; border: 0; border-radius: var(--r-m); overflow: hidden; background: #081230; box-shadow: 0 0 0 1px var(--rule); cursor: zoom-in; }
+.seat-img img { width: 100%; height: auto; }
+.seat-cap { margin: 6px 0 0; font-size: 14px; color: var(--muted); }
 .move { display: grid; grid-template-columns: 30px minmax(0, 1fr); column-gap: 12px; margin: -6px 0 12px; }
 .move span { grid-column: 2; display: inline-flex; align-items: center; gap: 7px; font-size: 14px; font-weight: 700; color: var(--muted); }
 .move svg { width: 20px; height: 20px; color: var(--c); }
