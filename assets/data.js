@@ -15,9 +15,9 @@ window.TRIP = {
 
   // Van seating chart for the airport-to-hotel ride, shown on Day 1
   seating: {
-    src: "assets/van-seating.webp", w: 1600, h: 1507,
+    src: "assets/van-seating.webp", w: 1600, h: 1304,
     caption: "Who rides where from the airport. Tap to see it bigger.",
-    alt: "Van seating chart. Van 1: Pao and Gelo in front; Je, Yuki and Kylian in the middle; Kim, Sarah and Edward in the back. Van 2: Angelou, Aisla and Gian in the middle; Joe and Sekai in the back. Van 3: Barts and Myles in front; Mark and Dancel in the middle. Naz follows on his own tricycle, as a joke."
+    alt: "Van seating chart. Van 1: Pao and Gelo in front; Je, Yuki and Kylian in the middle; Kim, Sarah and Edward in the back. Van 2: Angelou, Aisla and Gian in the middle; Joe, Sekai and Naz in the back. Van 3: Barts and Myles in front; Mark in the middle."
   },
 
   // Live countdown on the cover. Update "to" and "note" once the flight is booked (Taipei time, +08:00).
@@ -46,10 +46,10 @@ window.TRIP = {
     { names: "Pao and Je", adults: 2, kids: [{ name: "Yuki" }] },
     { names: "Kim and Gelo", adults: 2, kids: [{ name: "Kylian" }] },
     { names: "Angelou and Gian", adults: 2, kids: [{ name: "Aisla" }] },
-    { names: "Joe", adults: 1, kids: [{ name: "Sekai" }] },
+    { names: "Joe and Naz", adults: 2, kids: [{ name: "Sekai" }] },
     { names: "Sarah and Edward", adults: 2 },
     { names: "Barts and Myles", adults: 2 },
-    { names: "Mark and Dancel", adults: 2 }
+    { names: "Mark", adults: 1 }
   ],
 
   // One Taipei-MRT-style line per day
