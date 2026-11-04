@@ -15,9 +15,9 @@ window.TRIP = {
 
   // Van seating chart for the airport-to-hotel ride, shown on Day 1
   seating: {
-    src: "assets/van-seating.webp", w: 1600, h: 1304,
+    src: "assets/van-seating.webp", w: 1600, h: 1467,
     caption: "Who rides where from the airport. Tap to see it bigger.",
-    alt: "Van seating chart. Van 1: Pao and Gelo in front; Je, Yuki and Kylian in the middle; Kim, Sarah and Edward in the back. Van 2: Angelou, Aisla and Gian in the middle; Joe, Sekai and Naz in the back. Van 3: Barts and Myles in front; Mark in the middle."
+    alt: "Van seating chart, airport to hotel, with one seat up front. Van 1: Pao in front; Je, Yuki and Kylian in row 2; Kim and Gelo in row 3; Sarah and Edward in the back. Van 2: Angelou, Aisla and Gian in row 2; Joe, Sekai and Naz in row 3; bags in the back. Van 3: Mark in front; Barts and Myles together in row 2; bags in rows 3 and 4."
   },
 
   // Van seating chart for the tour days (Dec 5 to 7): 2 vans, 1 seat up front, no luggage
