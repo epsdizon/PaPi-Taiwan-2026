@@ -17,7 +17,7 @@ window.TRIP = {
   seating: {
     src: "assets/van-seating.webp", w: 1600, h: 1467,
     caption: "Who rides where from the airport. Tap to see it bigger.",
-    alt: "Van seating chart, airport to hotel, in 3 nine-seaters: 1 seat up front, then rows of 2, 2 and 3. Van 1: Pao in front; Je and Yuki; Gelo and Kylian; Kim, Sarah and Edward in the back. Van 2: Gian in front; Angelou and Aisla; bags in row 3; Joe, Sekai and Naz in the back. Van 3: Mark in front; Barts and Myles together in row 2; bags behind."
+    alt: "Van seating chart, airport to hotel, in 3 nine-seaters: 1 seat up front, then rows of 2, 2 and 3. Van 1: Pao in front; Je and Yuki; Gelo and Kylian; Kim, Sarah and Edward in the back. Van 2: Gian in front; Angelou and Aisla; bags in row 3; Joe, Sekai and Naz in the back. Van 3: Mark in front with most of the bags. Barts and Myles aren't on this ride."
   },
 
   // Van seating chart for the tour days (Dec 5 to 7): 2 nine-seaters (1 up front, then 2, 2 and 3), no luggage
@@ -242,9 +242,9 @@ window.TRIP = {
         [1, "ximending", "Ximending street food (optional night)", "Street food", "If the kids still have energy", 250, false, "Switch on to count it."],
         [3, "pepperbun", "Fuzhou Black Pepper Bun (optional)", "Street food", "Pepper bun from the clay oven", 65, false, "Raohe isn't in this plan. Switch on to count it."]
       ],
-      // day, item, category, basis, NT$ per unit (or FOOD / SHOP / HOTEL), note, price-check search, flag, vans that day, Transfer or Tour
+      // day, item, category, basis, NT$ per unit (or FOOD / SHOP / HOTEL), note, price-check search, flag, vans that day, Transfer or Tour, people not on this ride
       budget: [
-        [1, "Van: arrival airport (booked)", "Van", "van", 2000, "Booked: 3 vans at NT$2,000 each.", "", "booked", 3, "Transfer"],
+        [1, "Van: arrival airport (booked)", "Van", "van", 2000, "Booked: 3 vans at NT$2,000 each. Barts and Myles aren't on this ride, so the other 11 adults split it.", "", "booked", 3, "Transfer", ["Barts", "Myles"]],
         [1, "Child car seats (free with the vans)", "Van", "child", 0, "Required by law for kids 0 to 4. No extra cost."],
         [1, "Taipei 101 Observatory (adults)", "Entrance", "adult", 600, "Kids under 115 cm usually free. Type 0 to skip.", "Taipei 101 Observatory ticket price"],
         [1, "Meals", "Food", "eater", "FOOD", "From the Food tab."],
@@ -379,7 +379,7 @@ window.TRIP = {
         [3, "chunshui", "Chun Shui Tang extra milk tea to go", "Milk tea", "A second cup for the road", 100, false, "Switch on to count it."]
       ],
       budget: [
-        [1, "Van: arrival airport (booked)", "Van", "van", 2000, "Booked: 3 vans at NT$2,000 each.", "", "booked", 3, "Transfer"],
+        [1, "Van: arrival airport (booked)", "Van", "van", 2000, "Booked: 3 vans at NT$2,000 each. Barts and Myles aren't on this ride, so the other 11 adults split it.", "", "booked", 3, "Transfer", ["Barts", "Myles"]],
         [1, "Child car seats (free with the vans)", "Van", "child", 0, "Required by law for kids 0 to 4. No extra cost."],
         [1, "Taipei 101 Observatory (adults, optional)", "Entrance", "adult", 600, "Type 0 to skip.", "Taipei 101 Observatory ticket price"],
         [1, "Meals and street food", "Food", "eater", "FOOD", "From the Food tab."],
