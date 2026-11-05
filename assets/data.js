@@ -13,11 +13,11 @@ window.TRIP = {
   // Fallback exchange rate if the live rate can't load (mid-market, Nov 4, 2026)
   rate: { value: 1.936, asOf: "Nov 4, 2026" },
 
-  // Van seating chart for both airport rides (Dec 4 and Dec 9), shown on Day 1 and Day 6
+  // Van seating chart for the ride from the airport (Dec 4), shown on Day 1
   seating: {
     src: "assets/van-seating.webp", w: 1600, h: 1467,
-    caption: "Who rides where to and from the airport. Tap to see it bigger.",
-    alt: "Van seating chart for both airport rides, Dec 4 and Dec 9, in 2 nine-seaters: 1 seat up front, then rows of 2, 2 and 3. Van 1: Pao in front; Je and Yuki; Gelo and Kylian; Kim, Sarah and Edward in the back. Van 2: Gian in front; Angelou and Aisla; bags in row 3; Joe, Sekai and Naz in the back. Barts and Myles join for the tours only."
+    caption: "Who rides where from the airport. Tap to see it bigger.",
+    alt: "Van seating chart from the airport, Dec 4, in 2 nine-seaters: 1 seat up front, then rows of 2, 2 and 3. Van 1: Pao in front; Je and Yuki; Gelo and Kylian; Kim, Sarah and Edward in the back. Van 2: Gian in front; Angelou and Aisla; bags in row 3; Joe, Sekai and Naz in the back. Barts and Myles join for the tours only."
   },
 
   // Van seating chart for the tour days (Dec 5 to 7): 2 nine-seaters (1 up front, then 2, 2 and 3), no luggage
@@ -25,6 +25,13 @@ window.TRIP = {
     src: "assets/van-seating-tours.webp", w: 1600, h: 1467, title: "Tour seating",
     caption: "Who rides where on tour days. Tap to see it bigger.",
     alt: "Tour seating chart, 2 nine-seaters: 1 seat up front, then rows of 2, 2 and 3. Van 1: Pao in front; Je and Yuki; Gelo and Kylian; Kim, Sarah and Edward in the back. Van 2: Gian in front; Barts and Myles together in row 2; Angelou and Aisla in row 3; Joe, Sekai and Naz in the back. Every kid has a car seat."
+  },
+
+  // Van seating chart for the ride home (Dec 9), shown on Day 6
+  seatingHome: {
+    src: "assets/van-seating-home.webp", w: 1600, h: 1467, title: "Ride home seating",
+    caption: "Who rides where to the airport on Dec 9. Tap to see it bigger.",
+    alt: "Ride home seating chart, Dec 9, in 2 nine-seaters: 1 seat up front, then rows of 2, 2 and 3. Van 1: Pao in front; Je and Yuki; Gelo and Kylian; Kim and bags in the back. Van 2: Gian in front; Angelou and Aisla; bags in row 3; Joe, Sekai and Naz in the back. Barts, Myles, Sarah and Edward aren't on this ride."
   },
 
   // Live countdown on the cover. Update "to" and "note" once the flight is booked (Taipei time, +08:00).
@@ -209,7 +216,7 @@ window.TRIP = {
         [6, "9:30 AM", "Chiang Kai-shek Memorial Hall: big plaza and the guard change on the hour", "cks", "Van, about 15 min", "A great place for the kids to run around."],
         [6, "10:45 AM", "Last pasalubong: pineapple cakes", "sunnyhills", "Van", "SunnyHills or Chia Te."],
         [6, "12:00 PM", "Lunch", "", "", ""],
-        [6, "TBD", "Van to Taoyuan Airport", "airport", "2 vans, about 50 min", "2 vans booked, NT$2,000 each, same seats as the ride from the airport. Be at the airport 3 hours before the flight.", "", "seating"]
+        [6, "TBD", "Van to Taoyuan Airport", "airport", "2 vans, about 50 min", "2 vans booked, NT$2,000 each. Find your seat on the ride-home chart. Be at the airport 3 hours before the flight.", "", "seatingHome"]
       ],
       // day, place, name, type, what to order, NT$ per person, counted in budget, tip, must-eat
       food: [
@@ -268,7 +275,7 @@ window.TRIP = {
         [5, "Kids' rides (free)", "Entrance", "child", 0, "Kids ride free."],
         [5, "A grown-up riding along with each toddler", "Entrance", "child", 0, "Free for now. Type a price if the grown-ups riding along have to pay."],
         [5, "Meals", "Food", "eater", "FOOD", ""],
-        [6, "Van: departure airport (booked)", "Van", "van", 2000, "Booked: 2 vans at NT$2,000 each. Barts and Myles aren't on this ride, so the other 10 adults split it.", "", "booked", 2, "Transfer", ["Barts", "Myles"]],
+        [6, "Van: departure airport (booked)", "Van", "van", 2000, "Booked: 2 vans at NT$2,000 each. Barts, Myles, Sarah and Edward aren't on this ride, so the other 8 adults split it.", "", "booked", 2, "Transfer", ["Barts", "Myles", "Sarah", "Edward"]],
         [6, "Meals", "Food", "eater", "FOOD", ""],
         [6, "Diapers, milk and kid snacks (whole trip)", "Kids", "child", 1800, "About NT$300 per child per day. Bring from home to save."],
         [6, "Shopping and pasalubong", "Shopping", "adult", "SHOP", "Set on the Budget tab."],
@@ -340,7 +347,7 @@ window.TRIP = {
         [6, "8:00 AM", "Breakfast and pack", "hotel", "", ""],
         [6, "9:30 AM", "Last pasalubong: pineapple cakes", "sunnyhills", "MRT or taxi", "SunnyHills, or Chia Te near Nanjing Fuxing MRT."],
         [6, "12:00 PM", "Hotel check-out", "hotel", "", "Confirm the check-out time with Orange Hotel."],
-        [6, "TBD", "Van to Taoyuan Airport", "airport", "2 vans, about 50 min", "2 vans booked, NT$2,000 each, same seats as the ride from the airport. Be at the airport 3 hours before the flight.", "", "seating"]
+        [6, "TBD", "Van to Taoyuan Airport", "airport", "2 vans, about 50 min", "2 vans booked, NT$2,000 each. Find your seat on the ride-home chart. Be at the airport 3 hours before the flight.", "", "seatingHome"]
       ],
       food: [
         [1, "dtf", "Din Tai Fung (Taipei 101 B1)", "Restaurant", "Order for the table and share: baskets of xiaolongbao, fried rice, wontons and side dishes", 450, true, "The queue can be over an hour, so get a number first.", true, "dtf"],
@@ -398,7 +405,7 @@ window.TRIP = {
         [4, "Meals and street food", "Food", "eater", "FOOD", ""],
         [5, "MRT and taxis for the free day", "Transport", "adult", 200, "No van on the free day."],
         [5, "Meals and street food", "Food", "eater", "FOOD", ""],
-        [6, "Van: departure airport (booked)", "Van", "van", 2000, "Booked: 2 vans at NT$2,000 each. Barts and Myles aren't on this ride, so the other 10 adults split it.", "", "booked", 2, "Transfer", ["Barts", "Myles"]],
+        [6, "Van: departure airport (booked)", "Van", "van", 2000, "Booked: 2 vans at NT$2,000 each. Barts, Myles, Sarah and Edward aren't on this ride, so the other 8 adults split it.", "", "booked", 2, "Transfer", ["Barts", "Myles", "Sarah", "Edward"]],
         [6, "Meals", "Food", "eater", "FOOD", ""],
         [6, "Shopping and pasalubong", "Shopping", "adult", "SHOP", "Set on the Budget tab."],
         [6, "Hotel (if not prepaid)", "Hotel", "group", "HOTEL", "Set on the Budget tab."],

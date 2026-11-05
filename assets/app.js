@@ -146,8 +146,8 @@
     const p = P[key];
     return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.map || p.en + ', Taiwan');
   };
-  // Van seating charts a stop can show: "seating" (airport transfers) and "seatingTour" (tour days)
-  const seatChart = (k) => ((k === 'seating' || k === 'seatingTour') && T[k] ? T[k] : null);
+  // Van seating charts a stop can show: "seating" (from the airport), "seatingTour" (tour days), "seatingHome" (ride home)
+  const seatChart = (k) => (['seating', 'seatingTour', 'seatingHome'].includes(k) && T[k] ? T[k] : null);
   const zhShort = (key) => ((P[key] && P[key].zh) || '').split(/[\s/]/)[0].slice(0, 2);
 
   // ---------- Budget math ----------

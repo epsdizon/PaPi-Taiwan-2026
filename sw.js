@@ -1,7 +1,7 @@
 /* PaPi Taiwan 2026 — offline support.
    The site keeps working with weak signal: pages come from the network first, then from this cache.
    Bump VERSION whenever site files change. */
-const VERSION = 'papi-2026-v20';
+const VERSION = 'papi-2026-v21';
 const PHOTOS = 'papi-photos-v1';
 const CORE = [
   './',
@@ -13,6 +13,7 @@ const CORE = [
   'assets/icons/icon-192.png',
   'assets/van-seating.webp',
   'assets/van-seating-tours.webp',
+  'assets/van-seating-home.webp',
   'assets/fonts/sofia-sans-latin-wght-normal.woff2',
   'assets/fonts/sofia-sans-extra-condensed-latin-wght-normal.woff2',
   'assets/fonts/noto-sans-tc-400.woff2',
