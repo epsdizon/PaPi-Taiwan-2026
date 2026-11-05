@@ -830,7 +830,11 @@
       const k = Math.round(l.amt * 100) + '|' + l.rides.join('|');
       (groups[k] = groups[k] || { names: [], l }).names.push(n);
     });
-    return Object.values(groups).map((g) => `${joinNames(g.names)}: ${fmt(g.l.amt)} (not on ${joinNames(g.l.rides.map(rideName))})`);
+    // "the arrival airport and departure airport vans" reads better than listing "the … van" twice
+    const rides = (rs) => (rs.every((t) => /^Van:/.test(t))
+      ? `the ${joinNames(rs.map((t) => vanLabel(t).toLowerCase()))} ${rs.length > 1 ? 'vans' : 'van'}`
+      : joinNames(rs.map(rideName)));
+    return Object.values(groups).map((g) => `${joinNames(g.names)}: ${fmt(g.l.amt)} (not on ${rides(g.l.rides)})`);
   }
   function renderVanSplit(c) {
     const box = $('#vansplit');

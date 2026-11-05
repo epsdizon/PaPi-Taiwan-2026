@@ -7,24 +7,24 @@ window.TRIP = {
   start: "2026-12-04",
   dates: ["2026-12-04", "2026-12-05", "2026-12-06", "2026-12-07", "2026-12-08", "2026-12-09"],
   version: 1,
-  settingsRev: 2,      // bump when the default group changes, so phones pick up the new numbers
-  pricesRev: 4,        // bump when van, kid or ticket prices change, so phones drop their old edits to those rows
+  settingsRev: 3,      // bump when the default group changes, so phones pick up the new numbers
+  pricesRev: 5,        // bump when van, kid or ticket prices change, so phones drop their old edits to those rows
 
   // Fallback exchange rate if the live rate can't load (mid-market, Nov 4, 2026)
   rate: { value: 1.936, asOf: "Nov 4, 2026" },
 
-  // Van seating chart for the airport-to-hotel ride, shown on Day 1
+  // Van seating chart for both airport rides (Dec 4 and Dec 9), shown on Day 1 and Day 6
   seating: {
     src: "assets/van-seating.webp", w: 1600, h: 1467,
-    caption: "Who rides where from the airport. Tap to see it bigger.",
-    alt: "Van seating chart, airport to hotel, in 3 nine-seaters: 1 seat up front, then rows of 2, 2 and 3. Van 1: Pao in front; Je and Yuki; Gelo and Kylian; Kim, Sarah and Edward in the back. Van 2: Gian in front; Angelou and Aisla; bags in row 3; Joe, Sekai and Naz in the back. Van 3: Mark in front with most of the bags. Barts and Myles aren't on this ride."
+    caption: "Who rides where to and from the airport. Tap to see it bigger.",
+    alt: "Van seating chart for both airport rides, Dec 4 and Dec 9, in 2 nine-seaters: 1 seat up front, then rows of 2, 2 and 3. Van 1: Pao in front; Je and Yuki; Gelo and Kylian; Kim, Sarah and Edward in the back. Van 2: Gian in front; Angelou and Aisla; bags in row 3; Joe, Sekai and Naz in the back. Barts and Myles join for the tours only."
   },
 
   // Van seating chart for the tour days (Dec 5 to 7): 2 nine-seaters (1 up front, then 2, 2 and 3), no luggage
   seatingTour: {
     src: "assets/van-seating-tours.webp", w: 1600, h: 1467, title: "Tour seating",
     caption: "Who rides where on tour days. Tap to see it bigger.",
-    alt: "Tour seating chart, 2 nine-seaters: 1 seat up front, then rows of 2, 2 and 3. Van 1: Pao in front; Je and Yuki; Gelo and Kylian; Kim, Sarah and Edward in the back. Van 2: Mark in front; Barts and Myles together in row 2; Angelou and Aisla in row 3; Gian, Joe and Naz in the back, with Sekai on Joe's lap."
+    alt: "Tour seating chart, 2 nine-seaters: 1 seat up front, then rows of 2, 2 and 3. Van 1: Pao in front; Je and Yuki; Gelo and Kylian; Kim, Sarah and Edward in the back. Van 2: Gian in front; Barts and Myles together in row 2; Angelou and Aisla in row 3; Joe, Sekai and Naz in the back. Every kid has a car seat."
   },
 
   // Live countdown on the cover. Update "to" and "note" once the flight is booked (Taipei time, +08:00).
@@ -32,7 +32,7 @@ window.TRIP = {
 
   // Group setup. Every number can be changed on the Budget tab.
   settings: {
-    adults: 13,
+    adults: 12,
     kids: 4,             // Yuki, Kylian, Aisla and Sekai
     kidFood: 0.4,        // a toddler eats about 40% of an adult meal
     vanPax: 8,           // 9-seater van = 8 passengers; a car seat counts as 1
@@ -55,8 +55,7 @@ window.TRIP = {
     { names: "Angelou and Gian", adults: 2, kids: [{ name: "Aisla" }] },
     { names: "Joe and Naz", adults: 2, kids: [{ name: "Sekai" }] },
     { names: "Sarah and Edward", adults: 2 },
-    { names: "Barts and Myles", adults: 2 },
-    { names: "Mark", adults: 1 }
+    { names: "Barts and Myles", adults: 2 }
   ],
 
   // One Taipei-MRT-style line per day
@@ -167,7 +166,7 @@ window.TRIP = {
       ],
       stops: [
         [1, "12:00 PM", "Land at Taoyuan Airport", "airport", "", "Immigration, then grab a SIM or eSIM. Keep snacks, milk and a change of clothes in your hand-carry."],
-        [1, "1:00 PM", "Meet the van drivers at arrivals", "", "3 vans, about 50 min", "3 vans booked for the airport run, NT$2,000 each. Find your van on the seating chart. Kids can nap on the ride.", "", "seating"],
+        [1, "1:00 PM", "Meet the van drivers at arrivals", "", "2 vans, about 50 min", "2 vans booked for the airport run, NT$2,000 each. Find your van on the seating chart. Kids can nap on the ride.", "", "seating"],
         [1, "2:00 PM", "Check in at Orange Hotel, then nap time", "hotel", "", "Let everyone recover from the flight."],
         [1, "4:00 PM", "Early dinner at Din Tai Fung, Taipei 101", "dtf", "MRT to Taipei 101/World Trade Center, about 25 min", "The restaurant is in the mall basement, linked to the station. 4 to 5 PM has the shortest queue. Order for the table and share the xiaolongbao. High chairs available.", "must"],
         [1, "5:30 PM", "Taipei 101 Observatory, or just walk the mall", "t101", "", "Kids under 115 cm usually go up free."],
@@ -210,7 +209,7 @@ window.TRIP = {
         [6, "9:30 AM", "Chiang Kai-shek Memorial Hall: big plaza and the guard change on the hour", "cks", "Van, about 15 min", "A great place for the kids to run around."],
         [6, "10:45 AM", "Last pasalubong: pineapple cakes", "sunnyhills", "Van", "SunnyHills or Chia Te."],
         [6, "12:00 PM", "Lunch", "", "", ""],
-        [6, "TBD", "Van to Taoyuan Airport", "airport", "3 vans, about 50 min", "3 vans booked, NT$2,000 each. Be at the airport 3 hours before the flight."]
+        [6, "TBD", "Van to Taoyuan Airport", "airport", "2 vans, about 50 min", "2 vans booked, NT$2,000 each, same seats as the ride from the airport. Be at the airport 3 hours before the flight.", "", "seating"]
       ],
       // day, place, name, type, what to order, NT$ per person, counted in budget, tip, must-eat
       food: [
@@ -244,7 +243,7 @@ window.TRIP = {
       ],
       // day, item, category, basis, NT$ per unit (or FOOD / SHOP / HOTEL), note, price-check search, flag, vans that day, Transfer or Tour, people not on this ride
       budget: [
-        [1, "Van: arrival airport (booked)", "Van", "van", 2000, "Booked: 3 vans at NT$2,000 each. Barts and Myles aren't on this ride, so the other 11 adults split it.", "", "booked", 3, "Transfer", ["Barts", "Myles"]],
+        [1, "Van: arrival airport (booked)", "Van", "van", 2000, "Booked: 2 vans at NT$2,000 each. Barts and Myles aren't on this ride, so the other 10 adults split it.", "", "booked", 2, "Transfer", ["Barts", "Myles"]],
         [1, "Child car seats (free with the vans)", "Van", "child", 0, "Required by law for kids 0 to 4. No extra cost."],
         [1, "Taipei 101 Observatory (adults)", "Entrance", "adult", 600, "Kids under 115 cm usually free. Type 0 to skip.", "Taipei 101 Observatory ticket price"],
         [1, "Meals", "Food", "eater", "FOOD", "From the Food tab."],
@@ -269,12 +268,12 @@ window.TRIP = {
         [5, "Kids' rides (free)", "Entrance", "child", 0, "Kids ride free."],
         [5, "A grown-up riding along with each toddler", "Entrance", "child", 0, "Free for now. Type a price if the grown-ups riding along have to pay."],
         [5, "Meals", "Food", "eater", "FOOD", ""],
-        [6, "Van: departure airport (booked)", "Van", "van", 2000, "Booked: 3 vans at NT$2,000 each.", "", "booked", 3, "Transfer"],
+        [6, "Van: departure airport (booked)", "Van", "van", 2000, "Booked: 2 vans at NT$2,000 each. Barts and Myles aren't on this ride, so the other 10 adults split it.", "", "booked", 2, "Transfer", ["Barts", "Myles"]],
         [6, "Meals", "Food", "eater", "FOOD", ""],
         [6, "Diapers, milk and kid snacks (whole trip)", "Kids", "child", 1800, "About NT$300 per child per day. Bring from home to save."],
         [6, "Shopping and pasalubong", "Shopping", "adult", "SHOP", "Set on the Budget tab."],
         [6, "Hotel (if not prepaid)", "Hotel", "group", "HOTEL", "Set on the Budget tab."],
-        [6, "Driver tips (optional, about NT$500 per van per day)", "Van", "group", 6000, "12 van-days: 3 vans on Dec 4 and 9, 2 vans on Dec 5 to 7. Not required in Taiwan, but a nice gesture."],
+        [6, "Driver tips (optional, about NT$500 per van per day)", "Van", "group", 5000, "10 van-days: 2 vans a day on Dec 4 to 7 and Dec 9. Not required in Taiwan, but a nice gesture."],
         [2, "Taipei Zoo train (adults)", "Entrance", "adult", 5, "Kids ride free."]
       ]
     },
@@ -293,7 +292,7 @@ window.TRIP = {
       ],
       stops: [
         [1, "12:00 PM", "Land at Taoyuan Airport", "airport", "", "Allow 45 to 60 minutes for immigration and bags. Buy an EasyCard and a SIM or eSIM."],
-        [1, "1:00 PM", "Meet the van drivers at arrivals", "", "3 vans, about 50 min", "3 vans booked for the airport run, NT$2,000 each. Find your van on the seating chart. The city is by MRT.", "", "seating"],
+        [1, "1:00 PM", "Meet the van drivers at arrivals", "", "2 vans, about 50 min", "2 vans booked for the airport run, NT$2,000 each. Find your van on the seating chart. The city is by MRT.", "", "seating"],
         [1, "2:00 PM", "Orange Hotel: check in or drop the bags", "hotel", "", ""],
         [1, "2:30 PM", "Taipei 101: late lunch at Din Tai Fung (B1), then the mall", "dtf", "MRT to Taipei 101/World Trade Center, about 25 min", "Get a queue number first, then walk the mall while you wait. Order for the table and share the xiaolongbao.", "must"],
         [1, "4:15 PM", "Taipei 101 Observatory on the 89th floor (optional)", "t101", "", "Go up before sunset, around 5:05 PM in December."],
@@ -341,7 +340,7 @@ window.TRIP = {
         [6, "8:00 AM", "Breakfast and pack", "hotel", "", ""],
         [6, "9:30 AM", "Last pasalubong: pineapple cakes", "sunnyhills", "MRT or taxi", "SunnyHills, or Chia Te near Nanjing Fuxing MRT."],
         [6, "12:00 PM", "Hotel check-out", "hotel", "", "Confirm the check-out time with Orange Hotel."],
-        [6, "TBD", "Van to Taoyuan Airport", "airport", "3 vans, about 50 min", "3 vans booked, NT$2,000 each. Be at the airport 3 hours before the flight."]
+        [6, "TBD", "Van to Taoyuan Airport", "airport", "2 vans, about 50 min", "2 vans booked, NT$2,000 each, same seats as the ride from the airport. Be at the airport 3 hours before the flight.", "", "seating"]
       ],
       food: [
         [1, "dtf", "Din Tai Fung (Taipei 101 B1)", "Restaurant", "Order for the table and share: baskets of xiaolongbao, fried rice, wontons and side dishes", 450, true, "The queue can be over an hour, so get a number first.", true, "dtf"],
@@ -379,7 +378,7 @@ window.TRIP = {
         [3, "chunshui", "Chun Shui Tang extra milk tea to go", "Milk tea", "A second cup for the road", 100, false, "Switch on to count it."]
       ],
       budget: [
-        [1, "Van: arrival airport (booked)", "Van", "van", 2000, "Booked: 3 vans at NT$2,000 each. Barts and Myles aren't on this ride, so the other 11 adults split it.", "", "booked", 3, "Transfer", ["Barts", "Myles"]],
+        [1, "Van: arrival airport (booked)", "Van", "van", 2000, "Booked: 2 vans at NT$2,000 each. Barts and Myles aren't on this ride, so the other 10 adults split it.", "", "booked", 2, "Transfer", ["Barts", "Myles"]],
         [1, "Child car seats (free with the vans)", "Van", "child", 0, "Required by law for kids 0 to 4. No extra cost."],
         [1, "Taipei 101 Observatory (adults, optional)", "Entrance", "adult", 600, "Type 0 to skip.", "Taipei 101 Observatory ticket price"],
         [1, "Meals and street food", "Food", "eater", "FOOD", "From the Food tab."],
@@ -399,11 +398,11 @@ window.TRIP = {
         [4, "Meals and street food", "Food", "eater", "FOOD", ""],
         [5, "MRT and taxis for the free day", "Transport", "adult", 200, "No van on the free day."],
         [5, "Meals and street food", "Food", "eater", "FOOD", ""],
-        [6, "Van: departure airport (booked)", "Van", "van", 2000, "Booked: 3 vans at NT$2,000 each.", "", "booked", 3, "Transfer"],
+        [6, "Van: departure airport (booked)", "Van", "van", 2000, "Booked: 2 vans at NT$2,000 each. Barts and Myles aren't on this ride, so the other 10 adults split it.", "", "booked", 2, "Transfer", ["Barts", "Myles"]],
         [6, "Meals", "Food", "eater", "FOOD", ""],
         [6, "Shopping and pasalubong", "Shopping", "adult", "SHOP", "Set on the Budget tab."],
         [6, "Hotel (if not prepaid)", "Hotel", "group", "HOTEL", "Set on the Budget tab."],
-        [6, "Driver tips (optional, about NT$500 per van per day)", "Van", "group", 6000, "12 van-days: 3 vans on Dec 4 and 9, 2 vans on Dec 5 to 7. Not required in Taiwan, but a nice gesture."],
+        [6, "Driver tips (optional, about NT$500 per van per day)", "Van", "group", 5000, "10 van-days: 2 vans a day on Dec 4 to 7 and Dec 9. Not required in Taiwan, but a nice gesture."],
         [4, "MRT or taxi to Ximending and back", "Transport", "adult", 50, ""],
         [2, "Taipei Zoo train (adults)", "Entrance", "adult", 5, "Kids ride free."]
       ]
