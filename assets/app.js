@@ -994,7 +994,8 @@
   const mrtBadge = (code) => { const [name, c, ink] = lineOf(code); return `<span class="mrt" style="--lc:${c};--li:${ink}" title="${esc(name)}">${esc(code)}</span>`; };
   const mrtFor = (key) => (EX().mrt.stations || []).find((s) => (s.for || []).includes(key));
   const fareTxt = (s) => (s && Number.isFinite(s.fare) ? 'about ' + twd(s.fare) : 'fare varies');
-  const routeUrl = (s) => 'https://www.google.com/maps/dir/?api=1&travelmode=transit&origin=' + encodeURIComponent('Taipei Main Station')
+  // Directions start at the hotel (Orange Hotel Han Zhong, near Ximen Station)
+  const routeUrl = (s) => 'https://www.google.com/maps/dir/?api=1&travelmode=transit&origin=' + encodeURIComponent((P.hotel && P.hotel.map) || 'Taipei Main Station')
     + '&destination=' + encodeURIComponent(s.station + ' MRT Station, Taipei');
   const dayInPlan = (key) => { const s = plan().stops.find((x) => x[3] === key); return s ? s[0] : 0; };
 

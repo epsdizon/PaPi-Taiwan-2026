@@ -97,7 +97,7 @@ window.TRIP = {
      photo = a direct image URL that overrides everything (optional). */
   places: {
     airport:     { en: "Taoyuan International Airport", zh: "桃園國際機場", map: "Taoyuan International Airport Terminal 1", wiki: ["Taoyuan International Airport"], commons: "Taoyuan International Airport terminal" },
-    hotel:       { en: "Orange Hotel", zh: "福泰桔子商旅", map: "Orange Hotel Taipei", note: "Show your booking too, so the driver gets the right branch.", photoless: true },
+    hotel:       { en: "Orange Hotel Han Zhong (Ximen)", zh: "桔子商旅 台北漢中店", addr: "台北市萬華區漢中街170號", map: "Orange Hotel - Han Zhong (Xi Men), No. 170, Hanzhong St, Wanhua District, Taipei", note: "In Ximending, about 5 minutes' walk from Ximen MRT.", photoless: true },
     t101:        { en: "Taipei 101", zh: "台北101", addr: "台北市信義區信義路五段7號", wiki: ["Taipei 101"], commons: "Taipei 101" },
     dtf:         { en: "Din Tai Fung, Taipei 101", zh: "鼎泰豐 台北101店", addr: "台北101購物中心 B1", map: "Din Tai Fung Taipei 101", wiki: ["Xiaolongbao", "Din Tai Fung"], commons: "Din Tai Fung" },
     cks:         { en: "Chiang Kai-shek Memorial Hall", zh: "中正紀念堂", addr: "台北市中正區中山南路21號", wiki: ["Chiang Kai-shek Memorial Hall"], commons: "Chiang Kai-shek Memorial Hall" },
@@ -174,10 +174,10 @@ window.TRIP = {
       stops: [
         [1, "12:00 PM", "Land at Taoyuan Airport", "airport", "", "Immigration, then grab a SIM or eSIM. Keep snacks, milk and a change of clothes in your hand-carry."],
         [1, "1:00 PM", "Meet the van drivers at arrivals", "", "2 vans, about 50 min", "2 vans booked for the airport run, NT$2,000 each. Find your van on the seating chart. Kids can nap on the ride.", "", "seating"],
-        [1, "2:00 PM", "Check in at Orange Hotel, then nap time", "hotel", "", "Let everyone recover from the flight."],
-        [1, "4:00 PM", "Early dinner at Din Tai Fung, Taipei 101", "dtf", "MRT to Taipei 101/World Trade Center, about 25 min", "The restaurant is in the mall basement, linked to the station. 4 to 5 PM has the shortest queue. Order for the table and share the xiaolongbao. High chairs available.", "must"],
+        [1, "2:00 PM", "Check in at Orange Hotel Han Zhong, then nap time", "hotel", "", "Let everyone recover from the flight."],
+        [1, "4:00 PM", "Early dinner at Din Tai Fung, Taipei 101", "dtf", "MRT from Ximen to Taipei 101/World Trade Center, about 25 min", "The restaurant is in the mall basement, linked to the station. 4 to 5 PM has the shortest queue. Order for the table and share the xiaolongbao. High chairs available.", "must"],
         [1, "5:30 PM", "Taipei 101 Observatory, or just walk the mall", "t101", "", "Kids under 115 cm usually go up free."],
-        [1, "6:30 PM", "MRT back to the hotel for an early night", "hotel", "MRT, about 25 min", "It's rush hour, so use the elevators and keep the strollers together. A taxi is an easy backup."],
+        [1, "6:30 PM", "MRT back to the hotel for an early night", "hotel", "MRT to Ximen, about 25 min, then a 5-minute walk", "It's rush hour, so use the elevators and keep the strollers together. A taxi is an easy backup."],
 
         [2, "8:00 AM", "Breakfast near the hotel", "breakfast", "Walk", "Steamed buns (mantou) make easy toddler food."],
         [2, "9:00 AM", "Van pickup at the hotel", "hotel", "", "2 vans booked for the day, NT$6,500 each (NT$13,000). Confirm how many hours it covers, since overtime is extra.", "", "seatingTour"],
@@ -203,14 +203,14 @@ window.TRIP = {
         [4, "2:15 PM", "Jiufen Old Street: taro balls and A-Mei Teahouse", "jiufen", "Van, about 10 min", "Lots of stairs, so carriers only. The lanterns light up around 5 PM."],
         [4, "4:45 PM", "Van back to the hotel", "hotel", "Van, about 1 hr", "The van's day ends at the hotel."],
         [4, "6:30 PM", "Dinner at Ichiran Taipei flagship", "ichiran", "MRT, about 25 min", "It's open 24 hours, so if everyone's tired, eat near the hotel and go another night. The booth dividers fold open for families.", "must"],
-        [4, "8:00 PM", "MRT back to the hotel", "hotel", "MRT, about 25 min", ""],
+        [4, "8:00 PM", "MRT back to the hotel", "hotel", "MRT to Ximen, about 25 min", ""],
 
         [5, "8:00 AM", "Breakfast", "breakfast", "Walk", ""],
         [5, "9:00 AM", "MRT to Taipei Children's Amusement Park", "", "MRT, then a short taxi", "No van today. The park is closed on Mondays, so Tuesday is fine."],
         [5, "9:30 AM", "Carousel, Ferris wheel and the indoor play area", "amusement", "", "Kids under 6 get in free. Toddlers under 90 cm have their own rides and an air-conditioned playground. Stay until about 3:30 PM."],
         [5, "12:00 PM", "Lunch at the park", "", "", "The strollers double as nap spots."],
         [5, "3:30 PM", "Shilin Night Market for an early dinner", "shilin", "Taxi, about 10 min", "Stalls open from around 4 PM. Use a baby carrier, not a stroller."],
-        [5, "6:30 PM", "MRT back to the hotel", "hotel", "MRT from Jiantan, about 25 min", ""],
+        [5, "6:30 PM", "MRT back to the hotel", "hotel", "MRT from Jiantan to Ximen, about 25 min", ""],
 
         [6, "8:00 AM", "Breakfast, pack and check out", "hotel", "", "Bags go in the van. Confirm the luggage space with the operator."],
         [6, "9:30 AM", "Chiang Kai-shek Memorial Hall: big plaza and the guard change on the hour", "cks", "Van, about 15 min", "A great place for the kids to run around."],
@@ -224,7 +224,7 @@ window.TRIP = {
         [2, "breakfast", "Breakfast shop or 7-Eleven", "Breakfast", "Dan bing (egg crepe), soy milk, steamed buns", 100, true, "Steamed buns are great toddler food."],
         [2, "zoo", "Zoo food court", "Casual", "Bento, noodles", 200, true, ""],
         [2, "yaoyue", "Yao Yue Teahouse", "Teahouse", "Tea set with tea snacks", 300, true, "Close to Maokong Station."],
-        [2, "aychung", "Ay-Chung Flour-Rice Noodle (if near the hotel)", "Street food", "Mee sua, soft noodles that kids can eat", 85, true, ""],
+        [2, "aychung", "Ay-Chung Flour-Rice Noodle (near the hotel)", "Street food", "Mee sua, soft noodles that kids can eat", 85, true, ""],
         [2, "xingfutang", "Xing Fu Tang", "Milk tea", "Brown sugar boba milk", 90, true, "No boba for the toddlers: choking risk."],
         [2, "", "Dinner near the hotel", "Casual", "Fried rice, noodles, dumplings", 250, true, ""],
         [3, "", "Breakfast to go", "Breakfast", "Onigiri, tea eggs, sandwiches from 7-Eleven", 80, true, "Unless the hotel packs breakfast boxes."],
@@ -245,7 +245,7 @@ window.TRIP = {
         [5, "shilin", "Shilin Night Market stalls", "Street food", "Oyster omelette, sweet potato balls, sausage", 200, true, "Sweet potato balls (QQ balls) are a kid favorite."],
         [6, "breakfast", "Breakfast", "Breakfast", "", 100, true, ""],
         [6, "cks", "Lunch near CKS or at the airport", "Casual", "", 250, true, ""],
-        [1, "ximending", "Ximending street food (optional night)", "Street food", "If the kids still have energy", 250, false, "Switch on to count it."],
+        [1, "ximending", "Ximending street food (optional night)", "Street food", "Right by the hotel, if the kids still have energy", 250, false, "Switch on to count it."],
         [3, "pepperbun", "Fuzhou Black Pepper Bun (optional)", "Street food", "Pepper bun from the clay oven", 65, false, "Raohe isn't in this plan. Switch on to count it."]
       ],
       // day, item, category, basis, NT$ per unit (or FOOD / SHOP / HOTEL), note, price-check search, flag, vans that day, Transfer or Tour, people not on this ride
@@ -300,7 +300,7 @@ window.TRIP = {
       stops: [
         [1, "12:00 PM", "Land at Taoyuan Airport", "airport", "", "Allow 45 to 60 minutes for immigration and bags. Buy an EasyCard and a SIM or eSIM."],
         [1, "1:00 PM", "Meet the van drivers at arrivals", "", "2 vans, about 50 min", "2 vans booked for the airport run, NT$2,000 each. Find your van on the seating chart. The city is by MRT.", "", "seating"],
-        [1, "2:00 PM", "Orange Hotel: check in or drop the bags", "hotel", "", ""],
+        [1, "2:00 PM", "Orange Hotel Han Zhong: check in or drop the bags", "hotel", "", ""],
         [1, "2:30 PM", "Taipei 101: late lunch at Din Tai Fung (B1), then the mall", "dtf", "MRT to Taipei 101/World Trade Center, about 25 min", "Get a queue number first, then walk the mall while you wait. Order for the table and share the xiaolongbao.", "must"],
         [1, "4:15 PM", "Taipei 101 Observatory on the 89th floor (optional)", "t101", "", "Go up before sunset, around 5:05 PM in December."],
         [1, "5:15 PM", "Chiang Kai-shek Memorial Hall: plaza, gates and night lights", "cks", "MRT, Red line, about 10 min", ""],
@@ -333,7 +333,7 @@ window.TRIP = {
         [4, "1:15 PM", "Golden Waterfall", "golden", "Van, about 45 min", "A quick roadside photo stop. Minerals left by the old mines stain the rocks gold."],
         [4, "1:45 PM", "Jiufen Old Street: lunch, taro balls and A-Mei Teahouse", "jiufen", "Van, about 10 min", "Stay until dusk. The lanterns light up around 5 PM."],
         [4, "5:30 PM", "Van back to the hotel", "hotel", "Van, about 1 hr", "The van's day ends at the hotel."],
-        [4, "7:00 PM", "Ximending for a last shopping evening", "ximending", "MRT or taxi", ""],
+        [4, "7:00 PM", "Ximending for a last shopping evening", "ximending", "Walk, it's next to the hotel", ""],
         [4, "9:00 PM", "Back to the hotel", "hotel", "MRT or taxi", ""],
 
         [5, "8:00 AM", "Fu Hang Dou Jiang, the famous soy milk breakfast", "fuhang", "MRT to Shandao Temple", "Free day, no van. The line moves fast; go early."],
@@ -346,7 +346,7 @@ window.TRIP = {
 
         [6, "8:00 AM", "Breakfast and pack", "hotel", "", ""],
         [6, "9:30 AM", "Last pasalubong: pineapple cakes", "sunnyhills", "MRT or taxi", "SunnyHills, or Chia Te near Nanjing Fuxing MRT."],
-        [6, "12:00 PM", "Hotel check-out", "hotel", "", "Confirm the check-out time with Orange Hotel."],
+        [6, "12:00 PM", "Hotel check-out", "hotel", "", "Confirm the check-out time with the hotel."],
         [6, "TBD", "Van to Taoyuan Airport", "airport", "2 vans, about 50 min", "2 vans booked, NT$2,000 each. Find your seat on the ride-home chart. Be at the airport 3 hours before the flight.", "", "seatingHome"]
       ],
       food: [
@@ -410,7 +410,7 @@ window.TRIP = {
         [6, "Shopping and pasalubong", "Shopping", "adult", "SHOP", "Set on the Budget tab."],
         [6, "Hotel (if not prepaid)", "Hotel", "group", "HOTEL", "Set on the Budget tab."],
         [6, "Driver tips (optional, about NT$500 per van per day)", "Van", "group", 5000, "10 van-days: 2 vans a day on Dec 4 to 7 and Dec 9. Not required in Taiwan, but a nice gesture."],
-        [4, "MRT or taxi to Ximending and back", "Transport", "adult", 50, ""],
+        [4, "MRT or taxi to Ximending and back", "Transport", "adult", 0, "Ximending is next to the hotel, so walk."],
         [2, "Taipei Zoo train (adults)", "Entrance", "adult", 5, "Kids ride free."]
       ]
     }
@@ -439,6 +439,7 @@ window.TRIP = {
       { title: "Stop at the Golden Waterfall", detail: "A roadside waterfall over rocks stained gold by the old mines.", place: "golden" }
     ],
     /* MRT guide. fare = approximate adult one-way fare from Taipei Main Station (NT$20 to 65 by distance).
+       The hotel's station is Ximen, one stop away, so fares are about the same; "Route" links start at the hotel.
        "for" = places on the site this station serves. Tap "Route" on the site for the exact fare. */
     mrt: {
       airport: { fare: 160, text: "Taoyuan Airport Terminal 1 or 2 to Taipei Main Station, about 35 minutes. Handy if anyone arrives separately from the van." },
@@ -454,7 +455,7 @@ window.TRIP = {
         { dest: "Elephant Mountain and Ichiran", station: "Xiangshan", zh: "象山", code: "R02", fare: 25, for: ["elephant", "ichiran"], group: "plan", note: "Ichiran is about 1 minute from the station." },
         { dest: "Chiang Kai-shek Memorial Hall", station: "Chiang Kai-shek Memorial Hall", zh: "中正紀念堂", code: "R08", fare: 20, for: ["cks"], group: "plan", note: "Exit 5 for the main plaza." },
         { dest: "Longshan Temple and Guangzhou St night market", station: "Longshan Temple", zh: "龍山寺", code: "BL10", fare: 20, for: ["longshan", "guangzhou"], group: "plan", note: "Exit 1, across the park." },
-        { dest: "Ximending", station: "Ximen", zh: "西門", code: "BL11", fare: 20, for: ["ximending", "aychung", "xingfutang"], group: "plan", note: "Exit 6 for the walking street." },
+        { dest: "Ximending", station: "Ximen", zh: "西門", code: "BL11", fare: 20, for: ["ximending", "aychung", "xingfutang"], group: "plan", note: "The hotel's station, about a 5-minute walk. Exit 6 for the walking street." },
         { dest: "Taipei Zoo and Maokong Gondola", station: "Taipei Zoo", zh: "動物園", code: "BR01", fare: 30, for: ["zoo", "gondola", "maokong", "yaoyue"], group: "plan", note: "Change to the Brown line at Zhongxiao Fuxing. The gondola station is a short walk away." },
         { dest: "Shilin Night Market", station: "Jiantan", zh: "劍潭", code: "R15", fare: 20, for: ["shilin", "hotstar"], group: "plan", note: "Exit 1, then cross the road." },
         { dest: "Taipei Children's Amusement Park", station: "Shilin", zh: "士林", code: "R16", fare: 25, for: ["amusement"], group: "plan", note: "Then a 5-minute taxi or bus. Walking is about 20 minutes." },
@@ -463,7 +464,7 @@ window.TRIP = {
         { dest: "Dihua Street and Dadaocheng", station: "Beimen", zh: "北門", code: "G13", fare: 20, for: ["dihua"], group: "plan", note: "Exit 3, then about 10 minutes on foot." },
         { dest: "Chia Te pineapple cakes", station: "Nanjing Sanmin", zh: "南京三民", code: "G17", fare: 25, for: ["sunnyhills"], group: "plan", note: "Exit 2, a few minutes' walk." },
         { dest: "Pokémon Center and Xinyi malls", station: "Taipei City Hall", zh: "市政府", code: "BL18", fare: 25, for: ["pokemon", "xinyi"], group: "shop", note: "Exit 3. Pokémon Center is 3 minutes away." },
-        { dest: "DON DON DONKI, Ximen", station: "Ximen", zh: "西門", code: "BL11", fare: 20, for: ["donki"], group: "shop", note: "Exit 6." },
+        { dest: "DON DON DONKI, Ximen", station: "Ximen", zh: "西門", code: "BL11", fare: 20, for: ["donki"], group: "shop", note: "Walking distance from the hotel. Exit 6." },
         { dest: "Carrefour Guilin", station: "Longshan Temple", zh: "龍山寺", code: "BL10", fare: 20, for: ["carrefour"], group: "shop", note: "About 8 minutes on foot." },
         { dest: "Taipei City Mall (underground)", station: "Taipei Main Station", zh: "台北車站", code: "BL12", fare: null, for: ["citymall"], group: "shop", note: "Right under Taipei Main Station." },
         { dest: "Huashan 1914 and Guanghua Digital Plaza", station: "Zhongxiao Xinsheng", zh: "忠孝新生", code: "BL14", fare: 20, for: ["huashan", "guanghua"], group: "shop", note: "Exit 1 for Huashan, Exit 4 for Guanghua." },
@@ -523,7 +524,7 @@ window.TRIP = {
     "Van quote includes tolls, parking, fuel and overtime",
     "Exact number of adults coming",
     "Flight times for Dec 4 and Dec 9",
-    "Orange Hotel branch, and whether it's prepaid",
+    "Orange Hotel Han Zhong: is it prepaid, and is breakfast a voucher for a nearby café?",
     "Taiwan online arrival card filed within 3 days before the flight (one person can file for the whole family)",
     "Passports valid, with return tickets",
     "Travel insurance"
