@@ -76,6 +76,8 @@
     ownRate: store.get('ownRate', null),
     photos: {},
     filter: 'all',
+    // Food tab: "plan" (our food stops) or "picks" (the Food Masterlist sheet), and the picks filters
+    picks: Object.assign({ view: 'plan', group: '', kind: 'all', all: false }, store.get('picks', {})),
   };
   const plan = () => T.plans[state.plan];
   const line = (d) => T.lines[d] || T.lines[0];
@@ -341,7 +343,7 @@
     Object.keys(P).forEach((k) => { if (P[k].photo) overrides[k] = { src: P[k].photo }; });
     const cache = store.get('photos', null);
     if (cache && Date.now() - cache.t < 5 * 864e5 && cache.n === Object.keys(P).length) {
-      state.photos = Object.assign({}, cache.map, overrides);
+      Object.assign(state.photos, cache.map, overrides); // merged: the Food tab's sample photos live here too
       applyPhotos();
       return;
     }
@@ -356,7 +358,7 @@
       if (hit) map[k] = hit;
     });
     if (Object.keys(map).length) store.set('photos', { t: Date.now(), n: Object.keys(P).length, map });
-    state.photos = Object.assign(map, overrides);
+    Object.assign(state.photos, map, overrides);
     applyPhotos();
   }
 
@@ -373,8 +375,16 @@
   }
 
   const strip = (h) => String(h || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  // A place, or a Food tab sample dish ("dish:lurou"), for the photo viewer
+  const photoMeta = (key) => {
+    if (String(key).startsWith('dish:')) {
+      const d = window.FOOD && window.FOOD.dishes[key.slice(5)];
+      return d ? { en: 'Sample photos: ' + d.en, commons: d.commons } : null;
+    }
+    return P[key];
+  };
   async function gallery(key) {
-    const p = P[key];
+    const p = photoMeta(key);
     if (!p || !p.commons) return [];
     const ck = 'gal:' + key;
     const c = store.get(ck, null);
@@ -507,7 +517,11 @@
     if (!el) return;
     const n = stopsOf(d).length;
     const perHead = c.adultByDay[d] * rateNow();
-    el.innerHTML = `${n} stops. About <strong>${php(perHead)}</strong> per ${headWord()} for the day (${twd(perHead / rateNow())}).`;
+    // A link to the Food tab's Local picks for where the day goes
+    const gk = FD ? groupForDay(d) : '';
+    const pn = gk ? FD.list.filter((f) => f.group === gk && goodPick(f)).length : 0;
+    el.innerHTML = `${n} stops. About <strong>${php(perHead)}</strong> per ${headWord()} for the day (${twd(perHead / rateNow())}).`
+      + (pn ? ` <button type="button" class="linkbtn day-picks" data-act="day-picks" data-g="${gk}">${pn} local food picks ${gk === 'hotel' ? 'near the hotel' : 'near today\'s stops'}</button>` : '');
   }
 
   function renderDays(animate) {
@@ -944,7 +958,17 @@
     ['sweet', 'Milk tea and sweets', (t) => /milk tea|dessert|teahouse/i.test(t)],
     ['morning', 'Breakfast', (t) => /breakfast/i.test(t)],
   ];
+  const FOOD_LEDE = {
+    plan: 'The three must-eats first, then every food stop by day. Prices are per person; change one and the budget follows.',
+    picks: 'More places to eat from the Food Masterlist sheet, sorted by where we\'ll be.',
+  };
   function renderFood() {
+    const pk = state.picks.view === 'picks' && !!FD;
+    $$('#food .seg button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.v === (pk ? 'picks' : 'plan'))));
+    $('#food-plan').hidden = pk;
+    $('#food-picks').hidden = !pk;
+    $('#food-lede').textContent = FOOD_LEDE[pk ? 'picks' : 'plan'];
+    if (pk) { renderPicks(); return; }
     const r = rateNow();
     const list = foods();
     $('#musts').innerHTML = list.filter((f) => f.must && P[f.place]).map((f) => {
@@ -999,6 +1023,131 @@
     });
     $('#foodlist').innerHTML = html || '<p class="daysum">Nothing of this type in this plan.</p>';
     applyPhotos($('#food'));
+  }
+
+  // ---------- Local picks: the "Food Masterlist" sheet, made into assets/food.js by tools/import_food.py ----------
+  const FD = window.FOOD || null;
+  const PICK_KINDS = [['all', 'All'], ['meal', 'Meals'], ['breakfast', 'Breakfast'], ['sweet', 'Desserts and drinks']];
+  const WEEKDAYS = ['Sundays', 'Mondays', 'Tuesdays', 'Wednesdays', 'Thursdays', 'Fridays', 'Saturdays'];
+  const HAN = /[㐀-鿿]/;
+  const wday = (iso) => new Date(iso + 'T00:00:00Z').getUTCDay();
+  const goodPick = (f) => (f.stars || 0) >= 3;
+  const pickMap = (f) => 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(f.q || f.name);
+  const savePicks = () => store.set('picks', state.picks);
+  // The plan's days that pass through an area (any stop or banner place in its "near" list)
+  function pickDays(g) {
+    if (!g || !g.near.length) return [];
+    const near = new Set(g.near);
+    return T.dates.map((iso, d) => d).filter((d) => stopsOf(d).some((s) => near.has(s.place)) || ((plan().days[d] || {}).banner || []).some((k) => near.has(k)));
+  }
+  const dayWords = (ds) => (ds.length === 1 ? `Day ${ds[0] + 1}` : `Days ${ds.slice(0, -1).map((d) => d + 1).join(', ')} and ${ds[ds.length - 1] + 1}`);
+  const groupTag = (g) => (g.key !== 'hotel' && pickDays(g).length ? dayWords(pickDays(g)) : '');
+  // The area to open for a day: the first one (other than the hotel's) that the day passes through
+  function groupForDay(d) {
+    const g = FD && FD.groups.find((x) => x.key !== 'hotel' && pickDays(x).includes(d));
+    return g ? g.key : 'hotel';
+  }
+  // "Closed Sundays (Dec 6)", with a warning when it's closed on a day we're in that area
+  function closedLine(f, days) {
+    if (!f.closed) return '';
+    if (!f.closed.length) return 'Open every day';
+    const names = f.closed.map((w) => WEEKDAYS[w]);
+    const txt = 'Closed ' + (names.length > 1 ? names.slice(0, -1).join(', ') + ' and ' + names[names.length - 1] : names[0]);
+    const ours = T.dates.slice(0, -1).map((iso, d) => ({ iso, d })).filter((x) => f.closed.includes(wday(x.iso)));
+    if (!ours.length) return esc(txt) + ', so it\'s open on our dates';
+    const clash = ours.filter((x) => days.includes(x.d));
+    if (clash.length) return `<span class="warn">${esc(txt)}, so it's closed on Day ${clash.map((x) => x.d + 1).join(' and ')}, when we're there</span>`;
+    return `${esc(txt)} (${esc(ours.map((x) => dfmt(x.iso, { month: 'short', day: 'numeric' })).join(', '))})`;
+  }
+  function pickCard(f, i, days) {
+    const D = FD.dishes[f.dish] || { en: 'Food' };
+    const zh = HAN.test(f.name);
+    const ph = zh ? (f.name.match(/[㐀-鿿]/g) || []).slice(0, 2).join('') : f.name.slice(0, 2);
+    const price = Math.min(f.price || 0, 5);
+    const hours = [esc((f.hours || '').replace(/\.$/, '')), closedLine(f, days)].filter(Boolean).join('. ');
+    return '<article class="pick">'
+      + `<button type="button" class="pk-ph ph" data-act="gallery" data-place="dish:${esc(f.dish)}" aria-label="More sample photos of ${esc(D.en.toLowerCase())}">`
+      + `<span class="ph-zh" aria-hidden="true">${esc(ph)}</span>`
+      + `<img data-photo="dish:${esc(f.dish)}" data-w="330" data-alt="Sample photo of ${esc(D.en.toLowerCase())}" alt="" loading="lazy" decoding="async">`
+      + `<span class="pk-sample" aria-hidden="true">Sample photo:<br>${esc(D.en)}</span></button>`
+      + `<div class="pk-body"><h4 class="pk-name"${zh ? ' lang="zh-Hant"' : ''}>${esc(f.name)}</h4>`
+      + '<p class="pk-meta">' + (f.stars ? `<span class="pk-stars" aria-label="${f.stars} out of 5 stars">★ ${f.stars}</span>` : '<span class="pk-new">Not tried yet</span>')
+      + (price ? `<span class="pk-price" title="Price level ${price} of 5" aria-label="Price level ${price} of 5">${'💸'.repeat(price)}${f.price > 5 ? '+' : ''}</span>` : '')
+      + `<span>${esc(f.type)}${f.where ? ' · ' + esc(f.where) : ''}</span></p>`
+      + (f.note ? `<p class="pk-note">${esc(f.note)}</p>` : '')
+      + (f.orig ? `<p class="pk-orig" lang="zh-Hant">${esc(f.orig)}</p>` : '')
+      + (hours ? `<p class="pk-hours">${hours}</p>` : '')
+      + '</div>'
+      + `<div class="acts pk-acts"><a class="act" href="${esc(pickMap(f))}" target="_blank" rel="noopener">${ICON.camera}Real photos and map</a>`
+      + `<button type="button" class="act" data-act="driver-pick" data-i="${i}">${ICON.driver}Show driver</button></div></article>`;
+  }
+  function renderPicks() {
+    const box = $('#food-picks');
+    const S = state.picks;
+    const kindOK = (f) => S.kind === 'all' || f.kind === S.kind;
+    const inKind = FD.list.filter(kindOK);
+    const groups = FD.groups.filter((g) => inKind.some((f) => f.group === g.key));
+    if (!groups.some((g) => g.key === S.group)) {
+      const want = groupForDay(state.day);
+      S.group = (groups.find((g) => g.key === want) || groups[0] || {}).key || '';
+    }
+    const g = FD.groups.find((x) => x.key === S.group);
+    const days = !g || g.key === 'hotel' ? [] : pickDays(g);
+    const here = FD.list.map((f, i) => ({ f, i })).filter((x) => x.f.group === S.group && kindOK(x.f))
+      .sort((a, b) => (b.f.stars || 0) - (a.f.stars || 0) || (a.f.price || 9) - (b.f.price || 9) || a.i - b.i);
+    const good = here.filter((x) => goodPick(x.f));
+    const shown = S.all ? here : good;
+    const more = here.length - good.length;
+    const tag = g ? groupTag(g) : '';
+    box.innerHTML = `<p class="pk-intro">${FD.list.length} places from <a href="${esc(FD.source.url)}" target="_blank" rel="noopener">the sheet</a>, with its own stars and notes (translated). `
+      + 'The pictures are sample photos of each place\'s kind of food. Tap <b>Real photos and map</b> to see the shop itself.</p>'
+      + `<div class="filters pk-areas" role="group" aria-label="Area">${groups.map((x) => {
+        const n = inKind.filter((f) => f.group === x.key && (S.all || goodPick(f))).length;
+        const t = groupTag(x);
+        return `<button type="button" class="fchip" data-act="pick-group" data-g="${x.key}" aria-pressed="${x.key === S.group}">${esc(x.label)}${t ? ` <small>${esc(t)}</small>` : ''}<span class="n">${n}</span></button>`;
+      }).join('')}</div>`
+      + `<div class="filters pk-kinds" role="group" aria-label="Type of food">${PICK_KINDS.map(([k, label]) => `<button type="button" class="fchip" data-act="pick-kind" data-k="${k}" aria-pressed="${k === S.kind}">${label}</button>`).join('')}</div>`
+      + (g ? `<div class="pk-head"><h3>${esc(g.label)}${tag ? ` <small>${esc(tag)}</small>` : ''}</h3><p>${esc(g.sub)}</p></div>` : '')
+      + `<div class="picks">${shown.map((x) => pickCard(x.f, x.i, days)).join('') || '<p class="daysum">Nothing here has 3 stars or more yet. Tap below to see the rest.</p>'}</div>`
+      + (more ? `<button type="button" class="linkbtn pk-more" data-act="pick-all">${S.all ? 'Show only 3 stars and up' : `Show ${more} more: not tried yet, or under 3 stars`}</button>` : '');
+    centerChips(box);
+    applyPhotos(box);
+    loadDishPhotos();
+  }
+  // Scroll each chip row so its selected chip is in view (without moving the page)
+  function centerChips(root) {
+    $$('.filters', root).forEach((row) => {
+      const on = $('[aria-pressed="true"]', row);
+      if (!on) return;
+      const r = row.getBoundingClientRect();
+      const c = on.getBoundingClientRect();
+      row.scrollLeft += c.left - r.left - (r.width - c.width) / 2;
+    });
+  }
+  // Sample photos: the lead photo of each dish's Wikipedia article, looked up once and kept for a few days
+  let dishLoad = null;
+  function loadDishPhotos() {
+    if (!FD || dishLoad) return;
+    dishLoad = (async () => {
+      const keys = Object.keys(FD.dishes);
+      const cache = store.get('dishPhotos', null);
+      let map = cache && cache.v === FD.version && Date.now() - cache.t < 5 * 864e5 ? cache.map : null;
+      if (!map) {
+        const en = new Set();
+        const zh = new Set();
+        keys.forEach((k) => { FD.dishes[k].wiki.forEach((t) => en.add(t)); FD.dishes[k].wikiZh.forEach((t) => zh.add(t)); });
+        const [E, Z] = await Promise.all([pageImages('en', [...en]), zh.size ? pageImages('zh', [...zh]) : {}]);
+        map = {};
+        keys.forEach((k) => {
+          const hit = FD.dishes[k].wiki.map((t) => E[t]).find(Boolean) || FD.dishes[k].wikiZh.map((t) => Z[t]).find(Boolean);
+          if (hit) map['dish:' + k] = hit;
+        });
+        if (Object.keys(map).length >= keys.length * 0.6) store.set('dishPhotos', { t: Date.now(), v: FD.version, map });
+        else dishLoad = null; // mostly offline: try again next time
+      }
+      Object.assign(state.photos, map);
+      applyPhotos($('#food-picks'));
+    })();
   }
 
   // ---------- Budget ----------
@@ -1447,8 +1596,9 @@
 
   // ---------- Driver card and photo viewer ----------
   let lastFocus = null;
+  // key: a place key, or { zh, addr, en, note, url } for a Local pick (shown in the phone's own Chinese font)
   function openDriver(key) {
-    const p = P[key];
+    const p = typeof key === 'string' ? P[key] : key;
     if (!p) return;
     lastFocus = document.activeElement;
     $('#drv-zh').textContent = p.zh;
@@ -1457,7 +1607,8 @@
     $('#drv-en').textContent = p.en;
     $('#drv-note').textContent = p.note || '';
     $('#drv-note').hidden = !p.note;
-    $('#drv-map').href = mapUrl(key);
+    $('#drv-map').href = typeof key === 'string' ? mapUrl(key) : p.url;
+    $('#driver').classList.toggle('sys', typeof key !== 'string');
     $('#driver').classList.add('open');
     document.body.classList.add('locked');
     $('#drv-close').focus();
@@ -1480,7 +1631,7 @@
     tr.scrollBy({ left: dir * tr.clientWidth, behavior: motionOK() ? 'smooth' : 'auto' });
   }
   async function openGallery(key) {
-    const p = P[key];
+    const p = photoMeta(key);
     if (!p) return;
     const token = ++lbToken;
     lastFocus = document.activeElement;
@@ -1580,7 +1731,7 @@
     if (tab === 'budget') renderBudget();
     if (tab === 'days') { if (opts.render) renderDays(true); else requestAnimationFrame(() => { placeVan(false); renderDayMap(); }); } else mapFull(false);
     updateRoute();
-    const hash = tab === 'days' ? `#day-${state.day + 1}` : '#' + tab;
+    const hash = tab === 'days' ? `#day-${state.day + 1}` : tab === 'food' && state.picks.view === 'picks' ? '#picks' : '#' + tab;
     if (location.hash !== hash) history.replaceState(null, '', hash);
     if (opts.scroll) scrollToMain();
   }
@@ -1592,6 +1743,8 @@
       if (d >= 0 && d < T.dates.length) state.day = d;
       return 'days';
     }
+    if (h === 'picks' || h === 'food') state.picks.view = h === 'picks' ? 'picks' : 'plan';
+    if (h === 'picks') return 'food';
     return TABS.includes(h) ? h : null;
   }
 
@@ -1633,6 +1786,29 @@
       closeGallery();
     } else if (act === 'lb-prev' || act === 'lb-next') {
       lbGo(act === 'lb-next' ? 1 : -1);
+    } else if (act === 'food-view') {
+      state.picks.view = t.dataset.v === 'picks' ? 'picks' : 'plan';
+      savePicks();
+      renderFood();
+      history.replaceState(null, '', state.picks.view === 'picks' ? '#picks' : '#food');
+    } else if (act === 'pick-group' || act === 'pick-kind' || act === 'pick-all') {
+      if (act === 'pick-group') state.picks.group = t.dataset.g;
+      if (act === 'pick-kind') state.picks.kind = t.dataset.k;
+      if (act === 'pick-all') state.picks.all = !state.picks.all;
+      savePicks();
+      renderPicks();
+    } else if (act === 'day-picks') {
+      Object.assign(state.picks, { view: 'picks', group: t.dataset.g, kind: 'all' });
+      savePicks();
+      showTab('food', { scroll: true });
+    } else if (act === 'driver-pick') {
+      const f = FD && FD.list[Number(t.dataset.i)];
+      if (f) {
+        openDriver({
+          zh: f.name, addr: f.zh || '', en: [f.type, f.where].filter(Boolean).join(', '),
+          note: 'The food list has no street address, so show the driver the Google Maps pin too.', url: pickMap(f),
+        });
+      }
     } else if (act === 'filter') {
       state.filter = t.dataset.f;
       renderFood();

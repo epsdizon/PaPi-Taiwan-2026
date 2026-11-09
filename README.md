@@ -29,6 +29,8 @@ After any change, bump `VERSION` in `sw.js`. Phones that already have the site o
 
 After adding a place with new Chinese characters, run `python tools/build_assets.py` so the characters are added to the site's font. They still show without it, just in the phone's own font.
 
+The Food tab's **Local picks** come from the "Food Masterlist" Google Sheet. `tools/food/sheet.json` holds a copy of its Taiwan tabs and `tools/food/curation.json` holds the English notes and fixes. To refresh: update `sheet.json`, run `python3 tools/import_food.py --check` to see new places and Chinese notes that need English, add those to `curation.json`, then run `python3 tools/import_food.py` (it writes `assets/food.js`) and bump `VERSION` in `sw.js`. The picks' photos are sample photos of each kind of dish, taken from Wikipedia in the browser.
+
 To preview a trip day, add `?today=2026-12-06&time=10:15` to the address.
 
 ## Credits

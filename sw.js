@@ -1,7 +1,7 @@
 /* PaPi Taiwan 2026 — offline support.
    The site keeps working with weak signal: pages come from the network first, then from this cache.
    Bump VERSION whenever site files change. */
-const VERSION = 'papi-2026-v24';
+const VERSION = 'papi-2026-v25';
 const PHOTOS = 'papi-photos-v1';
 const TILES = 'papi-tiles-v1'; // map tiles you've already seen, for weak signal
 const CORE = [
@@ -11,6 +11,7 @@ const CORE = [
   'assets/style.css',
   'assets/data.js',
   'assets/outfit.js',
+  'assets/food.js',
   'assets/app.js',
   'assets/icons/icon-192.png',
   'assets/van-seating.webp',

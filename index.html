@@ -153,12 +153,19 @@
   <section class="view" id="food" aria-labelledby="food-h" hidden>
     <div class="view-head">
       <h2 id="food-h">Food</h2>
-      <p>The three must-eats first, then every food stop by day. Prices are per person; change one and the budget follows.</p>
+      <p id="food-lede">The three must-eats first, then every food stop by day. Prices are per person; change one and the budget follows.</p>
     </div>
-    <div class="musts" id="musts"></div>
-    <div class="share" id="share-box"></div>
-    <div class="filters" id="filters" role="group" aria-label="Show food by type"></div>
-    <div id="foodlist"></div>
+    <div class="seg" role="group" aria-label="What to show">
+      <button type="button" data-act="food-view" data-v="plan" aria-pressed="true">Our food plan</button>
+      <button type="button" data-act="food-view" data-v="picks" aria-pressed="false">Local picks</button>
+    </div>
+    <div id="food-plan">
+      <div class="musts" id="musts"></div>
+      <div class="share" id="share-box"></div>
+      <div class="filters" id="filters" role="group" aria-label="Show food by type"></div>
+      <div id="foodlist"></div>
+    </div>
+    <div id="food-picks" hidden></div>
   </section>
 
   <section class="view" id="explore" aria-labelledby="explore-h" hidden>
@@ -325,6 +332,7 @@
 <noscript><p style="padding:16px">Turn on JavaScript to see the trip plan.</p></noscript>
 <script src="assets/data.js"></script>
 <script src="assets/outfit.js"></script>
+<script src="assets/food.js"></script>
 <script src="assets/app.js"></script>
 </body>
 </html>

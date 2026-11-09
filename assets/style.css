@@ -72,6 +72,8 @@
   --font: "Sofia Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-cond: "Sofia Sans Extra Condensed", "Sofia Sans", "Arial Narrow", sans-serif;
   --font-zh: "Sofia Sans", "Noto Sans TC Sub", "PingFang TC", "Heiti TC", "Microsoft JhengHei", "Noto Sans CJK TC", sans-serif;
+  /* The phone's own Chinese font, for the Local picks names (the site's font only has the characters it uses elsewhere) */
+  --font-zh-sys: "PingFang TC", "Heiti TC", "Microsoft JhengHei", "Noto Sans CJK TC", "Noto Sans TC", sans-serif;
   --nav-h: 64px;
   --c: #E3002C;
   --ci: #FFFFFF;
@@ -719,6 +721,54 @@ button.ph { border: 0; padding: 0; cursor: zoom-in; }
 .switch input:checked { background: #1E8E5A; }
 .switch input:checked::after { transform: translateX(16px); }
 .linkbtn { border: 0; background: none; padding: 4px 0; color: var(--muted); font-size: 14px; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+
+/* Food tab: Our food plan / Local picks */
+.seg { display: inline-flex; gap: 4px; margin: 18px 0 0; padding: 4px; border-radius: 999px; background: var(--surface); box-shadow: inset 0 0 0 1.5px var(--rule); }
+.seg button { min-height: 38px; padding: 7px 16px; border: 0; border-radius: 999px; background: none; color: var(--muted); font-size: 15px; font-weight: 800; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.daysum .day-picks { margin-left: 2px; padding: 0; font-size: inherit; }
+
+/* Local picks (the Food Masterlist sheet) */
+.pk-intro { margin: 16px 0 0; color: var(--muted); max-width: 62ch; font-size: 15.5px; }
+.pk-intro a { color: inherit; }
+.pk-areas { margin-top: 16px; }
+.pk-kinds { margin-top: 8px; }
+.fchip small { margin-left: 5px; font-size: 12.5px; font-weight: 700; opacity: .7; }
+.fchip .n { display: inline-block; min-width: 22px; margin-left: 7px; padding: 1px 6px; border-radius: 999px; background: var(--surface-2); color: var(--ink); font-size: 12.5px; font-weight: 800; }
+.fchip[aria-pressed="true"] .n { background: var(--gold); color: #3A2600; }
+.pk-head { margin: 24px 0 0; }
+.pk-head h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; margin: 0; font: 900 30px/1 var(--font-cond); }
+.pk-head h3 small { font: 700 15px/1 var(--font); color: var(--muted); }
+.pk-head p { margin: 6px 0 0; color: var(--muted); }
+.picks { --c: #E8A33D; display: grid; gap: 12px; margin-top: 14px; }
+.pick { display: grid; grid-template-columns: 108px minmax(0, 1fr); align-items: start; gap: 0 14px; padding: 12px; border-radius: var(--r-m); background: var(--surface); box-shadow: inset 0 0 0 1px var(--rule); }
+.pk-ph { width: 108px; height: 108px; border-radius: 12px; }
+.pk-ph .ph-zh { font-family: var(--font-zh-sys); font-weight: 700; }
+.pk-sample { position: absolute; inset: auto 0 0; z-index: 1; padding: 16px 7px 6px; background: linear-gradient(transparent, rgba(4, 8, 22, .72)); color: #fff; font-size: 10.5px; font-weight: 700; line-height: 1.2; text-align: left; }
+.pk-body { min-width: 0; }
+.pk-name { margin: 0; font: 800 18px/1.3 var(--font); overflow-wrap: anywhere; }
+.pk-name:lang(zh-Hant) { font: 600 19px/1.3 var(--font-zh-sys); }
+.pk-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; margin: 5px 0 0; font-size: 14px; line-height: 1.3; color: var(--muted); }
+.pk-stars, .pk-new { padding: 3px 7px 2px; border-radius: 999px; font-size: 12.5px; font-weight: 800; line-height: 1.2; white-space: nowrap; }
+.pk-stars { background: var(--gold); color: #3A2600; }
+.pk-new { background: var(--surface-2); color: var(--muted); }
+.pk-price { font-size: 12px; letter-spacing: -2px; white-space: nowrap; }
+.pk-note { margin: 6px 0 0; font-size: 15px; line-height: 1.4; }
+.pk-orig { margin: 3px 0 0; font: 400 13.5px/1.45 var(--font-zh-sys); color: var(--muted); }
+.pk-hours { margin: 6px 0 0; font-size: 13.5px; line-height: 1.4; color: var(--muted); }
+.pk-hours .warn { color: #B42318; font-weight: 700; }
+.pk-acts { grid-column: 1 / -1; margin-top: 10px; }
+.pk-acts .act { --c: #E8A33D; }
+.pk-more { margin-top: 14px; }
+.driver.sys .name, #driver.sys .name, #driver.sys .addr { font-family: var(--font-zh-sys); }
+@media (prefers-color-scheme: dark) {
+  .pk-hours .warn { color: #FF8A80; }
+}
+@media (min-width: 760px) {
+  .picks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pick { grid-template-columns: 124px minmax(0, 1fr); }
+  .pk-ph { width: 124px; height: 124px; }
+}
 
 /* ---------------- Budget ---------------- */
 .total {
