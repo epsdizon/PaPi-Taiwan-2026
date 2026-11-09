@@ -43,6 +43,10 @@ window.TRIP = {
     { no: "5J 313", date: "Wed, Dec 9", from: "Taoyuan Terminal 1", dep: "10:20 AM", to: "Manila NAIA Terminal 3", arr: "1:05 PM" }
   ],
 
+  // Day maps: a free CARTO basemaps key (carto.com/basemaps/apikey) for the nicer map style.
+  // Leave it "" to use OpenStreetMap's own map tiles.
+  mapKey: "cb1_54zu_1_a0ece80c2859a45cd8300009",
+
   /* Weather for each day: where to check the live forecast (Open-Meteo, free, no key),
      and what early December is usually like there (°C), shown until the forecast reaches that day */
   weather: [

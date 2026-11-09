@@ -768,31 +768,46 @@
     }
     return pts;
   }
+  /* Map tiles, best first: CARTO's (needs the free key in data.js), then plain OpenStreetMap ones.
+     When a source's tiles keep failing while online, the next one takes over, so the map never goes blank. */
+  const OSM_BY = '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors';
+  function tileSources() {
+    const osm = { url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', by: OSM_BY, cors: true };
+    const list = [osm, Object.assign({}, osm, { cors: false })];
+    if (!T.mapKey) return list;
+    const style = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark_all' : 'rastertiles/voyager';
+    const carto = (r) => ({
+      url: `https://basemaps.cartocdn.com/${style}/{z}/{x}/{y}${r}.png?key=${encodeURIComponent(T.mapKey)}`,
+      by: `${OSM_BY} &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>`,
+      cors: true, // lets the offline cache keep the tiles small
+    });
+    return [carto('{r}'), carto('')].concat(list); // {r}: sharper tiles on phone screens
+  }
+  function useTiles(i) {
+    const src = tileSources()[i];
+    if (!src) return;
+    if (MAP.tiles) MAP.map.removeLayer(MAP.tiles);
+    let loaded = 0;
+    let failed = 0;
+    MAP.tiles = window.L.tileLayer(src.url, { maxZoom: 19, crossOrigin: src.cors, attribution: src.by })
+      .on('tileload', () => { loaded += 1; })
+      .on('tileerror', () => {
+        failed += 1;
+        if (failed === 4 && !loaded && navigator.onLine !== false) useTiles(i + 1);
+      })
+      .addTo(MAP.map);
+  }
   function makeMap(L) {
     const el = $('#daymap');
     el.textContent = '';
     const map = L.map(el, { zoomSnap: 0.5, zoomDelta: 0.5, minZoom: 6, maxZoom: 18, scrollWheelZoom: false, dragging: !coarse() });
     map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
-    const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    MAP.tiles = L.tileLayer(`https://{s}.basemaps.cartocdn.com/${dark ? 'dark_all' : 'rastertiles/voyager'}/{z}/{x}/{y}{r}.png`, {
-      subdomains: 'abcd',
-      maxZoom: 19,
-      crossOrigin: true, // lets the offline cache keep the tiles small
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>',
-    }).addTo(map);
-    // If the tile server ever refuses cross-origin loading, fall back to plain images
-    let loaded = 0;
-    let failed = 0;
-    MAP.tiles.on('tileload', () => { loaded += 1; });
-    MAP.tiles.on('tileerror', () => {
-      failed += 1;
-      if (failed === 4 && !loaded && navigator.onLine !== false && MAP.tiles.options.crossOrigin) { MAP.tiles.options.crossOrigin = false; MAP.tiles.redraw(); }
-    });
+    MAP.map = map;
+    useTiles(0);
     MAP.path = L.polyline([], { weight: 4, opacity: 0.95, dashArray: '1 9', lineCap: 'round', interactive: false }).addTo(map);
     MAP.marks = L.layerGroup().addTo(map);
     map.on('zoomend', drawMarks);
     map.on('click', hidePick);
-    MAP.map = map;
   }
   function fitDay() {
     const { map, places } = MAP;
