@@ -441,6 +441,96 @@ main { display: block; }
 .daysum { margin: 14px 2px 0; color: var(--muted); }
 .daysum strong { color: var(--ink); }
 
+/* Weather for the day */
+.wx[hidden], .daymap[hidden] { display: none; }
+.wx { margin: 14px 0 0; padding: 14px 16px; border-radius: var(--r-m); background: var(--surface); box-shadow: inset 0 0 0 1px var(--rule); }
+.wx p { margin: 0; }
+.wx-main { display: flex; align-items: center; gap: 12px; }
+.wx-ic { display: grid; place-items: center; flex: none; width: 48px; height: 48px; border-radius: 50%; background: color-mix(in srgb, var(--c) 22%, var(--surface)); color: var(--ink); }
+.wx-ic svg.i { width: 28px; height: 28px; }
+.wx-t { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.wx-t b { font: 900 32px/1 var(--font-cond); letter-spacing: .005em; font-variant-numeric: tabular-nums; }
+.wx-rain, .wx-usual { display: inline-flex; align-items: center; gap: 3px; font-size: 15px; font-weight: 700; color: var(--muted); }
+.wx-rain svg.i { width: 15px; height: 15px; }
+.wx .wx-l { margin-top: 4px; font-size: 15px; font-weight: 600; color: var(--muted); }
+.wx .wx-now { margin-top: 10px; font-size: 15px; }
+.wx .wx-tip { margin-top: 10px; font-size: 15px; line-height: 1.45; text-wrap: pretty; }
+.wx .wx-src { margin-top: 6px; font-size: 13px; color: var(--muted); }
+.wx .wx-src:empty { display: none; }
+/* What to wear: little clothing pictures on paper tiles (light in both themes) */
+.wear { margin-top: 12px; }
+.wear .wear-h { font: 800 15px/1 var(--font); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.wear-list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: 12px 7px; }
+.wear-list li { display: flex; flex-direction: column; align-items: center; gap: 6px; min-width: 0; text-align: center; }
+.wear-tile { display: block; width: 100%; max-width: 84px; aspect-ratio: 1; padding: 7px; border-radius: 12px; background: #F5F1E8; }
+.wear-art { display: block; width: 100%; height: 100%; }
+.wear-lbl { font-size: 12.5px; font-weight: 700; line-height: 1.15; overflow-wrap: anywhere; }
+.wear .wear-kids { margin-top: 10px; font-size: 14.5px; line-height: 1.4; color: var(--muted); }
+.wx .wx-src a { color: inherit; }
+
+/* Map of the day */
+.daymap { margin: 14px 0 0; }
+.daymap > summary { display: flex; align-items: baseline; gap: 10px; padding: 8px 2px 10px; cursor: pointer; list-style: none; font: 800 21px/1 var(--font-cond); letter-spacing: .01em; }
+.daymap > summary::-webkit-details-marker { display: none; }
+.daymap > summary::after { content: ""; align-self: center; width: 9px; height: 9px; margin: -4px 4px 0 auto; border-right: 2.5px solid var(--muted); border-bottom: 2.5px solid var(--muted); transform: rotate(45deg); transition: transform .2s; }
+.daymap[open] > summary::after { transform: rotate(-135deg); margin-top: 4px; }
+.dm-count { font: 600 14px/1 var(--font); color: var(--muted); }
+.dm-wrap { position: relative; isolation: isolate; overflow: hidden; border-radius: var(--r-m); background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--rule); }
+.dm-canvas { height: 300px; }
+@media (min-width: 760px) { .dm-canvas { height: 380px; } }
+.dm-canvas.leaflet-container { background: var(--surface-2); font: 400 14px/1.4 var(--font); }
+.dm-off { display: grid; place-items: center; height: 100%; margin: 0; padding: 20px; text-align: center; color: var(--muted); }
+.dm-full { position: absolute; top: 10px; right: 10px; z-index: 1000; display: grid; place-items: center; width: 42px; height: 42px; padding: 0; border: 0; border-radius: 10px; background: var(--surface); color: var(--ink); box-shadow: 0 1px 5px rgba(4, 8, 24, .35); cursor: pointer; }
+.daymap.full .dm-wrap { position: fixed; inset: 0; z-index: 80; border-radius: 0; box-shadow: none; }
+.daymap.full .dm-canvas { height: 100%; }
+.daymap.full .dm-full { top: calc(10px + env(safe-area-inset-top)); }
+.dm-note { margin: 6px 2px 0; font-size: 13.5px; color: var(--muted); }
+.daymap .leaflet-bar a { background: var(--surface); color: var(--ink); border-bottom-color: var(--rule); }
+.daymap .leaflet-control-attribution { background: color-mix(in srgb, var(--surface) 85%, transparent); color: var(--muted); font-size: 11px; }
+.daymap .leaflet-control-attribution a { color: inherit; }
+/* Pins: the day's line color with stop numbers; the hotel and airport as icons */
+.mk .pin {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 27px;
+  height: 27px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--c);
+  color: var(--ci);
+  font: 800 16px/1 var(--font-cond);
+  letter-spacing: .02em;
+  white-space: nowrap;
+  box-shadow: 0 0 0 2.5px #fff, 0 3px 8px rgba(4, 8, 24, .45);
+  cursor: pointer;
+}
+.mk .pin b { font-weight: 800; padding-top: 1px; }
+.mk .pin.base { padding: 0 5px; background: #121A31; color: #F6C453; }
+.mk .pin.on { scale: 1.18; box-shadow: 0 0 0 2.5px #fff, 0 0 0 5.5px #121A31, 0 4px 10px rgba(4, 8, 24, .45); }
+.mk .pin svg.i { width: 16px; height: 16px; }
+.mk:focus-visible { outline: none; }
+.mk:focus-visible .pin { outline: 3px solid var(--gold); outline-offset: 2px; }
+/* The tapped pin's details: under the map, or over it when the map is big */
+.dm-pick { position: relative; margin-top: 10px; padding: 14px 16px; border-radius: var(--r-m); background: var(--surface); box-shadow: inset 0 0 0 1px var(--rule); }
+.dm-pick[hidden] { display: none; }
+.daymap.full .dm-pick { position: fixed; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); z-index: 81; max-height: 55vh; overflow: auto; margin: 0; box-shadow: 0 10px 34px rgba(4, 8, 24, .45); }
+.dm-x { position: absolute; top: 8px; right: 8px; display: grid; place-items: center; width: 36px; height: 36px; padding: 0; border: 0; border-radius: 50%; background: var(--surface-2); color: var(--ink); cursor: pointer; }
+.mp p { margin: 0; }
+.mp + .mp { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.mp .mp-h { padding-right: 40px; font: 900 23px/1.05 var(--font-cond); }
+.mp + .mp .mp-h { padding-right: 0; }
+.mp .mp-zh { margin-top: 3px; font-size: 14.5px; color: var(--muted); }
+.mp ul { list-style: none; margin: 8px 0 0; padding: 0; font-size: 15px; }
+.mp li + li { margin-top: 4px; }
+.mp li b { font-variant-numeric: tabular-nums; }
+.mp .mp-acts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
 /* The day as a metro line */
 .line { list-style: none; margin: 18px 0 0; padding: 0; position: relative; }
 .line::before {
@@ -733,6 +823,13 @@ button.ph { border: 0; padding: 0; cursor: zoom-in; }
 .note-box p + p { margin-top: 8px; }
 
 /* ---------------- Packing ---------------- */
+.flights { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.flights li { padding: 14px 16px; border-radius: var(--r-m); background: var(--surface); box-shadow: inset 0 0 0 1px var(--rule); }
+.flights p { margin: 0; }
+.flights .no { display: flex; justify-content: space-between; align-items: baseline; font: 900 26px/1 var(--font-cond); }
+.flights .no span { font: 700 15px/1 var(--font); color: var(--muted); }
+.flights .leg { margin-top: 6px; font-size: 15px; color: var(--muted); }
+.flights .leg b { display: inline-block; min-width: 76px; color: var(--ink); font-variant-numeric: tabular-nums; }
 .checks { list-style: none; margin: 0; padding: 0; }
 .checks label { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-top: 1px solid var(--rule); cursor: pointer; }
 .checks input { flex: none; width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--sign); }

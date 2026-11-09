@@ -137,6 +137,16 @@
     <div class="daybar" id="daybar" role="group" aria-label="Pick a day"></div>
     <div class="banner" id="banner"></div>
     <p class="daysum" id="daysum"></p>
+    <div class="wx" id="daywx" aria-live="polite" hidden></div>
+    <details class="daymap" id="daymap-box" open hidden>
+      <summary>Map of the day<span class="dm-count" id="daymap-count"></span></summary>
+      <div class="dm-wrap">
+        <div class="dm-canvas" id="daymap" role="region" aria-label="Map of the day's stops"></div>
+        <button type="button" class="dm-full" data-act="map-full" aria-label="Make the map bigger"></button>
+      </div>
+      <div class="dm-pick" id="daymap-pick" aria-live="polite" hidden></div>
+      <p class="dm-note">Numbers match the stops below. Tap a pin for directions. Dotted lines show the order, not the roads.</p>
+    </details>
     <ol class="line" id="line"></ol>
   </section>
 
@@ -260,6 +270,8 @@
       <h2 id="pack-h">Packing and prep</h2>
       <p>Your ticks are saved on this phone.</p>
     </div>
+    <h3 class="section-h">Flights</h3>
+    <ul class="flights" id="flights"></ul>
     <h3 class="section-h">Before the trip</h3>
     <ul class="checks" id="confirm"></ul>
     <h3 class="section-h">For the little ones</h3>
@@ -312,6 +324,7 @@
 
 <noscript><p style="padding:16px">Turn on JavaScript to see the trip plan.</p></noscript>
 <script src="assets/data.js"></script>
+<script src="assets/outfit.js"></script>
 <script src="assets/app.js"></script>
 </body>
 </html>

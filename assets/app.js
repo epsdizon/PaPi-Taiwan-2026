@@ -94,6 +94,23 @@
     bowl: svg('<path d="M3 11h18a9 9 0 0 1-18 0z"/><path d="M8 21h8"/><path d="M13 9l7-6M10 9l6-7"/>'),
     search: svg('<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/>'),
     bag: svg('<path d="M5 8h14l-1.2 12H6.2z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>'),
+    home: svg('<path d="M3.5 11.5L12 4.5l8.5 7"/><path d="M6 9.8V20h12V9.8"/><path d="M10 20v-5.5h4V20"/>'),
+    plane: svg('<path d="M10.6 4a1.4 1.4 0 0 1 2.8 0v5.6l7.1 4.1v2.1l-7.1-2.2v4.3l2.4 1.8v1.7L12 20.5l-3.8.9v-1.7l2.4-1.8v-4.3l-7.1 2.2v-2.1l7.1-4.1z"/>'),
+    expand: svg('<path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>'),
+    close: svg('<path d="M6 6l12 12M18 6L6 18"/>'),
+  };
+  // Weather icons
+  const CLOUD = (y) => `<path d="M7.2 ${y}h9.9a4.2 4.2 0 0 0 .5-8.4 5.8 5.8 0 0 0-11.1 1.6 3.5 3.5 0 0 0 .7 6.8z"/>`;
+  const WXI = {
+    sun: svg('<circle cx="12" cy="12" r="4.2"/><path d="M12 2.8v2.1M12 19.1v2.1M2.8 12h2.1M19.1 12h2.1M5.5 5.5L7 7M17 17l1.5 1.5M5.5 18.5L7 17M17 7l1.5-1.5"/>'),
+    partly: svg('<path d="M8.5 2.8v1.7M3.1 5.1l1.2 1.2M1.8 10.4h1.7M13.9 5.1l-1.2 1.2"/><path d="M5 12.8a4 4 0 0 1 7.3-3.9"/><path d="M8.6 20.5h8.6a3.8 3.8 0 0 0 .4-7.6 5.2 5.2 0 0 0-10 1.4 3.1 3.1 0 0 0 1 6.2z"/>'),
+    cloud: svg(CLOUD(19)),
+    fog: svg('<path d="M6.3 13.5a3.4 3.4 0 0 1 .6-4.9 5.8 5.8 0 0 1 10.7.3 3.6 3.6 0 0 1 2.3 4.6"/><path d="M3 16.8h18M5.5 20.3h13"/>'),
+    rain: svg(CLOUD(15.5) + '<path d="M8.5 18.5l-1.1 2.7M12.5 18.5l-1.1 2.7M16.5 18.5l-1.1 2.7"/>'),
+    storm: svg(CLOUD(15.5) + '<path d="M12.8 15.6l-2.3 3.4h3.2l-2.3 3.4"/>'),
+    snow: svg(CLOUD(15.5) + '<path d="M8 19.5h.01M12 18.5h.01M16 19.5h.01M10 22h.01M14 22h.01"/>'),
+    usual: svg('<path d="M14 14.6V5.2a2 2 0 0 0-4 0v9.4a4 4 0 1 0 4 0z"/><path d="M12 9.5v6.5"/>'),
+    drop: svg('<path d="M12 3.5s6 6.3 6 10.4a6 6 0 0 1-12 0c0-4.1 6-10.4 6-10.4z"/>'),
   };
   const moveIcon = (t) => (/gondola|cable car|ropeway/i.test(t) ? ICON.gondola : /mrt/i.test(t) ? ICON.train : /^walk/i.test(t) ? ICON.walk : ICON.van);
 
@@ -144,8 +161,13 @@
   };
   const mapUrl = (key) => {
     const p = P[key];
+    if (p.url) return p.url; // an exact Google Maps link, e.g. the hotel's
     return 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(p.map || p.en + ', Taiwan');
   };
+  // The day's stops as shown: a breakfast stop becomes the hotel's free breakfast when that's switched on
+  const dayStops = (d) => stopsOf(d).map((s) => (s.place === 'breakfast' && state.settings.hotelBreakfast && (toMin(s.time) ?? 0) >= 7 * 60
+    ? Object.assign({}, s, { title: 'Free breakfast at the hotel', tip: 'Or try a Taiwanese breakfast shop nearby: dan bing and soy milk, about NT$100.', place: '', at: 'hotel' })
+    : s));
   // Van seating charts a stop can show: "seating" (from the airport), "seatingTour" (tour days), "seatingHome" (ride home)
   const seatChart = (k) => (['seating', 'seatingTour', 'seatingHome'].includes(k) && T[k] ? T[k] : null);
   const zhShort = (key) => ((P[key] && P[key].zh) || '').split(/[\s/]/)[0].slice(0, 2);
@@ -492,7 +514,7 @@
     const d = state.day;
     const L = line(d);
     const meta = plan().days[d];
-    const stops = stopsOf(d);
+    const stops = dayStops(d);
     const view = $('#days');
     view.style.setProperty('--c', L.color);
     view.style.setProperty('--ci', L.ink);
@@ -510,6 +532,7 @@
       + (keys.length ? `<button type="button" class="photos-btn" data-act="gallery" data-place="${esc(keys[0])}">${ICON.camera}More photos</button>` : '');
 
     daySummary(compute());
+    renderWeather();
 
     const isToday = d === tripIdx;
     const now = nowMinutes();
@@ -517,10 +540,6 @@
     if (isToday) next = stops.findIndex((s) => { const m = toMin(s.time); return m === null || m + 30 >= now; });
     let html = '';
     stops.forEach((s, i) => {
-      const hotelBreakfast = s.place === 'breakfast' && state.settings.hotelBreakfast && (toMin(s.time) ?? 0) >= 7 * 60;
-      if (hotelBreakfast) {
-        s = Object.assign({}, s, { title: 'Free breakfast at the hotel', tip: 'Or try a Taiwanese breakfast shop nearby: dan bing and soy milk, about NT$100.', place: '' });
-      }
       const p = s.place ? P[s.place] : null;
       const st = isToday ? (next === -1 || i < next ? 'done' : i === next ? 'next' : '') : '';
       if (s.move) html += `<li class="move" style="--i:${i}"><span>${moveIcon(s.move)}${esc(s.move)}</span></li>`;
@@ -553,6 +572,7 @@
     if (animate && motionOK()) { ol.classList.remove('go'); void ol.offsetWidth; ol.classList.add('go'); }
     applyPhotos($('#days'));
     requestAnimationFrame(() => placeVan(animate));
+    renderDayMap();
   }
 
   let vanBusyUntil = 0;
@@ -584,6 +604,321 @@
       van.style.transition = 'none';
       van.style.top = y(stops[target]) + 'px';
     }
+  }
+
+  // ---------- Weather for the day (Open-Meteo: live, free, no key) ----------
+  const WX = T.weather || [];
+  const WX_KEY = WX.map((w) => w.ll.join(',')).join(';');
+  let wx = (() => { const c = store.get('wx', null); return c && c.key === WX_KEY && Array.isArray(c.loc) ? c : null; })();
+  let wxBusy = null;
+  function loadWeather(force) {
+    if (!WX.length || (!force && wx && Date.now() - wx.t < 15 * 60e3)) return Promise.resolve(false);
+    if (wxBusy) return wxBusy;
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + WX.map((w) => w.ll[0]).join(',')
+      + '&longitude=' + WX.map((w) => w.ll[1]).join(',')
+      + '&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max'
+      + '&current=temperature_2m,weather_code,is_day&timezone=Asia%2FTaipei&past_days=7&forecast_days=16';
+    wxBusy = fetchT(url, 9000, { cache: 'no-store' })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((j) => {
+        const list = Array.isArray(j) ? j : j ? [j] : []; // one place comes back as an object, several as a list
+        if (list.length !== WX.length || !list.every((x) => x.daily && Array.isArray(x.daily.time))) return false;
+        wx = {
+          key: WX_KEY,
+          t: Date.now(),
+          loc: list.map((x) => ({
+            time: x.daily.time,
+            code: x.daily.weather_code || [],
+            max: x.daily.temperature_2m_max || [],
+            min: x.daily.temperature_2m_min || [],
+            rain: x.daily.precipitation_probability_max || [],
+            now: x.current ? { temp: x.current.temperature_2m, code: x.current.weather_code, day: x.current.is_day !== 0 } : null,
+          })),
+        };
+        store.set('wx', wx);
+        return true;
+      })
+      .catch(() => false)
+      .finally(() => { wxBusy = null; });
+    return wxBusy;
+  }
+  // WMO weather codes, as words and an icon
+  const wxLabel = (c, day = true) => (
+    c === 0 ? [day ? 'Sunny' : 'Clear', 'sun']
+      : c === 1 ? [day ? 'Mostly sunny' : 'Mostly clear', 'partly']
+        : c === 2 ? ['Partly cloudy', 'partly']
+          : c === 3 ? ['Cloudy', 'cloud']
+            : c === 45 || c === 48 ? ['Foggy', 'fog']
+              : c >= 51 && c <= 57 ? ['Drizzle', 'rain']
+                : c === 61 || c === 66 ? ['Light rain', 'rain']
+                  : c === 63 ? ['Rain', 'rain']
+                    : c === 65 || c === 67 ? ['Heavy rain', 'rain']
+                      : c === 80 ? ['Light showers', 'rain']
+                        : c === 81 ? ['Showers', 'rain']
+                          : c === 82 ? ['Heavy showers', 'rain']
+                            : (c >= 71 && c <= 77) || c === 85 || c === 86 ? ['Snow', 'snow']
+                              : c >= 95 ? ['Thunderstorms', 'storm'] : ['', 'cloud']);
+  function wxTip(lo, hi, rain, ic) {
+    const t = [lo < 15 ? 'Warm jackets for everyone, especially the kids.'
+      : lo < 19 ? 'Bring light jackets for the morning and evening.'
+        : hi >= 28 ? 'Light clothes, hats, sunscreen and water.'
+          : 'T-shirt weather, with a thin layer for the cold MRT and malls.'];
+    if (rain >= 50 || /rain|storm|snow/.test(ic)) t.push('Pack umbrellas and the stroller rain covers.');
+    else if (rain >= 25) t.push('Keep a small umbrella in the bag.');
+    return t.join(' ');
+  }
+  const WX_BY = 'Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>.'; // credit the weather data (CC BY 4.0)
+  // What to wear, as little pictures (outfit.js); the plain-text tip is the fallback
+  const wearHtml = (wear, tip) => (!window.OUTFIT ? `<p class="wx-tip">${esc(tip)}</p>`
+    : (() => {
+      const o = window.OUTFIT.pick(wear);
+      return '<div class="wear"><p class="wear-h">What to wear</p><ul class="wear-list">'
+        + o.items.map((it) => `<li><span class="wear-tile">${it.svg}</span><span class="wear-lbl">${esc(it.label)}</span></li>`).join('')
+        + `</ul><p class="wear-kids">${esc(o.kids)}</p></div>`;
+    })());
+  const hm = (ts) => new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Taipei', hour: 'numeric', minute: '2-digit' }).format(new Date(ts));
+  const num = (v) => typeof v === 'number' && Number.isFinite(v);
+  function renderWeather() {
+    const box = $('#daywx');
+    if (!box) return;
+    const d = state.day;
+    const w = WX[d];
+    box.hidden = !w;
+    if (!w) return;
+    const iso = T.dates[d];
+    const L = wx && wx.loc[d];
+    const i = L ? L.time.indexOf(iso) : -1;
+    const ahead = daysBetween(iso, today); // days from today to this trip day
+    const now = L && L.now && num(L.now.temp) ? L.now : null;
+    const nowLbl = now ? wxLabel(now.code, now.day)[0] : '';
+    const nowTxt = now ? `${Math.round(now.temp)}°C${nowLbl ? ', ' + nowLbl.toLowerCase() : ''}` : '';
+    const card = (ic, temps, side, sub) => `<div class="wx-main"><span class="wx-ic">${WXI[ic]}</span><div>`
+      + `<p class="wx-t"><b>${temps}</b>${side}</p><p class="wx-l">${sub}</p></div></div>`;
+    if (i >= 0 && num(L.max[i]) && num(L.min[i])) {
+      const fresh = Date.now() - wx.t < 2 * 3600e3;
+      const kind = ahead < 0 ? 'The weather that day' : ahead > 7 ? 'Long-range forecast (it will still change)' : 'Live forecast';
+      const [label, ic] = wxLabel(L.code[i]);
+      const rain = num(L.rain[i]) ? Math.round(L.rain[i]) : null;
+      // A forecast older than 2 hours means there's been no signal since then: say when it's from
+      const stamp = fresh ? `${kind}, updated ${hm(wx.t)}.`
+        : `${ahead > 7 ? kind + '. ' : ''}Saved ${taipeiDate(wx.t) === taipeiDate(Date.now()) ? '' : shortDate(taipeiDate(wx.t)) + ', '}${hm(wx.t)}. It updates when you're online.`;
+      box.innerHTML = card(ic, `${Math.round(L.min[i])}–${Math.round(L.max[i])}°C`,
+        rain === null ? '' : `<span class="wx-rain" title="Chance of rain">${WXI.drop}${rain}% rain</span>`,
+        `${esc(label || 'Forecast')} · ${esc(w.place)}`)
+        + (ahead === 0 && nowTxt ? `<p class="wx-now">Right now: <b>${esc(nowTxt)}</b></p>` : '')
+        + (w.note ? `<p class="wx-tip">${esc(w.note)}</p>` : '')
+        + wearHtml({ lo: L.min[i], hi: L.max[i], rain, ic }, wxTip(L.min[i], L.max[i], rain, ic))
+        + `<p class="wx-src">${esc(stamp)} ${WX_BY}</p>`;
+      return;
+    }
+    const [lo, hi] = w.usual || [];
+    const from = shortDate(new Date(Date.parse(iso + 'T00:00:00Z') - 15 * 864e5).toISOString().slice(0, 10));
+    const when = ahead < -7 ? ''
+      : ahead > 15 ? `The live forecast starts ${from}.`
+        : wxBusy ? 'Checking the live forecast…' : 'The live forecast didn\'t load. It will try again when you\'re online.';
+    box.innerHTML = card('usual', `${lo}–${hi}°C`, '<span class="wx-usual">usually</span>', `Early December · ${esc(w.place)}`)
+      + (w.note ? `<p class="wx-tip">${esc(w.note)}</p>` : '')
+      + wearHtml({ lo, hi, wet: !!w.wet }, wxTip(lo, hi, null, ''))
+      + `<p class="wx-src">${esc([when, nowTxt ? `Right now there: ${nowTxt}.` : ''].filter(Boolean).join(' '))}${nowTxt ? ' ' + WX_BY : ''}</p>`;
+  }
+
+  // ---------- Map of the day (Leaflet with CARTO map tiles, loaded the first time it's opened) ----------
+  let leaflet = null;
+  const loadLeaflet = () => leaflet || (leaflet = new Promise((resolve, reject) => {
+    if (window.L) { resolve(window.L); return; }
+    let left = 2;
+    const done = () => { left -= 1; if (!left) { if (window.L) resolve(window.L); else reject(new Error('Leaflet')); } };
+    const fail = () => { leaflet = null; reject(new Error('Leaflet')); };
+    const css = Object.assign(document.createElement('link'), { rel: 'stylesheet', href: 'assets/vendor/leaflet/leaflet.css', onload: done, onerror: fail });
+    const js = Object.assign(document.createElement('script'), { src: 'assets/vendor/leaflet/leaflet.js', onload: done, onerror: fail });
+    document.head.insertBefore(css, $('link[rel="stylesheet"]')); // before style.css, so the site's styles win
+    document.head.append(js);
+  }));
+  const MAP = { map: null, tiles: null, marks: null, path: null, places: [], legs: [], sel: [], sig: '' };
+  const coarse = () => window.matchMedia('(pointer: coarse)').matches;
+  const BASE = { hotel: ICON.home, airport: ICON.plane }; // drawn as icons instead of stop numbers
+  // [3, 4, 5, 8] → "3–5·8"
+  const numText = (ns) => ns.reduce((acc, n) => { const r = acc[acc.length - 1]; if (r && n === r[1] + 1) r[1] = n; else acc.push([n, n]); return acc; }, [])
+    .map(([a, b]) => (a === b ? `${a}` : b === a + 1 ? `${a}·${b}` : `${a}–${b}`)).join('·');
+  // The day's places in stop order, and the legs between them
+  function mapDay(d) {
+    const places = [];
+    const path = [];
+    dayStops(d).forEach((s, i) => {
+      const key = s.at || s.place;
+      if (!key || !P[key] || !P[key].ll) return;
+      let p = places.find((x) => x.key === key);
+      if (!p) places.push(p = { key, ll: P[key].ll, stops: [] });
+      p.stops.push({ n: i + 1, time: s.time, title: s.title });
+      if (path[path.length - 1] !== key) path.push(key);
+    });
+    return { places, legs: path.slice(1).map((k, i) => [P[path[i]].ll, P[k].ll]) };
+  }
+  // A leg drawn as a gentle curve bending to the right, so a there-and-back trip shows as two lines
+  function arc(a, b) {
+    const k = Math.cos((a[0] * Math.PI) / 180);
+    const [ax, ay, bx, by] = [a[1] * k, a[0], b[1] * k, b[0]];
+    const cx = (ax + bx) / 2 + (by - ay) * 0.16;
+    const cy = (ay + by) / 2 - (bx - ax) * 0.16;
+    const pts = [];
+    for (let i = 0; i <= 20; i += 1) {
+      const t = i / 20;
+      const u = 1 - t;
+      pts.push([u * u * ay + 2 * u * t * cy + t * t * by, (u * u * ax + 2 * u * t * cx + t * t * bx) / k]);
+    }
+    return pts;
+  }
+  function makeMap(L) {
+    const el = $('#daymap');
+    el.textContent = '';
+    const map = L.map(el, { zoomSnap: 0.5, zoomDelta: 0.5, minZoom: 6, maxZoom: 18, scrollWheelZoom: false, dragging: !coarse() });
+    map.attributionControl.setPrefix('<a href="https://leafletjs.com" target="_blank" rel="noopener">Leaflet</a>');
+    const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    MAP.tiles = L.tileLayer(`https://{s}.basemaps.cartocdn.com/${dark ? 'dark_all' : 'rastertiles/voyager'}/{z}/{x}/{y}{r}.png`, {
+      subdomains: 'abcd',
+      maxZoom: 19,
+      crossOrigin: true, // lets the offline cache keep the tiles small
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions" target="_blank" rel="noopener">CARTO</a>',
+    }).addTo(map);
+    // If the tile server ever refuses cross-origin loading, fall back to plain images
+    let loaded = 0;
+    let failed = 0;
+    MAP.tiles.on('tileload', () => { loaded += 1; });
+    MAP.tiles.on('tileerror', () => {
+      failed += 1;
+      if (failed === 4 && !loaded && navigator.onLine !== false && MAP.tiles.options.crossOrigin) { MAP.tiles.options.crossOrigin = false; MAP.tiles.redraw(); }
+    });
+    MAP.path = L.polyline([], { weight: 4, opacity: 0.95, dashArray: '1 9', lineCap: 'round', interactive: false }).addTo(map);
+    MAP.marks = L.layerGroup().addTo(map);
+    map.on('zoomend', drawMarks);
+    map.on('click', hidePick);
+    MAP.map = map;
+  }
+  function fitDay() {
+    const { map, places } = MAP;
+    if (!map || !places.length) return;
+    if (places.length === 1) map.setView(places[0].ll, 15, { animate: false });
+    else map.fitBounds(window.L.latLngBounds(places.map((p) => p.ll)), { padding: [34, 34], maxZoom: 15, animate: false });
+  }
+  // A pin's label: stop numbers, plus the hotel or airport icon
+  const pinOf = (items) => {
+    const nums = items.filter((p) => !BASE[p.key]).flatMap((p) => p.stops.map((s) => s.n)).sort((a, b) => a - b);
+    const icons = items.filter((p) => BASE[p.key]).map((p) => BASE[p.key]);
+    const txt = nums.length ? numText(nums) : '';
+    return { txt, icons, w: 14 + icons.length * 18 + txt.length * 7.6 }; // w: about how wide it draws, in px
+  };
+  // One pin per place; pins that would overlap at this zoom merge until you zoom in
+  function drawMarks() {
+    const { map, places, marks } = MAP;
+    const L = window.L;
+    if (!map || !marks || !places.length) return;
+    marks.clearLayers();
+    const at = (items) => { const pts = items.map((p) => map.latLngToLayerPoint(p.ll)); return [pts.reduce((a, q) => a + q.x, 0) / pts.length, pts.reduce((a, q) => a + q.y, 0) / pts.length]; };
+    const groups = places.map((p) => ({ items: [p], xy: at([p]), w: pinOf([p]).w }));
+    for (let merged = true; merged;) {
+      merged = false;
+      for (let i = 0; i < groups.length && !merged; i += 1) {
+        for (let j = i + 1; j < groups.length && !merged; j += 1) {
+          const [a, b] = [groups[i], groups[j]];
+          if (Math.abs(a.xy[0] - b.xy[0]) < (a.w + b.w) / 2 + 4 && Math.abs(a.xy[1] - b.xy[1]) < 30) {
+            const items = a.items.concat(b.items);
+            groups.splice(j, 1);
+            groups[i] = { items, xy: at(items), w: pinOf(items).w };
+            merged = true;
+          }
+        }
+      }
+    }
+    groups.forEach(({ items }) => {
+      const ll = [0, 1].map((k) => items.reduce((a, p) => a + p.ll[k], 0) / items.length);
+      const { txt, icons } = pinOf(items);
+      const nums = txt ? [txt] : [];
+      const title = items.map((p) => P[p.key].en).join(', ');
+      const on = items.some((p) => MAP.sel.includes(p.key));
+      L.marker(ll, {
+        title,
+        riseOnHover: true,
+        zIndexOffset: on ? 1000 : 0,
+        icon: L.divIcon({ className: 'mk', iconSize: [0, 0], html: `<span class="pin${nums.length ? '' : ' base'}${on ? ' on' : ''}">${icons.join('')}${txt ? `<b>${txt}</b>` : ''}</span>` }),
+      }).on('click', () => openMark(items)).addTo(marks);
+    });
+  }
+  const pickHtml = (items) => items.map((p) => {
+    const pl = P[p.key];
+    return `<div class="mp"><p class="mp-h">${esc(pl.en)}</p>${pl.zh ? `<p class="mp-zh" lang="zh-Hant">${esc(pl.zh)}</p>` : ''}`
+      + `<ul>${p.stops.map((s) => `<li><b>${esc(s.time)}</b> ${esc(s.title)}</li>`).join('')}</ul>`
+      + `<p class="mp-acts"><a class="act" href="${esc(mapUrl(p.key))}" target="_blank" rel="noopener">${ICON.pin}Google Maps</a>`
+      + `<button type="button" class="act" data-act="driver" data-place="${esc(p.key)}">${ICON.driver}Show driver</button></p></div>`;
+  }).join('');
+  function openMark(items) {
+    const map = MAP.map;
+    // A shared pin for places far enough apart: zoom in to split it. Same building: show the details.
+    const apart = items.some((p) => items.some((q) => map.distance(p.ll, q.ll) > 90));
+    if (apart && map.getZoom() < 16) {
+      const b = window.L.latLngBounds(items.map((p) => p.ll));
+      if (motionOK()) map.flyToBounds(b, { padding: [60, 60], maxZoom: 17, duration: 0.6 });
+      else map.fitBounds(b, { padding: [60, 60], maxZoom: 17 });
+      return;
+    }
+    // The details show in a card under the map (or over it when the map is big)
+    const card = $('#daymap-pick');
+    MAP.sel = items.map((p) => p.key);
+    card.innerHTML = `<button type="button" class="dm-x" data-act="map-unpick" aria-label="Close">${ICON.close}</button>${pickHtml(items)}`;
+    card.hidden = false;
+    drawMarks();
+    if (!$('#daymap-box').classList.contains('full')) {
+      const r = card.getBoundingClientRect();
+      const bottom = window.innerHeight - (navOffset() ? 12 : 76); // keep it above the phone's tab bar
+      if (r.bottom > bottom) window.scrollBy({ top: r.bottom - bottom, behavior: motionOK() ? 'smooth' : 'auto' });
+    }
+  }
+  function hidePick() {
+    const card = $('#daymap-pick');
+    if (!card || card.hidden) return;
+    card.hidden = true;
+    MAP.sel = [];
+    drawMarks();
+  }
+  async function renderDayMap() {
+    const box = $('#daymap-box');
+    if (!box) return;
+    const { places, legs } = mapDay(state.day);
+    box.hidden = !places.length;
+    $('#daymap-count').textContent = places.length ? `${places.length} ${places.length === 1 ? 'place' : 'places'}` : '';
+    if (!places.length || !box.open || $('#days').hidden) return;
+    let L;
+    try { L = await loadLeaflet(); } catch (e) {
+      $('#daymap').innerHTML = '<p class="dm-off">The map needs a connection to load. Open this day again when you\'re online.</p>';
+      return;
+    }
+    if (!box.open || $('#days').hidden) return;
+    if (!MAP.map) makeMap(L);
+    MAP.map.invalidateSize();
+    const sig = [state.plan, state.day, state.settings.hotelBreakfast].join('|');
+    if (sig === MAP.sig) return;
+    MAP.sig = sig;
+    MAP.places = places;
+    MAP.sel = [];
+    $('#daymap-pick').hidden = true;
+    MAP.path.setLatLngs(legs.map(([a, b]) => arc(a, b))).setStyle({ color: line(state.day).color });
+    fitDay();
+    drawMarks();
+  }
+  function mapFull(on) {
+    const box = $('#daymap-box');
+    if (!box || box.classList.contains('full') === on) return;
+    box.classList.toggle('full', on);
+    document.body.classList.toggle('locked', on);
+    const b = $('.dm-full', box);
+    b.innerHTML = on ? ICON.close : ICON.expand;
+    b.setAttribute('aria-label', on ? 'Close the big map' : 'Make the map bigger');
+    const map = MAP.map;
+    if (!map) return;
+    map.invalidateSize();
+    if (coarse()) map.dragging[on ? 'enable' : 'disable']();
+    map.scrollWheelZoom[on ? 'enable' : 'disable']();
+    fitDay();
+    drawMarks();
   }
 
   // ---------- Food ----------
@@ -978,6 +1313,13 @@
     const list = (id, arr, pre) => {
       $(id).innerHTML = arr.map((t, i) => `<li><label><input type="checkbox" data-act="check" data-k="${pre}${i}"${checks[pre + i] ? ' checked' : ''}><span>${esc(t)}</span></label></li>`).join('');
     };
+    // Flights, from data.js
+    const fl = $('#flights');
+    if (fl) {
+      fl.innerHTML = (T.flights || []).map((f) => `<li><p class="no">${esc(f.no)}<span>${esc(f.date)}</span></p>`
+        + `<p class="leg"><b>${esc(f.dep)}</b> ${esc(f.from)}</p><p class="leg"><b>${esc(f.arr)}</b> ${esc(f.to)}</p></li>`).join('');
+      fl.hidden = !(T.flights || []).length;
+    }
     list('#confirm', T.confirm, 'c');
     list('#packlist', T.pack, 'p');
     $('#tips').innerHTML = T.tips.map(([h, b]) => `<div><dt>${esc(h)}</dt><dd>${esc(b)}</dd></div>`).join('');
@@ -1221,7 +1563,7 @@
     if (tab === 'food') renderFood();
     if (tab === 'explore') renderExplore();
     if (tab === 'budget') renderBudget();
-    if (tab === 'days') { if (opts.render) renderDays(true); else requestAnimationFrame(() => placeVan(false)); }
+    if (tab === 'days') { if (opts.render) renderDays(true); else requestAnimationFrame(() => { placeVan(false); renderDayMap(); }); } else mapFull(false);
     updateRoute();
     const hash = tab === 'days' ? `#day-${state.day + 1}` : '#' + tab;
     if (location.hash !== hash) history.replaceState(null, '', hash);
@@ -1321,6 +1663,10 @@
     } else if (act === 'reset-checks') {
       store.del('checks');
       renderPack();
+    } else if (act === 'map-full') {
+      mapFull(!$('#daymap-box').classList.contains('full'));
+    } else if (act === 'map-unpick') {
+      hidePick();
     } else if (act === 'reload') {
       location.reload();
     } else if (act === 'jump') {
@@ -1422,6 +1768,8 @@
       else if (e.key === 'ArrowLeft') lbGo(-1);
     } else if ($('#driver').classList.contains('open') && e.key === 'Escape') {
       closeDriver();
+    } else if (e.key === 'Escape' && $('#daymap-box.full')) {
+      mapFull(false);
     }
   });
   $('#lb-track').addEventListener('scroll', () => requestAnimationFrame(lbCount), { passive: true });
@@ -1432,7 +1780,16 @@
     renderHero();
     buildSetup();
     renderPack();
+    // The day map remembers whether it was left open or closed
+    const mbox = $('#daymap-box');
+    $('.dm-full', mbox).innerHTML = ICON.expand;
+    mbox.open = store.get('mapOpen', true);
+    mbox.addEventListener('toggle', () => {
+      store.set('mapOpen', mbox.open);
+      if (mbox.open) renderDayMap(); else mapFull(false);
+    });
     const fromLink = fromHash();
+    loadWeather(false).then(renderWeather); // started first, so the card can say it's checking
     renderDays(true);
     showTab(fromLink || 'days');
     if (fromLink) setTimeout(scrollToMain, 60);
@@ -1444,6 +1801,10 @@
       if (state.tab === 'food') renderFood();
       if (state.tab === 'explore') renderExplore();
     });
+    // Live weather: check now, every few minutes while the site is open, and when it comes back on screen
+    const freshWeather = () => { if (!document.hidden) loadWeather(false).then((changed) => { if (changed) renderWeather(); }); };
+    setInterval(freshWeather, 5 * 60e3);
+    document.addEventListener('visibilitychange', freshWeather);
 
     // During the trip, keep "Up next" current
     if (tripIdx >= 0) {

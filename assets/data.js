@@ -34,8 +34,25 @@ window.TRIP = {
     alt: "Ride home seating chart, Dec 9, in 2 nine-seaters: 1 seat up front, then rows of 2, 2 and 3. Van 1: Pao in front; Je and Yuki; Gelo and Kylian; Kim and bags in the back. Van 2: Gian in front; Angelou and Aisla; bags in row 3; Joe, Sekai and Naz in the back. Barts, Myles, Sarah and Edward aren't on this ride."
   },
 
-  // Live countdown on the cover. Update "to" and "note" once the flight is booked (Taipei time, +08:00).
-  countdown: { to: "2026-12-04T12:00:00+08:00", label: "Until we land in Taipei", note: "Fri, Dec 4, 12:00 PM Taipei time" },
+  // Live countdown on the cover (Taipei time, +08:00): Cebu Pacific 5J 312 lands at Taoyuan Terminal 1
+  countdown: { to: "2026-12-04T09:05:00+08:00", label: "Until we land in Taipei", note: "Fri, Dec 4, 9:05 AM · Cebu Pacific 5J 312" },
+
+  // Flights (local times)
+  flights: [
+    { no: "5J 312", date: "Fri, Dec 4", from: "Manila NAIA Terminal 3", dep: "6:35 AM", to: "Taoyuan Terminal 1", arr: "9:05 AM" },
+    { no: "5J 313", date: "Wed, Dec 9", from: "Taoyuan Terminal 1", dep: "10:20 AM", to: "Manila NAIA Terminal 3", arr: "1:05 PM" }
+  ],
+
+  /* Weather for each day: where to check the live forecast (Open-Meteo, free, no key),
+     and what early December is usually like there (°C), shown until the forecast reaches that day */
+  weather: [
+    { place: "Taipei", ll: [25.042, 121.508], usual: [16, 22] },
+    { place: "Taipei Zoo and Maokong", ll: [24.996, 121.582], usual: [15, 21] },
+    { place: "Sun Moon Lake", ll: [23.86, 120.92], usual: [12, 21], note: "Chilly in the morning by the lake, warmer in Taichung by evening." },
+    { place: "Jiufen and Shifen", ll: [25.109, 121.845], usual: [14, 18], wet: true, note: "Jiufen is often drizzly and windy in December." },
+    { place: "Taipei", ll: [25.088, 121.52], usual: [16, 22] },
+    { place: "Taoyuan Airport", ll: [25.078, 121.232], usual: [15, 21] }
+  ],
 
   // Group setup. Every number can be changed on the Budget tab.
   settings: {
@@ -96,47 +113,47 @@ window.TRIP = {
      commons = what to search on Wikimedia Commons for the photo gallery.
      photo = a direct image URL that overrides everything (optional). */
   places: {
-    airport:     { en: "Taoyuan International Airport", zh: "桃園國際機場", map: "Taoyuan International Airport Terminal 1", wiki: ["Taoyuan International Airport"], commons: "Taoyuan International Airport terminal" },
-    hotel:       { en: "Orange Hotel Han Zhong (Ximen)", zh: "桔子商旅 台北漢中店", addr: "台北市萬華區漢中街170號", map: "Orange Hotel - Han Zhong (Xi Men), No. 170, Hanzhong St, Wanhua District, Taipei", note: "In Ximending, about 5 minutes' walk from Ximen MRT.", photoless: true },
-    t101:        { en: "Taipei 101", zh: "台北101", addr: "台北市信義區信義路五段7號", wiki: ["Taipei 101"], commons: "Taipei 101" },
-    dtf:         { en: "Din Tai Fung, Taipei 101", zh: "鼎泰豐 台北101店", addr: "台北101購物中心 B1", map: "Din Tai Fung Taipei 101", wiki: ["Xiaolongbao", "Din Tai Fung"], commons: "Din Tai Fung" },
-    cks:         { en: "Chiang Kai-shek Memorial Hall", zh: "中正紀念堂", addr: "台北市中正區中山南路21號", wiki: ["Chiang Kai-shek Memorial Hall"], commons: "Chiang Kai-shek Memorial Hall" },
-    longshan:    { en: "Longshan Temple", zh: "艋舺龍山寺", addr: "台北市萬華區廣州街211號", map: "Longshan Temple Taipei", wiki: ["Bangka Lungshan Temple", "Lungshan Temple of Manka"], commons: "Lungshan Temple Taipei" },
+    airport:     { en: "Taoyuan International Airport", zh: "桃園國際機場", map: "Taoyuan International Airport Terminal 1", wiki: ["Taoyuan International Airport"], commons: "Taoyuan International Airport terminal", ll: [25.0805, 121.2384] },
+    hotel:       { en: "Orange Hotel Han Zhong (Ximen)", zh: "桔子商旅 台北漢中店", addr: "台北市萬華區漢中街170號", map: "Orange Hotel - Han Zhong (Xi Men), No. 170, Hanzhong St, Wanhua District, Taipei", url: "https://maps.app.goo.gl/ZekGo2uWPzBA7KGe6", note: "In Ximending, about 5 minutes' walk from Ximen MRT.", photoless: true, ll: [25.04104, 121.50642] },
+    t101:        { en: "Taipei 101", zh: "台北101", addr: "台北市信義區信義路五段7號", wiki: ["Taipei 101"], commons: "Taipei 101", ll: [25.03375, 121.56496] },
+    dtf:         { en: "Din Tai Fung, Taipei 101", zh: "鼎泰豐 台北101店", addr: "台北101購物中心 B1", map: "Din Tai Fung Taipei 101", wiki: ["Xiaolongbao", "Din Tai Fung"], commons: "Din Tai Fung", ll: [25.0336, 121.5654] },
+    cks:         { en: "Chiang Kai-shek Memorial Hall", zh: "中正紀念堂", addr: "台北市中正區中山南路21號", wiki: ["Chiang Kai-shek Memorial Hall"], commons: "Chiang Kai-shek Memorial Hall", ll: [25.0347, 121.5216] },
+    longshan:    { en: "Longshan Temple", zh: "艋舺龍山寺", addr: "台北市萬華區廣州街211號", map: "Longshan Temple Taipei", wiki: ["Bangka Lungshan Temple", "Lungshan Temple of Manka"], commons: "Lungshan Temple Taipei", ll: [25.0371, 121.4999] },
     guangzhou:   { en: "Guangzhou Street Night Market", zh: "廣州街夜市", map: "Guangzhou Street Night Market Taipei", wiki: ["Lu rou fan", "Minced pork rice"], commons: "lu rou fan" },
-    ximending:   { en: "Ximending", zh: "西門町", map: "Ximending Taipei", wiki: ["Ximending"], commons: "Ximending" },
-    aychung:     { en: "Ay-Chung Flour-Rice Noodle", zh: "阿宗麵線", addr: "台北市萬華區峨眉街8-1號", map: "Ay-Chung Flour-Rice Noodle Ximending", wiki: ["Oyster vermicelli", "Misua"], commons: "oyster vermicelli" },
+    ximending:   { en: "Ximending", zh: "西門町", map: "Ximending Taipei", wiki: ["Ximending"], commons: "Ximending", ll: [25.0425, 121.5072] },
+    aychung:     { en: "Ay-Chung Flour-Rice Noodle", zh: "阿宗麵線", addr: "台北市萬華區峨眉街8-1號", map: "Ay-Chung Flour-Rice Noodle Ximending", wiki: ["Oyster vermicelli", "Misua"], commons: "oyster vermicelli", ll: [25.0434, 121.5077] },
     xingfutang:  { en: "Xing Fu Tang", zh: "幸福堂", map: "Xing Fu Tang Ximending", wiki: ["Bubble tea"], commons: "bubble tea" },
-    zoo:         { en: "Taipei Zoo", zh: "臺北市立動物園", addr: "台北市文山區新光路二段30號", wiki: ["Taipei Zoo"], commons: "Taipei Zoo" },
-    gondola:     { en: "Maokong Gondola", zh: "貓空纜車", map: "Maokong Gondola Taipei Zoo Station", wiki: ["Maokong Gondola"], commons: "Maokong Gondola" },
-    maokong:     { en: "Maokong tea houses", zh: "貓空", map: "Maokong Station", wiki: ["Maokong", "Tieguanyin"], commons: "Maokong tea" },
+    zoo:         { en: "Taipei Zoo", zh: "臺北市立動物園", addr: "台北市文山區新光路二段30號", wiki: ["Taipei Zoo"], commons: "Taipei Zoo", ll: [24.9983, 121.5806] },
+    gondola:     { en: "Maokong Gondola", zh: "貓空纜車", map: "Maokong Gondola Taipei Zoo Station", wiki: ["Maokong Gondola"], commons: "Maokong Gondola", ll: [24.9961, 121.5772] },
+    maokong:     { en: "Maokong tea houses", zh: "貓空", map: "Maokong Station", wiki: ["Maokong", "Tieguanyin"], commons: "Maokong tea", ll: [24.9679, 121.5884] },
     yaoyue:      { en: "Yao Yue Teahouse", zh: "邀月茶坊", map: "Yao Yue Teahouse Maokong", wiki: ["Tieguanyin", "Maokong"], commons: "Maokong teahouse" },
-    shilin:      { en: "Shilin Night Market", zh: "士林夜市", wiki: ["Shilin Night Market"], commons: "Shilin Night Market" },
+    shilin:      { en: "Shilin Night Market", zh: "士林夜市", wiki: ["Shilin Night Market"], commons: "Shilin Night Market", ll: [25.088, 121.5241] },
     hotstar:     { en: "Hot-Star Large Fried Chicken", zh: "豪大大雞排", map: "Hot-Star Large Fried Chicken Shilin", wiki: ["Hot-Star Large Fried Chicken", "Taiwanese fried chicken", "Popcorn chicken"], commons: "Taiwanese fried chicken" },
-    formosan:    { en: "Formosan Aboriginal Culture Village", zh: "九族文化村", addr: "南投縣魚池鄉大林村金天巷45號", wiki: ["Formosan Aboriginal Culture Village", "Sun Moon Lake"], commons: "Formosan Aboriginal Culture Village" },
-    chunshui:    { en: "Chun Shui Tang, original store", zh: "春水堂 四維創始店", addr: "台中市西區四維街30號", map: "Chun Shui Tang Siwei original store Taichung", wiki: ["Chun Shui Tang", "Bubble tea"], wikiZh: ["春水堂"], commons: "Chun Shui Tang" },
-    miyahara:    { en: "Miyahara", zh: "宮原眼科", addr: "台中市中區中山路20號", map: "Miyahara Taichung", wiki: ["Miyahara (store)", "Miyahara Ophthalmology"], wikiZh: ["宮原眼科"], commons: "Miyahara Taichung" },
+    formosan:    { en: "Formosan Aboriginal Culture Village", zh: "九族文化村", addr: "南投縣魚池鄉大林村金天巷45號", wiki: ["Formosan Aboriginal Culture Village", "Sun Moon Lake"], commons: "Formosan Aboriginal Culture Village", ll: [23.8702, 120.9448] },
+    chunshui:    { en: "Chun Shui Tang, original store", zh: "春水堂 四維創始店", addr: "台中市西區四維街30號", map: "Chun Shui Tang Siwei original store Taichung", wiki: ["Chun Shui Tang", "Bubble tea"], wikiZh: ["春水堂"], commons: "Chun Shui Tang", ll: [24.13771, 120.67574] },
+    miyahara:    { en: "Miyahara", zh: "宮原眼科", addr: "台中市中區中山路20號", map: "Miyahara Taichung", wiki: ["Miyahara (store)", "Miyahara Ophthalmology"], wikiZh: ["宮原眼科"], commons: "Miyahara Taichung", ll: [24.1377, 120.6835] },
     taichungpark:{ en: "Taichung Park", zh: "台中公園", wiki: ["Taichung Park"], commons: "Taichung Park" },
-    raohe:       { en: "Raohe Night Market", zh: "饒河街觀光夜市", map: "Raohe Street Night Market", wiki: ["Raohe Street Night Market"], commons: "Raohe Street Night Market" },
+    raohe:       { en: "Raohe Night Market", zh: "饒河街觀光夜市", map: "Raohe Street Night Market", wiki: ["Raohe Street Night Market"], commons: "Raohe Street Night Market", ll: [25.0511, 121.5777] },
     pepperbun:   { en: "Fuzhou Black Pepper Bun", zh: "福州世祖胡椒餅", map: "Fuzhou Black Pepper Bun Raohe", wiki: ["Hujiao bing", "Pepper bun"], commons: "hujiao bing" },
-    shifen:      { en: "Shifen Old Street", zh: "十分老街", map: "Shifen Old Street", wiki: ["Shifen Old Street", "Shifen Station", "Sky lantern"], commons: "Shifen sky lantern" },
-    shifenfalls: { en: "Shifen Waterfall", zh: "十分瀑布", wiki: ["Shifen Waterfall"], commons: "Shifen Waterfall" },
-    houtong:     { en: "Houtong Cat Village", zh: "猴硐貓村", map: "Houtong Cat Village", wiki: ["Houtong Cat Village", "Houtong Station"], commons: "Houtong cat" },
-    golden:      { en: "Golden Waterfall", zh: "黃金瀑布", addr: "新北市瑞芳區金瓜石", map: "Golden Waterfall Jinguashi", wiki: ["Golden Waterfall", "Jinguashi"], wikiZh: ["黃金瀑布"], commons: "Golden Waterfall Jinguashi" },
-    jiufen:      { en: "Jiufen Old Street", zh: "九份老街", map: "Jiufen Old Street", wiki: ["Jiufen"], commons: "Jiufen" },
+    shifen:      { en: "Shifen Old Street", zh: "十分老街", map: "Shifen Old Street", wiki: ["Shifen Old Street", "Shifen Station", "Sky lantern"], commons: "Shifen sky lantern", ll: [25.0414, 121.7753] },
+    shifenfalls: { en: "Shifen Waterfall", zh: "十分瀑布", wiki: ["Shifen Waterfall"], commons: "Shifen Waterfall", ll: [25.0478, 121.7869] },
+    houtong:     { en: "Houtong Cat Village", zh: "猴硐貓村", map: "Houtong Cat Village", wiki: ["Houtong Cat Village", "Houtong Station"], commons: "Houtong cat", ll: [25.087, 121.8273] },
+    golden:      { en: "Golden Waterfall", zh: "黃金瀑布", addr: "新北市瑞芳區金瓜石", map: "Golden Waterfall Jinguashi", wiki: ["Golden Waterfall", "Jinguashi"], wikiZh: ["黃金瀑布"], commons: "Golden Waterfall Jinguashi", ll: [25.115, 121.8626] },
+    jiufen:      { en: "Jiufen Old Street", zh: "九份老街", map: "Jiufen Old Street", wiki: ["Jiufen"], commons: "Jiufen", ll: [25.1097, 121.8452] },
     agan:        { en: "A-Gan Yi Taro Balls", zh: "阿柑姨芋圓", map: "A-Gan Yi Taro Balls Jiufen", wiki: ["Taro ball", "Taro balls"], commons: "taro balls dessert" },
     peanutroll:  { en: "Peanut ice cream roll", zh: "花生捲冰淇淋", map: "Jiufen Old Street", wiki: ["Peanut ice cream roll"], commons: "peanut ice cream roll Taiwan" },
     amei:        { en: "A-Mei Teahouse", zh: "阿妹茶樓", map: "A-Mei Teahouse Jiufen", wiki: ["A-Mei Tea House"], wikiZh: ["阿妹茶樓"], commons: "A-Mei Tea House Jiufen" },
-    fuhang:      { en: "Fu Hang Dou Jiang", zh: "阜杭豆漿", addr: "台北市中正區忠孝東路一段108號2樓", map: "Fu Hang Dou Jiang Taipei", wiki: ["Fuhang Soy Milk", "Soy milk"], wikiZh: ["阜杭豆漿"], commons: "Fu Hang soy milk" },
-    dihua:       { en: "Dihua Street", zh: "迪化街", map: "Dihua Street Taipei", wiki: ["Dihua Street", "Dadaocheng"], commons: "Dihua Street" },
-    lindongfang: { en: "Lin Dong Fang Beef Noodles", zh: "林東芳牛肉麵", map: "Lin Dong Fang Beef Noodles Taipei", wiki: ["Beef noodle soup"], commons: "Taiwanese beef noodle soup" },
-    elephant:    { en: "Elephant Mountain", zh: "象山步道", map: "Elephant Mountain Hiking Trail Taipei", wiki: ["Elephant Mountain (Taipei)", "Xiangshan (Taipei)"], wikiZh: ["象山 (臺北市)"], commons: "Taipei 101 from Elephant Mountain" },
-    ichiran:     { en: "Ichiran Taipei flagship", zh: "一蘭 台灣台北本店", addr: "台北市信義區松仁路97號", map: "Ichiran Taipei Main Store Songren Road", wiki: ["Ichiran", "Tonkotsu ramen"], commons: "Ichiran ramen" },
+    fuhang:      { en: "Fu Hang Dou Jiang", zh: "阜杭豆漿", addr: "台北市中正區忠孝東路一段108號2樓", map: "Fu Hang Dou Jiang Taipei", wiki: ["Fuhang Soy Milk", "Soy milk"], wikiZh: ["阜杭豆漿"], commons: "Fu Hang soy milk", ll: [25.0443, 121.5248] },
+    dihua:       { en: "Dihua Street", zh: "迪化街", map: "Dihua Street Taipei", wiki: ["Dihua Street", "Dadaocheng"], commons: "Dihua Street", ll: [25.0557, 121.51] },
+    lindongfang: { en: "Lin Dong Fang Beef Noodles", zh: "林東芳牛肉麵", map: "Lin Dong Fang Beef Noodles Taipei", wiki: ["Beef noodle soup"], commons: "Taiwanese beef noodle soup", ll: [25.0478, 121.5384] },
+    elephant:    { en: "Elephant Mountain", zh: "象山步道", map: "Elephant Mountain Hiking Trail Taipei", wiki: ["Elephant Mountain (Taipei)", "Xiangshan (Taipei)"], wikiZh: ["象山 (臺北市)"], commons: "Taipei 101 from Elephant Mountain", ll: [25.0272, 121.5716] },
+    ichiran:     { en: "Ichiran Taipei flagship", zh: "一蘭 台灣台北本店", addr: "台北市信義區松仁路97號", map: "Ichiran Taipei Main Store Songren Road", wiki: ["Ichiran", "Tonkotsu ramen"], commons: "Ichiran ramen", ll: [25.03639, 121.56917] },
     sunnyhills:  { en: "SunnyHills or Chia Te", zh: "微熱山丘 / 佳德糕餅", map: "Chia Te Bakery Taipei", wiki: ["Pineapple cake"], commons: "Taiwanese pineapple cake" },
-    amusement:   { en: "Taipei Children's Amusement Park", zh: "臺北市立兒童新樂園", addr: "台北市士林區承德路五段55號", wiki: ["Taipei Children's Amusement Park"], commons: "Taipei Children's Amusement Park" },
+    amusement:   { en: "Taipei Children's Amusement Park", zh: "臺北市立兒童新樂園", addr: "台北市士林區承德路五段55號", wiki: ["Taipei Children's Amusement Park"], commons: "Taipei Children's Amusement Park", ll: [25.0973, 121.5146] },
     breakfast:   { en: "Taiwanese breakfast shop", zh: "早餐店", generic: true, wiki: ["Dan bing", "Youtiao"], commons: "Taiwanese breakfast" },
     pokemon:     { en: "Pokémon Center Taipei", zh: "寶可夢中心 台北", addr: "台北市信義區松壽路11號 新光三越A11 3樓", map: "Pokemon Center Taipei", wiki: ["Pokémon Center"], commons: "Pokemon Center store" },
     donki:       { en: "DON DON DONKI Ximen", zh: "唐吉訶德 西門店", map: "DON DON DONKI Ximen Taipei", wiki: ["Don Quijote (store)"], commons: "Don Don Donki" },
-    carrefour:   { en: "Carrefour Guilin", zh: "家樂福 桂林店", addr: "台北市萬華區桂林路1號", map: "Carrefour Guilin Taipei", wiki: ["Carrefour Taiwan", "Carrefour"], commons: "Carrefour Taiwan" },
+    carrefour:   { en: "Carrefour Guilin", zh: "家樂福 桂林店", addr: "台北市萬華區桂林路1號", map: "Carrefour Guilin Taipei", wiki: ["Carrefour Taiwan", "Carrefour"], commons: "Carrefour Taiwan", ll: [25.03789, 121.50586] },
     citymall:    { en: "Taipei City Mall", zh: "台北地下街", map: "Taipei City Mall underground", wiki: ["Taipei City Mall"], commons: "Taipei City Mall" },
     xinyi:       { en: "Xinyi shopping district", zh: "信義商圈", map: "Shin Kong Mitsukoshi Xinyi Place", wiki: ["Xinyi Special District", "Xinyi District, Taipei"], commons: "Xinyi District Taipei" },
     eslite:      { en: "Eslite Spectrum Songyan", zh: "誠品生活松菸", map: "Eslite Spectrum Songyan Store", wiki: ["Songshan Cultural and Creative Park"], commons: "Songshan Cultural and Creative Park" },
@@ -155,7 +172,7 @@ window.TRIP = {
     kuaikuai:    { en: "Kuai Kuai", zh: "乖乖", generic: true, wiki: ["Kuai Kuai"], commons: "Kuai Kuai snack" },
     sheetmask:   { en: "Sheet masks", zh: "面膜", generic: true, wiki: ["Sheet mask"], commons: "sheet mask" },
     kavalan:     { en: "Kavalan whisky", zh: "噶瑪蘭威士忌", generic: true, wiki: ["Kavalan Distillery"], commons: "Kavalan whisky" },
-    sunmoon:     { en: "Sun Moon Lake, Ita Thao", zh: "日月潭 伊達邵", map: "Ita Thao Sun Moon Lake", wiki: ["Sun Moon Lake Ropeway", "Sun Moon Lake"], commons: "Sun Moon Lake" }
+    sunmoon:     { en: "Sun Moon Lake, Ita Thao", zh: "日月潭 伊達邵", map: "Ita Thao Sun Moon Lake", wiki: ["Sun Moon Lake Ropeway", "Sun Moon Lake"], commons: "Sun Moon Lake", ll: [23.84956, 120.92872] }
   },
 
   plans: {
@@ -172,12 +189,15 @@ window.TRIP = {
         { title: "Easy morning, then uwian", banner: ["cks", "airport"] }
       ],
       stops: [
-        [1, "12:00 PM", "Land at Taoyuan Airport", "airport", "", "Immigration, then grab a SIM or eSIM. Keep snacks, milk and a change of clothes in your hand-carry."],
-        [1, "1:00 PM", "Meet the van drivers at arrivals", "", "2 vans, about 50 min", "2 vans booked for the airport run, NT$2,000 each. Find your van on the seating chart. Kids can nap on the ride.", "", "seating"],
-        [1, "2:00 PM", "Check in at Orange Hotel Han Zhong, then nap time", "hotel", "", "Let everyone recover from the flight."],
-        [1, "4:00 PM", "Early dinner at Din Tai Fung, Taipei 101", "dtf", "MRT from Ximen to Taipei 101/World Trade Center, about 25 min", "The restaurant is in the mall basement, linked to the station. 4 to 5 PM has the shortest queue. Order for the table and share the xiaolongbao. High chairs available.", "must"],
-        [1, "5:30 PM", "Taipei 101 Observatory, or just walk the mall", "t101", "", "Kids under 115 cm usually go up free."],
-        [1, "6:30 PM", "MRT back to the hotel for an early night", "hotel", "MRT to Ximen, about 25 min, then a 5-minute walk", "It's rush hour, so use the elevators and keep the strollers together. A taxi is an easy backup."],
+        [1, "9:05 AM", "Land at Taoyuan Airport, Terminal 1 (Cebu Pacific 5J 312)", "airport", "", "Leaves Manila Terminal 3 at 6:35 AM. Immigration and bags take 45 to 60 minutes; grab a SIM or eSIM. Keep snacks, milk and a change of clothes in your hand-carry."],
+        [1, "10:15 AM", "Meet the van drivers at Terminal 1 arrivals", "", "2 vans, about 50 min", "2 vans booked for the airport run, NT$2,000 each. Find your van on the seating chart. Kids can nap on the ride.", "", "seating"],
+        [1, "11:15 AM", "Orange Hotel Han Zhong: drop the bags", "hotel", "", "Check-in is usually 3 PM. Ask if any rooms are ready early for naps."],
+        [1, "11:45 AM", "Lunch in Ximending: Ay-Chung noodles and Xing Fu Tang", "aychung", "Walk, about 5 min", "Ay-Chung's soft noodles are easy for toddlers. It's eaten standing up."],
+        [1, "1:00 PM", "Chiang Kai-shek Memorial Hall: big plaza and the guard change on the hour", "cks", "MRT from Ximen, 2 stops on the Green line", "Lots of room for the kids to run, and the strollers double as nap spots."],
+        [1, "3:00 PM", "Check in at the hotel, then nap time", "hotel", "MRT back to Ximen", "Let everyone recover from the early flight."],
+        [1, "4:30 PM", "Early dinner at Din Tai Fung, Taipei 101", "dtf", "MRT from Ximen to Taipei 101/World Trade Center, about 25 min", "The restaurant is in the mall basement, linked to the station. 4 to 5 PM has the shortest queue. Order for the table and share the xiaolongbao. High chairs available.", "must"],
+        [1, "5:45 PM", "Taipei 101 Observatory, 89th floor", "t101", "", "City lights after dark. Kids under 115 cm usually go up free."],
+        [1, "7:00 PM", "MRT back to the hotel for an early night", "hotel", "MRT to Ximen, about 25 min, then a 5-minute walk", "It's rush hour, so use the elevators and keep the strollers together. A taxi is an easy backup."],
 
         [2, "8:00 AM", "Breakfast near the hotel", "breakfast", "Walk", "Steamed buns (mantou) make easy toddler food."],
         [2, "9:00 AM", "Van pickup at the hotel", "hotel", "", "2 vans booked for the day, NT$6,500 each (NT$13,000). Confirm how many hours it covers, since overtime is extra.", "", "seatingTour"],
@@ -186,7 +206,7 @@ window.TRIP = {
         [2, "3:00 PM", "Van back to the hotel, then nap time", "hotel", "Van", "The van's day ends here."],
         [2, "5:30 PM", "Dinner near the hotel", "", "Walk or taxi", "Keep it close. Day 2 doesn't need more."],
 
-        [3, "6:00 AM", "Van leaves the hotel for Sun Moon Lake", "", "", "2 vans booked for the day, NT$10,000 each (NT$20,000). Grab breakfast to eat on the way; the hotel breakfast may not be open yet, so ask the night before if they can pack breakfast boxes. Kids can nap in the van.", "", "seatingTour"],
+        [3, "6:00 AM", "Van leaves the hotel for Sun Moon Lake", "hotel", "", "2 vans booked for the day, NT$10,000 each (NT$20,000). Grab breakfast to eat on the way; the hotel breakfast may not be open yet, so ask the night before if they can pack breakfast boxes. Kids can nap in the van.", "", "seatingTour"],
         [3, "9:30 AM", "Formosan Aboriginal Culture Village: rides, shows and gardens", "formosan", "Van, about 3 hrs with a rest stop", "Opens at 9:30 AM. Kids under 3 get in free, and strollers are fine. Have lunch inside the park."],
         [3, "2:45 PM", "Sun Moon Lake: ropeway down to the lake at Ita Thao", "sunmoon", "Cable car, about 10 min", "Included in the village ticket. It stops around 4 PM, so head down by 3. Ask the drivers to meet you at Ita Thao so nobody rides back up."],
         [3, "4:00 PM", "Leave Sun Moon Lake for Taichung", "", "Van, about 1¼ hrs", ""],
@@ -211,12 +231,12 @@ window.TRIP = {
         [5, "12:00 PM", "Lunch at the park", "", "", "The strollers double as nap spots."],
         [5, "3:30 PM", "Shilin Night Market for an early dinner", "shilin", "Taxi, about 10 min", "Stalls open from around 4 PM. Use a baby carrier, not a stroller."],
         [5, "6:30 PM", "MRT back to the hotel", "hotel", "MRT from Jiantan to Ximen, about 25 min", ""],
+        [5, "7:30 PM", "Pasalubong at Carrefour Guilin, then pack", "carrefour", "Walk, about 5 min from the hotel", "Pineapple cakes, snacks and tea in bulk, and it's open late. Pack tonight: the van leaves at 6:15 AM."],
 
-        [6, "8:00 AM", "Breakfast, pack and check out", "hotel", "", "Bags go in the van. Confirm the luggage space with the operator."],
-        [6, "9:30 AM", "Chiang Kai-shek Memorial Hall: big plaza and the guard change on the hour", "cks", "Van, about 15 min", "A great place for the kids to run around."],
-        [6, "10:45 AM", "Last pasalubong: pineapple cakes", "sunnyhills", "Van", "SunnyHills or Chia Te."],
-        [6, "12:00 PM", "Lunch", "", "", ""],
-        [6, "TBD", "Van to Taoyuan Airport", "airport", "2 vans, about 50 min", "2 vans booked, NT$2,000 each. Find your seat on the ride-home chart. Be at the airport 3 hours before the flight.", "", "seatingHome"]
+        [6, "5:30 AM", "Wake up and check out", "hotel", "", "Breakfast to go from 7-Eleven: onigiri, bread and milk for the kids. Bags go in the van."],
+        [6, "6:15 AM", "Van to Taoyuan Airport, Terminal 1", "airport", "2 vans, about 50 min", "2 vans booked, NT$2,000 each. Find your seat on the ride-home chart.", "", "seatingHome"],
+        [6, "7:15 AM", "Check in for Cebu Pacific 5J 313", "airport", "", "Be at the counters 3 hours before the flight, then breakfast after immigration."],
+        [6, "10:20 AM", "Fly home: 5J 313 lands at Manila Terminal 3 at 1:05 PM", "airport", "", ""]
       ],
       // day, place, name, type, what to order, NT$ per person, counted in budget, tip, must-eat
       food: [
@@ -224,8 +244,8 @@ window.TRIP = {
         [2, "breakfast", "Breakfast shop or 7-Eleven", "Breakfast", "Dan bing (egg crepe), soy milk, steamed buns", 100, true, "Steamed buns are great toddler food."],
         [2, "zoo", "Zoo food court", "Casual", "Bento, noodles", 200, true, ""],
         [2, "yaoyue", "Yao Yue Teahouse", "Teahouse", "Tea set with tea snacks", 300, true, "Close to Maokong Station."],
-        [2, "aychung", "Ay-Chung Flour-Rice Noodle (near the hotel)", "Street food", "Mee sua, soft noodles that kids can eat", 85, true, ""],
-        [2, "xingfutang", "Xing Fu Tang", "Milk tea", "Brown sugar boba milk", 90, true, "No boba for the toddlers: choking risk."],
+        [1, "aychung", "Ay-Chung Flour-Rice Noodle (near the hotel)", "Street food", "Mee sua, soft noodles that kids can eat", 85, true, ""],
+        [1, "xingfutang", "Xing Fu Tang", "Milk tea", "Brown sugar boba milk", 90, true, "No boba for the toddlers: choking risk."],
         [2, "", "Dinner near the hotel", "Casual", "Fried rice, noodles, dumplings", 250, true, ""],
         [3, "", "Breakfast to go", "Breakfast", "Onigiri, tea eggs, sandwiches from 7-Eleven", 80, true, "Unless the hotel packs breakfast boxes."],
         [3, "formosan", "Lunch inside the village", "Casual", "Burgers, bento or aboriginal-style rice", 250, true, "Several restaurants and snack shops inside the park."],
@@ -244,7 +264,7 @@ window.TRIP = {
         [5, "hotstar", "Hot-Star Large Fried Chicken", "Street food", "Giant fried chicken cutlet to share", 120, true, ""],
         [5, "shilin", "Shilin Night Market stalls", "Street food", "Oyster omelette, sweet potato balls, sausage", 200, true, "Sweet potato balls (QQ balls) are a kid favorite."],
         [6, "breakfast", "Breakfast", "Breakfast", "", 100, true, ""],
-        [6, "cks", "Lunch near CKS or at the airport", "Casual", "", 250, true, ""],
+        [6, "airport", "Breakfast at the airport", "Casual", "Terminal 1 food court after immigration", 200, true, ""],
         [1, "ximending", "Ximending street food (optional night)", "Street food", "Right by the hotel, if the kids still have energy", 250, false, "Switch on to count it."],
         [3, "pepperbun", "Fuzhou Black Pepper Bun (optional)", "Street food", "Pepper bun from the clay oven", 65, false, "Raohe isn't in this plan. Switch on to count it."]
       ],
@@ -278,7 +298,7 @@ window.TRIP = {
         [6, "Van: departure airport (booked)", "Van", "van", 2000, "Booked: 2 vans at NT$2,000 each. Barts, Myles, Sarah and Edward aren't on this ride, so the other 8 adults split it.", "", "booked", 2, "Transfer", ["Barts", "Myles", "Sarah", "Edward"]],
         [6, "Meals", "Food", "eater", "FOOD", ""],
         [6, "Diapers, milk and kid snacks (whole trip)", "Kids", "child", 1800, "About NT$300 per child per day. Bring from home to save."],
-        [6, "Shopping and pasalubong", "Shopping", "adult", "SHOP", "Set on the Budget tab."],
+        [5, "Shopping and pasalubong", "Shopping", "adult", "SHOP", "Set on the Budget tab."],
         [6, "Hotel (if not prepaid)", "Hotel", "group", "HOTEL", "Set on the Budget tab."],
         [6, "Driver tips (optional, about NT$500 per van per day)", "Van", "group", 5000, "10 van-days: 2 vans a day on Dec 4 to 7 and Dec 9. Not required in Taiwan, but a nice gesture."],
         [2, "Taipei Zoo train (adults)", "Entrance", "adult", 5, "Kids ride free."]
@@ -298,15 +318,16 @@ window.TRIP = {
         { title: "Uwian day", banner: ["airport"] }
       ],
       stops: [
-        [1, "12:00 PM", "Land at Taoyuan Airport", "airport", "", "Allow 45 to 60 minutes for immigration and bags. Buy an EasyCard and a SIM or eSIM."],
-        [1, "1:00 PM", "Meet the van drivers at arrivals", "", "2 vans, about 50 min", "2 vans booked for the airport run, NT$2,000 each. Find your van on the seating chart. The city is by MRT.", "", "seating"],
-        [1, "2:00 PM", "Orange Hotel Han Zhong: check in or drop the bags", "hotel", "", ""],
-        [1, "2:30 PM", "Taipei 101: late lunch at Din Tai Fung (B1), then the mall", "dtf", "MRT to Taipei 101/World Trade Center, about 25 min", "Get a queue number first, then walk the mall while you wait. Order for the table and share the xiaolongbao.", "must"],
-        [1, "4:15 PM", "Taipei 101 Observatory on the 89th floor (optional)", "t101", "", "Go up before sunset, around 5:05 PM in December."],
+        [1, "9:05 AM", "Land at Taoyuan Airport, Terminal 1 (Cebu Pacific 5J 312)", "airport", "", "Leaves Manila Terminal 3 at 6:35 AM. Allow 45 to 60 minutes for immigration and bags. Buy an EasyCard and a SIM or eSIM."],
+        [1, "10:15 AM", "Meet the van drivers at Terminal 1 arrivals", "", "2 vans, about 50 min", "2 vans booked for the airport run, NT$2,000 each. Find your van on the seating chart. The city is by MRT.", "", "seating"],
+        [1, "11:15 AM", "Orange Hotel Han Zhong: drop the bags", "hotel", "", "Check-in is usually 3 PM."],
+        [1, "11:45 AM", "Taipei 101: lunch at Din Tai Fung (B1), then the mall", "dtf", "MRT from Ximen to Taipei 101/World Trade Center, about 25 min", "Get a queue number first, then walk the mall while you wait. Order for the table and share the xiaolongbao.", "must"],
+        [1, "2:00 PM", "Back to the hotel: check in and rest", "hotel", "MRT to Ximen, about 25 min", "Check-in is usually 3 PM."],
+        [1, "4:00 PM", "Taipei 101 Observatory on the 89th floor", "t101", "MRT from Ximen, about 25 min", "Go up before sunset, around 5:05 PM in December."],
         [1, "5:15 PM", "Chiang Kai-shek Memorial Hall: plaza, gates and night lights", "cks", "MRT, Red line, about 10 min", ""],
         [1, "6:15 PM", "Longshan Temple, lit up at night", "longshan", "MRT, change at Ximen, about 15 min", "Snack on lu rou fan at Guangzhou Street Night Market next door."],
         [1, "7:15 PM", "Ximending: dinner, street food and shopping", "ximending", "MRT, 1 stop to Ximen", "Ay-Chung mee sua and Xing Fu Tang brown sugar boba."],
-        [1, "9:00 PM", "Back to the hotel", "hotel", "Walk, MRT or taxi", ""],
+        [1, "9:00 PM", "Back to the hotel", "hotel", "Walk, about 5 min", ""],
 
         [2, "7:30 AM", "Breakfast near the hotel (dan bing or 7-Eleven)", "breakfast", "Walk", ""],
         [2, "8:30 AM", "Van pickup at the hotel", "hotel", "", "2 vans booked for the day, NT$6,500 each (NT$13,000). Confirm how many hours it covers, since overtime is extra.", "", "seatingTour"],
@@ -317,7 +338,7 @@ window.TRIP = {
         [2, "5:30 PM", "Shilin Night Market: dinner and street food", "shilin", "Van, about 40 min", "The van's day ends here. Hot-Star chicken, oyster omelette."],
         [2, "8:30 PM", "Back to the hotel", "hotel", "MRT from Jiantan, or taxi", ""],
 
-        [3, "6:00 AM", "Van leaves the hotel for Sun Moon Lake", "", "", "2 vans booked for the day, NT$10,000 each (NT$20,000). Grab breakfast to eat on the way; the hotel breakfast may not be open yet, so ask the night before if they can pack breakfast boxes. Kids can nap in the van.", "", "seatingTour"],
+        [3, "6:00 AM", "Van leaves the hotel for Sun Moon Lake", "hotel", "", "2 vans booked for the day, NT$10,000 each (NT$20,000). Grab breakfast to eat on the way; the hotel breakfast may not be open yet, so ask the night before if they can pack breakfast boxes. Kids can nap in the van.", "", "seatingTour"],
         [3, "9:30 AM", "Formosan Aboriginal Culture Village: rides, shows and gardens", "formosan", "Van, about 3 hrs with a rest stop", "Opens at 9:30 AM. It's beside Sun Moon Lake in Nantou. Have lunch inside the park."],
         [3, "2:45 PM", "Sun Moon Lake: ropeway down to the lake at Ita Thao", "sunmoon", "Cable car, about 10 min", "Included in the village ticket. It stops around 4 PM, so head down by 3. Ask the drivers to meet you at Ita Thao so nobody rides back up."],
         [3, "4:00 PM", "Leave Sun Moon Lake for Taichung", "", "Van, about 1¼ hrs", ""],
@@ -343,17 +364,18 @@ window.TRIP = {
         [5, "6:00 PM", "Dinner at Ichiran Taipei flagship", "ichiran", "Walk, about 5 min from the trail", "Open 24 hours; expect a queue.", "must"],
         [5, "7:30 PM", "Raohe Night Market for snacks and dessert", "raohe", "Taxi, about 10 min", "Fuzhou pepper bun at the entrance."],
         [5, "9:00 PM", "MRT back to the hotel", "hotel", "MRT from Songshan", ""],
+        [5, "9:45 PM", "Pasalubong at Carrefour Guilin, then pack", "carrefour", "Walk, about 5 min from the hotel", "Pineapple cakes, snacks and tea in bulk, and it's open late. Pack tonight: the van leaves at 6:15 AM."],
 
-        [6, "8:00 AM", "Breakfast and pack", "hotel", "", ""],
-        [6, "9:30 AM", "Last pasalubong: pineapple cakes", "sunnyhills", "MRT or taxi", "SunnyHills, or Chia Te near Nanjing Fuxing MRT."],
-        [6, "12:00 PM", "Hotel check-out", "hotel", "", "Confirm the check-out time with the hotel."],
-        [6, "TBD", "Van to Taoyuan Airport", "airport", "2 vans, about 50 min", "2 vans booked, NT$2,000 each. Find your seat on the ride-home chart. Be at the airport 3 hours before the flight.", "", "seatingHome"]
+        [6, "5:30 AM", "Wake up and check out", "hotel", "", "Breakfast to go from 7-Eleven. Bags go in the van."],
+        [6, "6:15 AM", "Van to Taoyuan Airport, Terminal 1", "airport", "2 vans, about 50 min", "2 vans booked, NT$2,000 each. Find your seat on the ride-home chart.", "", "seatingHome"],
+        [6, "7:15 AM", "Check in for Cebu Pacific 5J 313", "airport", "", "Be at the counters 3 hours before the flight, then breakfast after immigration."],
+        [6, "10:20 AM", "Fly home: 5J 313 lands at Manila Terminal 3 at 1:05 PM", "airport", "", ""]
       ],
       food: [
         [1, "dtf", "Din Tai Fung (Taipei 101 B1)", "Restaurant", "Order for the table and share: baskets of xiaolongbao, fried rice, wontons and side dishes", 450, true, "The queue can be over an hour, so get a number first.", true, "dtf"],
         [1, "guangzhou", "Guangzhou Street Night Market", "Street food", "Lu rou fan (braised pork rice), oyster omelette", 120, true, "Cheap and local, beside Longshan Temple."],
         [1, "aychung", "Ay-Chung Flour-Rice Noodle", "Street food", "Oyster and pork intestine mee sua", 85, true, "Eaten standing up. It's tradition."],
-        [1, "xingfutang", "Xing Fu Tang", "Milk tea", "Brown sugar boba milk", 90, true, ""],
+        [1, "xingfutang", "Xing Fu Tang", "Milk tea", "Brown sugar boba milk", 90, true, "No boba for the toddlers: choking risk."],
         [1, "ximending", "Ximending street stalls", "Street food", "Fried squid, grilled corn, scallion pancake", 200, true, ""],
         [2, "breakfast", "Breakfast shop or 7-Eleven", "Breakfast", "Dan bing (egg crepe), soy milk, tea eggs", 100, true, ""],
         [2, "zoo", "Zoo food court", "Casual", "Bento, noodles", 200, true, ""],
@@ -380,7 +402,7 @@ window.TRIP = {
         [5, "raohe", "Chen Dong Pork Ribs Herbal Soup", "Street food", "Herbal pork rib soup", 100, true, ""],
         [5, "raohe", "Raohe stalls", "Street food", "Mochi, grilled mushrooms, beef cubes", 150, true, ""],
         [6, "breakfast", "Breakfast", "Breakfast", "", 100, true, ""],
-        [6, "airport", "Lunch at the airport", "Casual", "", 250, true, ""],
+        [6, "airport", "Breakfast at the airport", "Casual", "Terminal 1 food court after immigration", 200, true, ""],
         [1, "dtf", "Din Tai Fung treats", "Restaurant", "Truffle xiaolongbao or red bean buns to share", 150, false, "Switch on to count it."],
         [3, "chunshui", "Chun Shui Tang extra milk tea to go", "Milk tea", "A second cup for the road", 100, false, "Switch on to count it."]
       ],
@@ -407,7 +429,7 @@ window.TRIP = {
         [5, "Meals and street food", "Food", "eater", "FOOD", ""],
         [6, "Van: departure airport (booked)", "Van", "van", 2000, "Booked: 2 vans at NT$2,000 each. Barts, Myles, Sarah and Edward aren't on this ride, so the other 8 adults split it.", "", "booked", 2, "Transfer", ["Barts", "Myles", "Sarah", "Edward"]],
         [6, "Meals", "Food", "eater", "FOOD", ""],
-        [6, "Shopping and pasalubong", "Shopping", "adult", "SHOP", "Set on the Budget tab."],
+        [5, "Shopping and pasalubong", "Shopping", "adult", "SHOP", "Set on the Budget tab."],
         [6, "Hotel (if not prepaid)", "Hotel", "group", "HOTEL", "Set on the Budget tab."],
         [6, "Driver tips (optional, about NT$500 per van per day)", "Van", "group", 5000, "10 van-days: 2 vans a day on Dec 4 to 7 and Dec 9. Not required in Taiwan, but a nice gesture."],
         [4, "MRT or taxi to Ximending and back", "Transport", "adult", 0, "Ximending is next to the hotel, so walk."],
@@ -523,7 +545,7 @@ window.TRIP = {
     "Car seats for the airport vans: 2 in Van 1 and 2 in Van 2 (seating chart on Day 1)",
     "Van quote includes tolls, parking, fuel and overtime",
     "Exact number of adults coming",
-    "Flight times for Dec 4 and Dec 9",
+    "Cebu Pacific 5J 312 and 5J 313: online check-in, seats together and baggage allowance",
     "Orange Hotel Han Zhong: is it prepaid, and is breakfast a voucher for a nearby café?",
     "Taiwan online arrival card filed within 3 days before the flight (one person can file for the whole family)",
     "Passports valid, with return tickets",
